@@ -23,16 +23,25 @@ CNBAModel::~CNBAModel()
 {
 }
 
+Mesh* CNBAModel::getMesh()
+{
+	return &m_mesh;
+}
 
 void CNBAModel::parse()
 {
-	printf("\n[CNBAModel] Parsing data...");
-
-	for (JSON::iterator it = m_json.begin(); it != m_json.end(); ++it){
+	for (JSON::iterator it = m_json.begin(); it != m_json.end(); ++it)
+	{
 		auto key = common::chash(it.key());
 
 		switch (key)
 		{
+			case enModelData::UDIM_SCALE:
+				g_dUVscale = { it.value()[0], it.value()[1] };
+				break;
+			case enModelData::UDIM_TRANSLATE:
+				g_dUVoffset = { it.value()[0], it.value()[1] };
+				break;
 			case enModelData::PRIM:
 				readPrim(it.value());
 				break;
@@ -59,9 +68,43 @@ void CNBAModel::loadMeshData()
 	if (m_dataBfs.empty() || m_vtxBfs.empty())
 		return;
 
+	this->loadIndices();
 	this->loadVertices();
 }
 
+static void setMeshVtxs(DataBuffer* posBf, Mesh& mesh)
+{
+	/* Format vertex coord mesh data - ignore every W position coord */
+	for (int i = 0; i < posBf->data.size(); i++)
+	{
+		auto& vtx = posBf->data[i];
+
+		// Apply Scale and Offset transforms -
+		float tfm = vtx * posBf->scale[i % 4];
+		tfm      += posBf->offset[i % 4];
+
+		if ((i + 1) % 4 != 0)
+			mesh.vertices.push_back(tfm);
+	}
+}
+
+static void addMeshUVMap(DataBuffer* texBf, Mesh& mesh, Array2D& scale, Array2D& offset)
+{
+	/* Format uv coord mesh data - ignore every W position coord */
+	UVMap channel{ texBf->id };
+
+	for (int i = 0; i < texBf->data.size(); i++)
+	{
+		auto& coord = texBf->data[i];
+
+		// Apply Scale and Offset transforms -
+		float tfm = coord * scale[i % 2] + offset[i % 2];
+
+		channel.map.push_back(tfm);
+	}
+
+	mesh.uvs.push_back(channel);
+}
 
 void CNBAModel::loadVertices()
 {
@@ -72,16 +115,25 @@ void CNBAModel::loadVertices()
 	if (!posBf || !tanBf || !texBf)
 		return;
 
-	m_mesh.vertices = posBf->data;
+	// todo: handle when model has multiple pos,tan,tex etc. datasets ...
+	m_mesh.name     = m_name;
 	m_mesh.normals  = tanBf->data;
-	//m_mesh.uvs      = posBf->data;
+	::setMeshVtxs(posBf, m_mesh);
+	::addMeshUVMap(texBf, m_mesh, g_dUVscale, g_dUVoffset);
+
+	// debug log ...
+	printf("\n[CNBAModel] Built 3D Mesh: \"%s\" | Points: %d | Tris: %d",
+		m_mesh.name.c_str(),
+		m_mesh.vertices.size() / 3,
+		m_mesh.triangles.size() 
+	);
 }
 
 void CNBAModel::loadIndices()
 {
 	auto triBf = this->findDataBuffer("IndexBuffer");
 
-	if (!triBf || triBf->data.size() % 3 != 0) // eval valid tri list count
+	if (!triBf || triBf->data.size() % 3 != 0) // check valid tri list count
 		return;
 
 	for (int i = 0; i < triBf->data.size(); i+=3)
@@ -105,7 +157,7 @@ void CNBAModel::readPrim(JSON& obj)
 	{
 		if (it.value().is_object())
 		{
-			// define material groups...
+			// todo: define material groups...
 			index++;
 		}
 	}
@@ -182,7 +234,6 @@ void CNBAModel::readIndexBuffer(JSON& obj)
 {
 	DataBuffer data;
 	data.parse(obj);
-	data.setStride(2);
 	data.loadBinary();
 
 	m_dataBfs.push_back(data);

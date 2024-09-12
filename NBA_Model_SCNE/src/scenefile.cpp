@@ -24,13 +24,19 @@ CSceneFile::load()
 		throw std::runtime_error("Cannot read scene file.");
 
 	/* load skin model object */
-	CSceneFile::parseJson();
+	CSceneFile::parse();
+}
+
+std::shared_ptr<CNBAScene>&
+CSceneFile::scene()
+{
+	return m_scene;
 }
 
 void
-CSceneFile::parseJson()
+CSceneFile::parse()
 {
-	printf("Loading Scene File: %s\n", m_path.c_str());
+	printf("\n\n[CSceneFile] Loading Scene File: %s\n", m_path.c_str());
 	
 	/* Update global active file */
 	WORKING_DIR = common::get_parent_directory(m_path);

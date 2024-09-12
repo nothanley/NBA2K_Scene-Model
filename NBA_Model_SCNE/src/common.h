@@ -1,12 +1,13 @@
+// commonly used global functions and generic helpers
+
 #include <string>
 #include <vector>
 
-// store active file path
+// store active file path to global scope
 extern std::string WORKING_DIR;
 
 namespace common
 {
-    // commonly used global helpers
     char* readFile(const std::string& filename, size_t* data_length = nullptr);
     uint32_t chash(const std::string& str);
     std::string get_exe_path();

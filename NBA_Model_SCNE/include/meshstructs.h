@@ -1,10 +1,15 @@
+/* Generic 3D structs and handlers */
+
 #include <vector>
 #include <string>
 #include <iostream>
 #include <array>
+#include <algorithm>
 #pragma once
 
 typedef std::array<uint32_t, 3> Triangle;
+#undef max
+#undef min
 
 struct Vec3 {
 	float x, y, z;
@@ -66,7 +71,6 @@ struct Vec3 {
 	bool operator!=(const Vec3& other) const {
 		return (x != other.x) || (y != other.y) || (z != other.z);
 	}
-
 
 	static void min(Vec3& result, const Vec3& a, const Vec3& b)
 	{

@@ -1,4 +1,5 @@
-// ...
+// Stores scene attributes and model children. Extrapolates CNBAModel objects from given JSON.
+
 #include <vector>
 #include <memory>
 #include <json.hpp>
@@ -22,14 +23,17 @@ public:
 	CNBAScene(const char* name, JSON& json);
 
 public:
-	void parse();
+	int getNumModels();
 	const char* getName();
+	bool empty();
 	void setName(const char* id);
+	std::vector<std::shared_ptr<CNBAModel>> models();
+
+public:
+	void parse();
 
 private:
 	void readModels(JSON& json);
-	// void readMaterial();
-	// void readEffect();
 
 private:
 	JSON m_json;

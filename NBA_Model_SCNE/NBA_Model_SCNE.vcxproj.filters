@@ -17,6 +17,9 @@
     <Filter Include="NBA\Mesh">
       <UniqueIdentifier>{ff8a4c3f-9a47-4f5c-8c72-0bf9696ba771}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library">
+      <UniqueIdentifier>{93ad3bb5-2cd7-49c3-9c1a-9a057d7705c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -42,6 +45,15 @@
     </ClCompile>
     <ClCompile Include="include\meshstructs.cpp">
       <Filter>NBA\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dll\interfaceskinmodel.cpp">
+      <Filter>Library</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dll\pch.cpp">
+      <Filter>Library</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dll\dllmain.cpp">
+      <Filter>Library</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -69,5 +81,19 @@
     <ClInclude Include="include\meshstructs.h">
       <Filter>NBA\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="src\dll\interfaceskinmodel.h">
+      <Filter>Library</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dll\pch.h">
+      <Filter>Library</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dll\framework.h">
+      <Filter>Library</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\nbascene">
+      <Filter>NBA</Filter>
+    </None>
   </ItemGroup>
 </Project>

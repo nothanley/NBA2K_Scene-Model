@@ -15,6 +15,10 @@ CNBAScene::CNBAScene(const char* id, JSON& json)
 {
 }
 
+int CNBAScene::getNumModels() {
+	return m_models.size();
+}
+
 const char* CNBAScene::getName() {
 	return this->m_name.c_str();
 }
@@ -23,6 +27,15 @@ void CNBAScene::setName(const char* id) {
 	this->m_name = id;
 }
 
+std::vector<std::shared_ptr<CNBAModel>> CNBAScene::models()
+{
+	return m_models;
+}
+
+bool CNBAScene::empty()
+{
+	return m_models.empty();
+}
 
 void CNBAScene::parse()
 {

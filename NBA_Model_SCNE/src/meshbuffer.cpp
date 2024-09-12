@@ -8,8 +8,8 @@ using namespace memreader;
 
 DataBuffer::DataBuffer()
 	:
-	m_index(0),
-	m_stride(1)
+	m_index(NULL),
+	m_stride(NULL)
 {
 }
 
@@ -35,7 +35,7 @@ void DataBuffer::loadBinary()
 
 	// Validate memory buffer size with target length
 	char* dataSrc   = fileBf;
-	size_t items    = m_size / m_stride;
+	size_t items    = m_size / getStride();
 	size_t dataSize = DatUnpack::getDataLen(items, type);
 
 	// load data elemenets from binary
@@ -56,6 +56,18 @@ void DataBuffer::setStride(int val)
 	m_stride = val;
 }
 
+int DataBuffer::getStride()
+{
+	if (m_stride > 0 || m_format.empty())
+		return m_stride;
+
+	// Manually calculate stride length if non available
+	auto type        = common::splitString(m_format, '_').front();
+	m_stride = DatUnpack::getDataLen(1, type);
+
+	return m_stride;
+}
+
 void DataBuffer::parse(JSON& json)
 {
 	for (JSON::iterator it = json.begin(); it != json.end(); ++it)
@@ -72,12 +84,12 @@ void DataBuffer::parse(JSON& json)
 				m_index  = value;
 				break;
 			case enPropertyTag::OFFSET:
-				m_offset = { it.value()[0], it.value()[1], it.value()[2], it.value()[3] };
+				offset = { it.value()[0], it.value()[1], it.value()[2], it.value()[3] };
 				break;
 			case enPropertyTag::SCALE:
-				m_scale  = { it.value()[0], it.value()[1], it.value()[2], it.value()[3] };
+				scale  = { it.value()[0], it.value()[1], it.value()[2], it.value()[3] };
 				break;
-			case enPropertyTag::SIZE:
+			case enPropertyTag::SIZE_:
 				m_size = value;
 				break;
 			case enPropertyTag::BINARY:
@@ -474,39 +486,39 @@ size_t DatUnpack::getDataLen(int items, std::string blockType)
 
 	switch (buf)
 	{
-	case R10_G10_B10_A2:
-		size *= 4;
-		break;
-	case R16_G16_B16_A16:
-		size *= 8;
-		break;
-	case R32_G32_B32:
-		size *= 12;
-		break;
-	case R8_G8_B8_A8:
-		size *= 4;
-		break;
-	case R32:
-		size *= 4;
-		break;
-	case R32_G32:
-		size *= 8;
-		break;
-	case R16_G16:
-		size *= 4;
-		break;
-	case R16:
-		size *= 2;
-		break;
-	case R8:
-		size *= 1;
-		break;
-	default:
-		break;
+		case R10_G10_B10_A2:
+			size *= 4;
+			break;
+		case R16_G16_B16_A16:
+			size *= 8;
+			break;
+		case R32_G32_B32:
+			size *= 12;
+			break;
+		case R8_G8_B8_A8:
+			size *= 4;
+			break;
+		case R32:
+			size *= 4;
+			break;
+		case R32_G32:
+			size *= 8;
+			break;
+		case R16_G16:
+			size *= 4;
+			break;
+		case R16:
+			size *= 2;
+			break;
+		case R8:
+			size *= 1;
+			break;
+		default:
+			break;
 	}
 
 	//check alignment
-	size = roundUp(size, 4);
+	//size = roundUp(size, 4);
 	return size;
 }
 

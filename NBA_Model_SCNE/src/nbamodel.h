@@ -1,3 +1,6 @@
+/* Stores special model attributes and child Meshes for model object. 
+   Extrapolates mesh data from given JSON container. */
+
 #include <fstream>
 #include <istream>
 #include <json.hpp>
@@ -12,7 +15,11 @@ struct BoundingBox;
 class CSceneFile;
 using JSON = nlohmann::json;
 
+typedef std::array<float, 2> Array2D;
+
 enum enModelData {
+	UDIM_SCALE     = 2089048676,
+	UDIM_TRANSLATE = 2089048677,
 	PRIM		 = 2089476285,
 	VERTEXFORMAT = 4088860140,
 	VERTEXSTREAM = 308573839,
@@ -27,6 +34,7 @@ public:
 	~CNBAModel();
 
 public:
+	Mesh* getMesh();
 	void parse();
 
 private:
@@ -48,8 +56,10 @@ private:
 	CSceneFile* m_parent;
 
 private:
+	float g_mOffset, g_mScale;
+	Array2D g_dUVscale, g_dUVoffset;
+
 	Mesh m_mesh;
-	std::vector<UVMap> m_uvs;
 	std::vector<DataBuffer> m_vtxBfs;
 	std::vector<DataBuffer> m_dataBfs;
 };

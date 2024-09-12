@@ -1,4 +1,5 @@
-// ...
+// File object and container class for all .scene data. Parses and extrapolates CNBAScene from given JSON file path.
+
 #include <fstream>
 #include <json.hpp>
 #pragma once
@@ -14,10 +15,11 @@ public:
 
 public:
 	void load();
-	void parseJson();
-	bool validate();
+	std::shared_ptr<CNBAScene>& scene();
 
 private:
+	void parse();
+	bool validate();
 	static std::string formatInputJson(const std::string& path);
 
 private:

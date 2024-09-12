@@ -1,3 +1,5 @@
+/* Stores and extrapolates abstract data from JSON and binary input */
+
 #include <string>
 #include <vector>
 #include <json.hpp>
@@ -11,7 +13,7 @@ enum enPropertyTag {
 	STREAM = 3522070833,
 	OFFSET = 3348510508,
 	SCALE  = 236250733,
-	SIZE   = 2089574848,
+	SIZE_  = 2089574848,
 	BINARY = 2843576490,
 	STRIDE = 3522075280,
 };
@@ -27,17 +29,17 @@ public:
 	int getStreamIdx();
 
 public:
+	int getStride();
 	void setStride(int val);
 	std::string id;
 	std::vector<float> data; // stores all data eg. pos, uvs, indices
+	std::vector<float> offset;
+	std::vector<float> scale;
 
 private:
 	int m_index;
 	std::string m_format;
 	std::string m_path;
-	std::vector<float> m_offset;
-	std::vector<float> m_scale;
-
 	int m_stride;
 	int m_size;
 };
@@ -66,7 +68,6 @@ enum {
 
 namespace DatUnpack
 {
-
 	char* roundPointerToNearest4(char* ptr);
 
 	constexpr unsigned int hash(const char* s, int off = 0);
@@ -96,5 +97,4 @@ namespace DatUnpack
 	void getData_R8(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
 
 	void getData_R16(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
-
 }
