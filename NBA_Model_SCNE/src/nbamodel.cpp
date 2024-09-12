@@ -156,7 +156,10 @@ void CNBAModel::readVertexStream(JSON& obj)
 			auto vtxBf = getVtxBuffer(index);
 			
 			if (vtxBf)
+			{
 				vtxBf->parse(it.value());
+				vtxBf->loadBinary();
+			}
 
 			index++;
 		}
@@ -167,6 +170,9 @@ void CNBAModel::readIndexBuffer(JSON& obj)
 {
 	DataBuffer data;
 	data.parse(obj);
+	data.setStride(2);
+	data.loadBinary();
+
 	m_dataBfs.push_back(data);
 }
 

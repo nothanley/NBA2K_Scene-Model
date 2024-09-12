@@ -1,5 +1,9 @@
 #include <common.h>
 #include <fstream>
+#include <Windows.h>
+#include <algorithm>
+
+std::string WORKING_DIR = "";
 
 char* common::readFile(const std::string& filename)
 {
@@ -24,3 +28,61 @@ uint32_t common::chash(const std::string& str) {
 	return hash;
 }
 
+std::string common::get_exe_path()
+{
+	char buffer[MAX_PATH];
+	GetModuleFileNameA(NULL, buffer, MAX_PATH);
+	std::string fullPath(buffer);
+	size_t lastSlash = fullPath.find_last_of("\\");
+	return fullPath.substr(0, lastSlash);
+}
+
+void common::str_to_lower(std::string& string)
+{
+	std::transform(string.begin(), string.end(), string.begin(), [](unsigned char c) { return std::tolower(c); });
+}
+
+std::string common::format_path(const std::string& path)
+{
+	std::string result;
+
+	for (char ch : path)
+	{	// Format all back/forward slashes
+		if (ch == '\\')
+			result.push_back('/');
+		else
+			result.push_back(ch);
+	}
+	return result;
+}
+
+std::string common::get_relative_file_path(const std::string& name)
+{
+	std::string file_path = get_exe_path() + "/" + name;
+	return common::format_path(file_path);
+};
+
+std::string common::get_parent_directory(const std::string& filePath) 
+{
+	size_t pos = filePath.find_last_of("/\\");
+
+	if (pos != std::string::npos) {
+		return filePath.substr(0, pos);
+	}
+
+	return "";
+}
+
+std::vector<std::string> common::splitString(const std::string& str, const char delimiter) {
+	std::vector<std::string> result;
+	size_t pos = str.find(delimiter);
+
+	if (pos != std::string::npos) {
+		// First part before the delimiter
+		result.push_back(str.substr(0, pos));
+		// Second part after the delimiter
+		result.push_back(str.substr(pos + 1));
+	}
+
+	return result;
+}

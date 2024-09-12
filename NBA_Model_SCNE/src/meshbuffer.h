@@ -27,6 +27,7 @@ public:
 	int getStreamIdx();
 
 public:
+	void setStride(int val);
 	std::string id;
 
 private:
@@ -41,3 +42,58 @@ private:
 };
 
 
+enum {
+	POSITION = 1656822844,
+	NORMALS = 2865655510,
+	BINORMALS = 2552595965,
+	TANGENTS = 2555205862,
+	BLENDWEIGHTS = 3362741239,
+	BLENDINDICES = 2622613563,
+	TEXCOORDS = 680036153,
+	COLOR = 229197112,
+
+	R16_G16_B16_A16 = 123583891,
+	R10_G10_B10_A2  = 775460992,
+	R32_G32_B32 = 251819603,
+	R8_G8_B8_A8 = 3503152076,
+	R32_G32 = 1382734287,
+	R16_G16 = 3666862864,
+	R32 = 0x0b867096,
+	R16 = 193355856,
+	R8 = 5859695,
+};
+
+namespace DatUnpack
+{
+
+	char* roundPointerToNearest4(char* ptr);
+
+	constexpr unsigned int hash(const char* s, int off = 0);
+
+	int roundUp(int numToRound, int multiple);
+
+	float bitFloat(float value, std::string signValue);
+
+	float shortFloat(float value, std::string signValue);
+
+	void getDataSet(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
+
+	//int getDataSetSize(int verts, std::string blockType);
+
+	void getData_R32_G32_B32(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
+
+	void getData_R8_G8_B8_A8(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
+
+	void getData_R16_G16_B16_A16(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
+
+	void getData_R10_G10_B10_A2(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
+
+	void getData_R32_G32(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
+
+	void getData_R16_G16(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
+
+	void getData_R8(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
+
+	void getData_R16(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
+
+}

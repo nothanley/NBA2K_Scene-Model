@@ -1,7 +1,7 @@
 #include <memoryreader.h>
 #include <scenefile.h>
 #include <json.hpp>
-
+#include <common.h>
 #include <nbamodel.h>
 #include <nbascene.h>
 
@@ -31,7 +31,11 @@ void
 CSceneFile::parseJson()
 {
 	printf("Loading Scene File: %s\n", m_path.c_str());
+	
+	/* Update global active file */
+	WORKING_DIR = common::get_parent_directory(m_path);
 
+	/* Iterate through scene json structure */
 	for (JSON::iterator it = m_json.begin(); it != m_json.end(); ++it)
 	{
 		if (it.value().is_object()) {
@@ -82,6 +86,16 @@ static void makeJsonKeyUnique(std::string& rawJson, const std::string key_name)
 	}
 }
 
+static void removeSubString(std::string& str, const std::string target)
+{
+	size_t startPos = 0;
+
+	while ((startPos = str.find(target, startPos)) != std::string::npos)
+	{
+		str.replace(startPos, target.length(), "");
+	}
+}
+
 std::string
 CSceneFile::formatInputJson(const std::string& path)
 {
@@ -97,6 +111,7 @@ CSceneFile::formatInputJson(const std::string& path)
 	std::string data = "{" + buffer.str() + "}";
 
 	// Correct matching keys...
+	::removeSubString(data, "\tnull,");
 	::makeJsonKeyUnique(data, "\"VertexBuffer\"");
 
 	return data;
