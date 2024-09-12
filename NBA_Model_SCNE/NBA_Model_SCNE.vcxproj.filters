@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Memory">
+      <UniqueIdentifier>{c22eb227-0948-4ccd-9325-9a9f1f72366d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NBA">
+      <UniqueIdentifier>{1e0071e9-4f81-431c-bba1-698faa7d4f3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{ee5ce1da-590d-4e08-9f0a-c22f71e76965}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NBA\Mesh">
+      <UniqueIdentifier>{ff8a4c3f-9a47-4f5c-8c72-0bf9696ba771}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\memoryreader.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scenefile.cpp">
+      <Filter>NBA</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nbamodel.cpp">
+      <Filter>NBA</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nbascene.cpp">
+      <Filter>NBA</Filter>
+    </ClCompile>
+    <ClCompile Include="src\meshbuffer.cpp">
+      <Filter>NBA\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="include\meshstructs.cpp">
+      <Filter>NBA\Mesh</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\memoryreader.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nbamodel.h">
+      <Filter>NBA</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scenefile.h">
+      <Filter>NBA</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\json.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nbascene.h">
+      <Filter>NBA</Filter>
+    </ClInclude>
+    <ClInclude Include="src\meshbuffer.h">
+      <Filter>NBA\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="include\meshstructs.h">
+      <Filter>NBA\Mesh</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
