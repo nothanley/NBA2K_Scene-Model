@@ -3,7 +3,10 @@
 
 int main()
 {
-	CSceneFile demoScene("C:/Users/wauke/Downloads/NBA 2K25 Research/mods/props/appliance_boombox_generic/appliance_boombox_generic.SCNE");
+	CSceneFile demoScene(
+		"C:/Users/wauke/Downloads/NBA 2K25 Research/mods/balls/ball.scne"
+	);
+
 	demoScene.load();
 
 }

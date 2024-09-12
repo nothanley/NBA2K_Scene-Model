@@ -63,7 +63,7 @@ void CNBAScene::readModels(JSON& obj)
 			// check okay...
 			model->parse();
 			m_models.push_back(model);
-		}
+ 		}
 	}
 
 }

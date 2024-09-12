@@ -5,7 +5,7 @@
 
 std::string WORKING_DIR = "";
 
-char* common::readFile(const std::string& filename)
+char* common::readFile(const std::string& filename, size_t* data_length)
 {
 	std::ifstream file(filename, std::ios::binary | std::ios::ate);
 	if (!file.is_open())
@@ -17,6 +17,8 @@ char* common::readFile(const std::string& filename)
 	char* data = new char[fileSize];
 	file.read(data, fileSize);
 	file.close();
+
+	*data_length = (data_length) ? fileSize : NULL;
 	return data;
 }
 
@@ -35,6 +37,27 @@ std::string common::get_exe_path()
 	std::string fullPath(buffer);
 	size_t lastSlash = fullPath.find_last_of("\\");
 	return fullPath.substr(0, lastSlash);
+}
+
+void common::removeSubString(std::string& str, const std::string target)
+{
+	size_t startPos = 0;
+
+	while ((startPos = str.find(target, startPos)) != std::string::npos)
+	{
+		str.replace(startPos, target.length(), "");
+	}
+}
+
+void common::replaceSubString(std::string& str, const std::string old_string, const std::string new_string)
+{
+	size_t startPos = 0;
+
+	while ((startPos = str.find(old_string, startPos)) != std::string::npos)
+	{
+		str.replace(startPos, old_string.length(), new_string);
+		startPos += new_string.length();
+	}
 }
 
 void common::str_to_lower(std::string& string)

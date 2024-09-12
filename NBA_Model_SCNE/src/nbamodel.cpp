@@ -72,19 +72,29 @@ void CNBAModel::loadVertices()
 	if (!posBf || !tanBf || !texBf)
 		return;
 
-	m_mesh.vertices;
-	m_mesh.normals;
-	m_mesh.uvs;
+	m_mesh.vertices = posBf->data;
+	m_mesh.normals  = tanBf->data;
+	//m_mesh.uvs      = posBf->data;
 }
 
 void CNBAModel::loadIndices()
 {
 	auto triBf = this->findDataBuffer("IndexBuffer");
 
-	if (!triBf)
+	if (!triBf || triBf->data.size() % 3 != 0) // eval valid tri list count
 		return;
 
-	m_mesh.triangles;
+	for (int i = 0; i < triBf->data.size(); i+=3)
+	{
+		Triangle face
+		{
+			triBf->data[i],
+			triBf->data[i+1],
+			triBf->data[i+2]
+		};
+
+		m_mesh.triangles.push_back(face);
+	}
 }
 
 void CNBAModel::readPrim(JSON& obj)
@@ -118,7 +128,7 @@ void CNBAModel::readVertexFmt(JSON& obj)
 DataBuffer* CNBAModel::getVtxBuffer(int index)
 {
 	if (index > m_vtxBfs.size())
-		return NULL;
+		return nullptr;
 
 
 	for (auto& vtxBf : m_vtxBfs)
@@ -126,6 +136,8 @@ DataBuffer* CNBAModel::getVtxBuffer(int index)
 		if (vtxBf.getStreamIdx() == index)
 			return &vtxBf;
 	}
+
+	return nullptr;
 }
 
 DataBuffer* CNBAModel::findDataBuffer(const char* target)

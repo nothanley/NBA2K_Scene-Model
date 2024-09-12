@@ -86,16 +86,6 @@ static void makeJsonKeyUnique(std::string& rawJson, const std::string key_name)
 	}
 }
 
-static void removeSubString(std::string& str, const std::string target)
-{
-	size_t startPos = 0;
-
-	while ((startPos = str.find(target, startPos)) != std::string::npos)
-	{
-		str.replace(startPos, target.length(), "");
-	}
-}
-
 std::string
 CSceneFile::formatInputJson(const std::string& path)
 {
@@ -111,7 +101,7 @@ CSceneFile::formatInputJson(const std::string& path)
 	std::string data = "{" + buffer.str() + "}";
 
 	// Correct matching keys...
-	::removeSubString(data, "\tnull,");
+	common::removeSubString(data, "\tnull,");
 	::makeJsonKeyUnique(data, "\"VertexBuffer\"");
 
 	return data;

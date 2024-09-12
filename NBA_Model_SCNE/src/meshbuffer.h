@@ -29,6 +29,7 @@ public:
 public:
 	void setStride(int val);
 	std::string id;
+	std::vector<float> data; // stores all data eg. pos, uvs, indices
 
 private:
 	int m_index;
@@ -54,7 +55,7 @@ enum {
 
 	R16_G16_B16_A16 = 123583891,
 	R10_G10_B10_A2  = 775460992,
-	R32_G32_B32 = 251819603,
+	R32_G32_B32 = 1171538707,
 	R8_G8_B8_A8 = 3503152076,
 	R32_G32 = 1382734287,
 	R16_G16 = 3666862864,
@@ -78,7 +79,7 @@ namespace DatUnpack
 
 	void getDataSet(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
 
-	//int getDataSetSize(int verts, std::string blockType);
+	size_t getDataLen(int items, std::string blockType);
 
 	void getData_R32_G32_B32(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
 
