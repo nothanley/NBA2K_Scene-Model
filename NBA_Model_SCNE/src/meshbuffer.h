@@ -26,6 +26,8 @@ public:
 	void loadBinary();
 	int getStreamIdx();
 
+public:
+	std::string id;
 
 private:
 	int m_index;

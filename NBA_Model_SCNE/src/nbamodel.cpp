@@ -33,22 +33,53 @@ void CNBAModel::parse()
 
 		switch (key)
 		{
-		case enModelData::PRIM:
-			readPrim(it.value());
-			break;
-		case enModelData::INDEXBUFFER:
-			readIndexBuffer(it.value());
-			break;
-		case enModelData::VERTEXFORMAT:
-			readVertexFmt(it.value());
-			break;
-		case enModelData::VERTEXSTREAM:
-			readVertexStream(it.value());
-			break;
-		default:
-			break;
+			case enModelData::PRIM:
+				readPrim(it.value());
+				break;
+			case enModelData::INDEXBUFFER:
+				readIndexBuffer(it.value());
+				m_dataBfs.back().id = it.key();
+				break;
+			case enModelData::VERTEXFORMAT:
+				readVertexFmt(it.value());
+				break;
+			case enModelData::VERTEXSTREAM:
+				readVertexStream(it.value());
+				break;
+			default:
+				break;
 		};
 	}
+
+	this->loadMeshData();
+}
+
+void CNBAModel::loadMeshData()
+{
+	if (m_dataBfs.empty() || m_vtxBfs.empty())
+		return;
+
+	this->loadVertices();
+}
+
+
+void CNBAModel::loadVertices()
+{
+	auto posBf = this->findDataBuffer("POSITION0");
+	auto tanBf = this->findDataBuffer("TANGENTFRAME0");
+	auto texBf = this->findDataBuffer("TEXCOORD0");
+
+	if (!posBf || !tanBf || !texBf)
+		return;
+
+	m_mesh.vertices;
+	m_mesh.normals;
+	m_mesh.uvs;
+}
+
+void CNBAModel::loadIndices()
+{
+
 }
 
 void CNBAModel::readPrim(JSON& obj)
@@ -72,6 +103,7 @@ void CNBAModel::readVertexFmt(JSON& obj)
 		if (it.value().is_object())
 		{
 			DataBuffer data;
+			data.id = it.key();
 			data.parse( it.value() );
 			m_vtxBfs.push_back(data);
 		}
@@ -89,6 +121,23 @@ DataBuffer* CNBAModel::getVtxBuffer(int index)
 		if (vtxBf.getStreamIdx() == index)
 			return &vtxBf;
 	}
+}
+
+DataBuffer* CNBAModel::findDataBuffer(const char* target)
+{
+	for (auto& dataBf : m_dataBfs)
+	{
+		if (dataBf.id == target)
+			return &dataBf;
+	}
+
+	for (auto& vtxBf : m_vtxBfs)
+	{
+		if (vtxBf.id == target)
+			return &vtxBf;
+	}
+
+	return nullptr;
 }
 
 void CNBAModel::readVertexStream(JSON& obj)

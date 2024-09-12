@@ -30,10 +30,16 @@ public:
 	void parse();
 
 private:
+	void loadMeshData();
+	void loadVertices();
+	void loadIndices();
 	void readPrim(JSON& obj);
 	void readVertexFmt(JSON& obj);
 	void readVertexStream(JSON& obj);
 	void readIndexBuffer(JSON& obj);
+
+private:
+	DataBuffer* findDataBuffer(const char* id);
 	DataBuffer* getVtxBuffer(int index);
 
 private:
