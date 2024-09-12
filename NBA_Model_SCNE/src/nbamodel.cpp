@@ -79,7 +79,12 @@ void CNBAModel::loadVertices()
 
 void CNBAModel::loadIndices()
 {
+	auto triBf = this->findDataBuffer("IndexBuffer");
 
+	if (!triBf)
+		return;
+
+	m_mesh.triangles;
 }
 
 void CNBAModel::readPrim(JSON& obj)
