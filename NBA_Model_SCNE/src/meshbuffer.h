@@ -27,6 +27,7 @@ public:
 	void parse(JSON& json);
 	void loadBinary();
 	int getStreamIdx();
+	std::string getFormat() { return m_format; }
 
 public:
 	int getStride();
@@ -34,7 +35,7 @@ public:
 	std::string id;
 	std::vector<float> data; // stores all data eg. pos, uvs, indices
 	std::vector<float> offset;
-	std::vector<float> scale;
+	std::vector<float> scale ;
 
 private:
 	int m_index;

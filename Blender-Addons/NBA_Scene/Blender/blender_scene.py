@@ -1,6 +1,7 @@
 import bpy # type: ignore
 import os
 from .blender_mesh import *
+from math import radians
 
 def getNewSceneCollection(name, link_to_scene=True):
     collection = bpy.data.collections.new(name)
@@ -30,8 +31,7 @@ def loadSkinModel(model, parent, args, model_path):
     for mesh in model.getMeshes():
         object = loadSkinMesh(mesh, args, model_path)
         parent.objects.link(object)
-
-        # object.rotation_euler[0] = radians(-90) # Flip default axis
+        object.rotation_euler[0] = radians(90) # Flip default axis
 
     return
 

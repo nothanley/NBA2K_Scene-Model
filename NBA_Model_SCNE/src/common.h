@@ -18,5 +18,6 @@ namespace common
     void removeSubString(std::string& str, const std::string target);
     void replaceSubString(std::string& str, const std::string old_string, const std::string new_string);
     void str_to_lower(std::string& string);
+    bool containsSubstring(const std::string& str, const std::string& substring);
 }
 

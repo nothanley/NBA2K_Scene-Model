@@ -141,7 +141,6 @@ const uint32_t* getMeshTriangleList(void* pSkinModel, const int index) {
 
     /* Load mesh */
     auto mesh = scene->models().at(index)->getMesh();
-    //mesh->flipNormals();
      
     /* Cast triangle vector to index list */
     auto& tris = mesh->triangles;

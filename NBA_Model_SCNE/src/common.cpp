@@ -60,6 +60,10 @@ void common::replaceSubString(std::string& str, const std::string old_string, co
 	}
 }
 
+bool common::containsSubstring(const std::string& str, const std::string& substring) {
+	return str.find(substring) != std::string::npos;
+}
+
 void common::str_to_lower(std::string& string)
 {
 	std::transform(string.begin(), string.end(), string.begin(), [](unsigned char c) { return std::tolower(c); });

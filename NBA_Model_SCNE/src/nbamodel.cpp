@@ -5,7 +5,11 @@
 CNBAModel::CNBAModel(const char* id)
 	:
 	m_name(id),
-	m_parent(NULL)
+	m_parent(NULL),
+	g_mOffset(0.0f),
+	g_mScale(1.0f),
+	g_dUVscale(Array2D{ 1,1 }),
+	g_dUVoffset(Array2D{ 0,0 })
 {
 }
 
@@ -14,7 +18,11 @@ CNBAModel::CNBAModel(const char* id, JSON& data)
 	:
 	m_name(id),
 	m_json(data),
-	m_parent(NULL)
+	m_parent(NULL),
+	g_mOffset(0.0f),
+	g_mScale(1.0f),
+	g_dUVscale(Array2D{ 1,1 }),
+	g_dUVoffset(Array2D{ 0,0 })
 {
 }
 
@@ -83,8 +91,14 @@ static void setMeshVtxs(DataBuffer* posBf, Mesh& mesh)
 		float tfm = vtx * posBf->scale[i % 4];
 		tfm      += posBf->offset[i % 4];
 
-		if ((i + 1) % 4 != 0)
+		if ( !common::containsSubstring(posBf->getFormat(), "R16G16B16A16") )
+		{
 			mesh.vertices.push_back(tfm);
+		}
+		else if ((i + 1) % 4 != 0)
+		{
+			mesh.vertices.push_back(tfm);
+		}
 	}
 }
 
@@ -103,7 +117,7 @@ static void addMeshUVMap(DataBuffer* texBf, Mesh& mesh, Array2D& scale, Array2D&
 		channel.map.push_back(tfm);
 	}
 
-	mesh.uvs.push_back(channel);
+	mesh.uvs.push_back(channel); 
 }
 
 void CNBAModel::loadVertices()
@@ -119,7 +133,9 @@ void CNBAModel::loadVertices()
 	m_mesh.name     = m_name;
 	m_mesh.normals  = tanBf->data;
 	::setMeshVtxs(posBf, m_mesh);
-	::addMeshUVMap(texBf, m_mesh, g_dUVscale, g_dUVoffset);
+
+	if (!texBf->data.empty())
+		::addMeshUVMap(texBf, m_mesh, g_dUVscale, g_dUVoffset);
 
 	// debug log ...
 	printf("\n[CNBAModel] Built 3D Mesh: \"%s\" | Points: %d | Tris: %d",
