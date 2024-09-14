@@ -38,6 +38,10 @@ public:
 	std::vector<float> scale ;
 
 private:
+	bool decompressGzFile(const std::string& filePath, std::string& targetPath);
+	std::string findBinaryFile();
+
+private:
 	int m_index;
 	std::string m_format;
 	std::string m_path;
@@ -60,9 +64,9 @@ enum {
 	R10_G10_B10_A2  = 775460992,
 	R32_G32_B32 = 1171538707,
 	R8_G8_B8_A8 = 3503152076,
+	R32     = 193360022,
 	R32_G32 = 1382734287,
 	R16_G16 = 3666862864,
-	R32 = 0x0b867096,
 	R16 = 193355856,
 	R8 = 5859695,
 };
@@ -98,4 +102,6 @@ namespace DatUnpack
 	void getData_R8(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
 
 	void getData_R16(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
+
+	void getData_R32(char*& data, int verts, std::string dataType, std::string blockType, std::vector<float>& dataSet);
 }

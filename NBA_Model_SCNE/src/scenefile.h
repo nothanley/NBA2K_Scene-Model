@@ -14,15 +14,15 @@ public:
 	~CSceneFile();
 
 public:
-	void load();
+	virtual void load();
 	std::shared_ptr<CNBAScene>& scene();
 
-private:
+protected:
 	void parse();
 	bool validate();
 	static std::string formatInputJson(const std::string& path);
 
-private:
+protected:
 	JSON m_json;
 	std::string m_path;
 	std::shared_ptr<CNBAScene> m_scene;

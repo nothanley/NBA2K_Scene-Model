@@ -20,6 +20,12 @@
     <Filter Include="Library">
       <UniqueIdentifier>{93ad3bb5-2cd7-49c3-9c1a-9a057d7705c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\GZIP">
+      <UniqueIdentifier>{d89dc1c5-f743-416c-be83-07e24e034748}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\ZLIB">
+      <UniqueIdentifier>{b6a2158f-aa5f-4db8-a401-1e1f178ce5ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -89,6 +95,54 @@
     </ClInclude>
     <ClInclude Include="src\dll\framework.h">
       <Filter>Library</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gzip\decompress.hpp">
+      <Filter>Library\GZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gzip\utils.hpp">
+      <Filter>Library\GZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gzip\version.hpp">
+      <Filter>Library\GZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gzip\compress.hpp">
+      <Filter>Library\GZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gzip\config.hpp">
+      <Filter>Library\GZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="include\zlib\inffast.h">
+      <Filter>Library\ZLIB</Filter>
+    </ClInclude>
+    <ClInclude Include="include\zlib\inffixed.h">
+      <Filter>Library\ZLIB</Filter>
+    </ClInclude>
+    <ClInclude Include="include\zlib\inflate.h">
+      <Filter>Library\ZLIB</Filter>
+    </ClInclude>
+    <ClInclude Include="include\zlib\inftrees.h">
+      <Filter>Library\ZLIB</Filter>
+    </ClInclude>
+    <ClInclude Include="include\zlib\trees.h">
+      <Filter>Library\ZLIB</Filter>
+    </ClInclude>
+    <ClInclude Include="include\zlib\zutil.h">
+      <Filter>Library\ZLIB</Filter>
+    </ClInclude>
+    <ClInclude Include="include\zlib\crc32.h">
+      <Filter>Library\ZLIB</Filter>
+    </ClInclude>
+    <ClInclude Include="include\zlib\deflate.h">
+      <Filter>Library\ZLIB</Filter>
+    </ClInclude>
+    <ClInclude Include="include\zlib\gzguts.h">
+      <Filter>Library\ZLIB</Filter>
+    </ClInclude>
+    <ClInclude Include="include\zlib\zlib.h">
+      <Filter>Library\ZLIB</Filter>
+    </ClInclude>
+    <ClInclude Include="include\zlib\zconf.h">
+      <Filter>Library\ZLIB</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

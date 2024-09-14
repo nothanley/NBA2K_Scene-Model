@@ -147,14 +147,16 @@ std::string common::findFileInDirectory(const std::string& mainDir, const std::s
 
 	// Recursively iterate through the directory and subdirectories for existing file
 	std::string local_file;
+	std::string target_fmt = filename;
+	common::str_to_lower(target_fmt);
 
 	for (const auto& entry : fs::recursive_directory_iterator(mainDir)) 
 		if (fs::is_regular_file(entry)) 
 		{
 			local_file = entry.path().filename().string();
-			common::str_to_lower(local_file);
+			common::str_to_lower(local_file); // match case...
 
-			if (local_file == filename)
+			if (local_file == target_fmt)
 				return entry.path().string();
 		}
 

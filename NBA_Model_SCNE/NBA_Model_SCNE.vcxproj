@@ -149,13 +149,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);WIN32_LEAN_AND_MEAN</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)NBA_Model_SCNE\src;$(SolutionDir)NBA_Model_SCNE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NBA_Model_SCNE\src;$(SolutionDir)NBA_Model_SCNE\include;$(SolutionDir)NBA_Model_SCNE\include\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies);$(SolutionDir)NBA_Model_SCNE\lib\zlib.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -164,15 +166,17 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);WIN32_LEAN_AND_MEAN</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)NBA_Model_SCNE\src;$(SolutionDir)NBA_Model_SCNE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NBA_Model_SCNE\src;$(SolutionDir)NBA_Model_SCNE\include;$(SolutionDir)NBA_Model_SCNE\include\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);$(SolutionDir)NBA_Model_SCNE\lib\zlib.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DLL-Library|x64'">
@@ -181,15 +185,17 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);WIN32_LEAN_AND_MEAN</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)NBA_Model_SCNE\src;$(SolutionDir)NBA_Model_SCNE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NBA_Model_SCNE\src;$(SolutionDir)NBA_Model_SCNE\include;$(SolutionDir)NBA_Model_SCNE\include\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);$(SolutionDir)NBA_Model_SCNE\lib\zlib.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(TargetDir)$(TargetName).dll" "C:\Users\wauke\AppData\Roaming\Blender Foundation\Blender\4.1\scripts\addons\NBA_Scene\Link\$(TargetName).dll"</Command>
@@ -209,9 +215,25 @@
     <ClCompile Include="src\scenefile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\gzip\compress.hpp" />
+    <ClInclude Include="include\gzip\config.hpp" />
+    <ClInclude Include="include\gzip\decompress.hpp" />
+    <ClInclude Include="include\gzip\utils.hpp" />
+    <ClInclude Include="include\gzip\version.hpp" />
     <ClInclude Include="include\json.hpp" />
     <ClInclude Include="include\memoryreader.h" />
     <ClInclude Include="include\meshstructs.h" />
+    <ClInclude Include="include\zlib\crc32.h" />
+    <ClInclude Include="include\zlib\deflate.h" />
+    <ClInclude Include="include\zlib\gzguts.h" />
+    <ClInclude Include="include\zlib\inffast.h" />
+    <ClInclude Include="include\zlib\inffixed.h" />
+    <ClInclude Include="include\zlib\inflate.h" />
+    <ClInclude Include="include\zlib\inftrees.h" />
+    <ClInclude Include="include\zlib\trees.h" />
+    <ClInclude Include="include\zlib\zconf.h" />
+    <ClInclude Include="include\zlib\zlib.h" />
+    <ClInclude Include="include\zlib\zutil.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\dll\framework.h" />
     <ClInclude Include="src\dll\interfaceskinmodel.h" />

@@ -1,11 +1,9 @@
-#include <memoryreader.h>
 #include <scenefile.h>
 #include <json.hpp>
 #include <common.h>
 #include <nbamodel.h>
 #include <nbascene.h>
-
-using namespace memreader;
+#include <sstream>
 
 CSceneFile::CSceneFile(const char* path)
 	: 
@@ -52,7 +50,6 @@ CSceneFile::parse()
 		}
 	}
 }
-
 
 bool
 CSceneFile::validate()

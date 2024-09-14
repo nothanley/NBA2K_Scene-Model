@@ -3,6 +3,8 @@
 #include <scenefile.h>
 #include <common.h>
 #include <memoryreader.h>
+#include <gzip/decompress.hpp>
+#include <gzip/utils.hpp>
 
 using namespace memreader;
 
@@ -21,15 +23,16 @@ void DataBuffer::loadBinary()
 	if (m_format.empty() || !m_size || m_path.empty())
 		return;
 
-	/* Perform decompression if nessecary*/
-	// for now just search for decompressed binaries.
-	common::replaceSubString(m_path, ".gz", ".bin");
-
 	/* Load file data into memory */
 	size_t fileLen         = NULL;
-	std::string binaryPath = common::format_path(WORKING_DIR + "/" + m_path);
+	std::string binaryPath = this->findBinaryFile();
 	char* fileBf           = common::readFile(binaryPath, &fileLen);
-	if (!fileBf) return;
+	if (binaryPath.empty())
+		printf("\n[DataBuffer] Invalid scene - missing model data file: %s\n", m_path.c_str());
+
+	/* Missing model data so must throw exception */
+	if (binaryPath.empty() || !fileBf)
+		throw std::runtime_error("");
 
 	/* Discern target data types */
 	auto type = common::splitString(m_format, '_').front();
@@ -105,6 +108,62 @@ void DataBuffer::parse(JSON& json)
 				break;
 		};
 	}
+}
+
+
+
+bool writeDataToFile(const std::string& filePath, const std::string& data)
+{
+	std::ofstream outFile(filePath, std::ios::binary);
+	if (!outFile) return false;
+
+	// write stream contents to file
+	outFile.write(data.c_str(), data.size());
+
+	// check write success...
+	if (!outFile) return false;
+
+	outFile.close();
+	return true;
+}
+
+bool DataBuffer::decompressGzFile(const std::string& filePath, std::string& targetPath)
+{
+	size_t size;
+	char* data = common::readFile(filePath, &size);
+	if (!data) return false;
+
+	if (gzip::is_compressed(data, size))
+	{
+		printf("\n[DataBuffer] Decompressing .gz file...");
+		auto decompressed_data = gzip::decompress(data, size);
+		
+		common::replaceSubString(targetPath, ".gz", ".bin");
+		::writeDataToFile(targetPath, decompressed_data);
+	}
+
+	// todo: handle already decompressed .gz files ... 
+	delete[] data;
+	return true;
+}
+
+std::string DataBuffer::findBinaryFile()
+{
+	std::string targetName = std::filesystem::path(m_path).filename().string();
+	bool isCompressed = common::containsSubstring(m_path, ".gz");
+
+	if (isCompressed)
+	{
+		auto compressedPath = common::findFileInDirectory(WORKING_DIR, targetName);
+
+		if (!compressedPath.empty())
+		{
+			std::string outPath = compressedPath;
+			return (decompressGzFile(compressedPath, outPath)) ? outPath : "";
+		}
+	}
+
+	return common::findFileInDirectory(WORKING_DIR, targetName);
 }
 
 char*
@@ -194,6 +253,9 @@ DatUnpack::getDataSet(char*& data, int size, std::string dataType, std::string b
 		case R16_G16:
 			getData_R16_G16(data, size, dataType, blockType, dataSet);
 			break;
+		case R32:
+			getData_R32(data, size, dataType, blockType, dataSet);
+			break;
 		case R16:
 			getData_R16(data, size, dataType, blockType, dataSet);
 			break;
@@ -201,6 +263,7 @@ DatUnpack::getDataSet(char*& data, int size, std::string dataType, std::string b
 			getData_R8(data, size, dataType, blockType, dataSet);
 			break;
 		default:
+			printf("\n[DataUnpack] Error: could not resolve encoding format: %s", blockType.c_str());
 			break;
 	}
 
@@ -415,6 +478,34 @@ DatUnpack::getData_R16_G16(char*& data, int size, std::string dataType, std::str
 		}
 		else if (dataType == "uint") {
 			auto val = ReadUInt16(data);
+			result = val;
+		}
+
+		dataSet.push_back(result);
+	}
+}
+
+void
+DatUnpack::getData_R32(char*& data, int size, std::string dataType, std::string blockType, std::vector<float>& dataSet)
+{
+	for (int i = 0; i < size; i++)
+	{
+		float result;
+
+		if (dataType == "snorm") {
+			auto val = ReadInt32(data);
+			result = decodeVariableLenFloat(val, 32, dataType);
+		}
+		else if (dataType == "unorm") {
+			auto val = ReadUInt32(data);
+			result = decodeVariableLenFloat(val, 32, dataType);
+		}
+		else if (dataType == "sint") {
+			auto val = ReadInt32(data);
+			result = val;
+		}
+		else if (dataType == "uint") {
+			auto val = ReadUInt32(data);
 			result = val;
 		}
 

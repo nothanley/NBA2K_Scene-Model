@@ -11,7 +11,7 @@ int main()
 {
 	// Open and load a scene file given a local path.
 	CSceneFile inFile(
-		"C:/Users/wauke/Downloads/NBA 2K25 Research/mods/balls/ball.scne" );
+		"C:/SteamLibrary/steamapps/common/NBA 2K25/mods/clothing/full/shoes_adidas_promodel.SCNE" );
 
 	//CSceneFile inFile(
 		//"C:/Users/wauke/Downloads/Player Model/png2020/hihead.scne");
@@ -26,9 +26,9 @@ int main()
 	for (auto& model : scene->models())
 	{
 		auto mesh = model->getMesh();
-		//printf("\n[DebugMsh] Browsing mesh: %s", mesh.name.c_str());
+		//printf("/n[DebugMsh] Browsing mesh: %s", mesh.name.c_str());
 	}
 
-	printf("\n\n[DEBUG-MAIN] Finished debug reader...");
+	printf("/n/n[DEBUG-MAIN] Finished debug reader...");
 }
 

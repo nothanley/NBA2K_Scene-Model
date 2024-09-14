@@ -233,12 +233,14 @@ void CNBAModel::readVertexStream(JSON& obj)
 	{
 		if (it.value().is_object()) 
 		{
-			auto vtxBf = getVtxBuffer(index);
-			
-			if (vtxBf)
+			for (auto& vtxBf : m_vtxBfs)
 			{
-				vtxBf->parse(it.value());
-				vtxBf->loadBinary();
+				// Vertex buffers can sometimes share a stream binary
+				if (vtxBf.getStreamIdx() == index)
+				{
+					vtxBf.parse(it.value());
+					vtxBf.loadBinary();
+				}
 			}
 
 			index++;

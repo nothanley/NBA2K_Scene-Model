@@ -2,6 +2,10 @@
 #include <fstream>
 #include <Windows.h>
 #include <algorithm>
+#include <filesystem>
+
+#define _HAS_STD_BYTE 0
+namespace fs = std::filesystem;
 
 std::string WORKING_DIR = "";
 
@@ -60,7 +64,7 @@ void common::replaceSubString(std::string& str, const std::string old_string, co
 	}
 }
 
-bool common::containsSubstring(const std::string& str, const std::string& substring) {
+bool common::containsSubstring(const std::string& str, const std::string substring) {
 	return str.find(substring) != std::string::npos;
 }
 
@@ -112,4 +116,77 @@ std::vector<std::string> common::splitString(const std::string& str, const char 
 	}
 
 	return result;
+}
+
+bool common::fileExists(const std::string& filePath)
+{
+	return fs::exists(filePath) && fs::is_regular_file(filePath);
+}
+
+std::string common::find_parent_directory(const std::string& path, const char* target_name)
+{
+	fs::path currentPath = path;
+
+	while (currentPath.has_parent_path()) {
+		std::string directoryName = currentPath.filename().string();
+
+		if (directoryName.find(target_name) != std::string::npos) {
+			return currentPath.string();
+		}
+
+		currentPath = currentPath.parent_path();
+	}
+
+	return "";
+}
+
+std::string common::findFileInDirectory(const std::string& mainDir, const std::string& filename)
+{
+	if (!fs::exists(mainDir) || !fs::is_directory(mainDir))
+		return "";
+
+	// Recursively iterate through the directory and subdirectories for existing file
+	std::string local_file;
+	std::string target_fmt = filename;
+	common::str_to_lower(target_fmt);
+
+	for (const auto& entry : fs::recursive_directory_iterator(mainDir)) 
+		if (fs::is_regular_file(entry)) 
+		{
+			local_file = entry.path().filename().string();
+			common::str_to_lower(local_file); // match case...
+
+			if (local_file == target_fmt)
+				return entry.path().string();
+		}
+
+	return "";
+}
+
+void common::set_console_text_color(int k)
+{
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	SetConsoleTextAttribute(hConsole, k);
+}
+
+std::vector<std::string> common::findMatchingExtensionFiles(const char* directory, const char* extension)
+{
+	std::vector<std::string> matchingFiles;
+
+	if (!fs::exists(directory) || !fs::is_directory(directory))
+		return matchingFiles;
+
+	try {
+		for (const auto& entry : fs::directory_iterator(directory)) {
+			// Check if the entry is a regular file and has the specified extension
+			if (entry.is_regular_file() && entry.path().extension() == extension) {
+				// Add the full file path to the result vector
+				matchingFiles.push_back(entry.path().string());
+			}
+		}
+	}
+	catch (const std::filesystem::filesystem_error& e) {}
+
+	return matchingFiles;
 }
