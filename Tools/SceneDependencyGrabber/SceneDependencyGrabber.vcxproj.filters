@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="File">
+      <UniqueIdentifier>{8033e00b-7473-4449-9b51-8c41201ae6b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{ad78534f-c3c0-46a1-94d8-1f3e4b0200f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\NBA_Scene">
+      <UniqueIdentifier>{ba138fee-02cd-48e5-b81f-0f7ceeb3bc85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Other">
+      <UniqueIdentifier>{7672c3c2-ed18-4b9e-86ca-71d3bca0fc9c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\NBA_Scene\nbamodel.cpp">
+      <Filter>Include\NBA_Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="include\NBA_Scene\nbascene.cpp">
+      <Filter>Include\NBA_Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="include\NBA_Scene\scenefile.cpp">
+      <Filter>Include\NBA_Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="include\NBA_Scene\memoryreader.cpp">
+      <Filter>Include\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="include\NBA_Scene\meshstructs.cpp">
+      <Filter>Include\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="include\NBA_Scene\meshbuffer.cpp">
+      <Filter>Include\NBA_Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="include\NBA_Scene\common.cpp">
+      <Filter>Include\NBA_Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\filescanner.cpp">
+      <Filter>File</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\NBA_Scene\scenefile.h">
+      <Filter>Include\NBA_Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NBA_Scene\nbamodel.h">
+      <Filter>Include\NBA_Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NBA_Scene\nbascene.h">
+      <Filter>Include\NBA_Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\json.hpp">
+      <Filter>Include\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NBA_Scene\memoryreader.h">
+      <Filter>Include\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NBA_Scene\meshstructs.h">
+      <Filter>Include\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NBA_Scene\meshbuffer.h">
+      <Filter>Include\NBA_Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NBA_Scene\common.h">
+      <Filter>Include\NBA_Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\filescanner.h">
+      <Filter>File</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
