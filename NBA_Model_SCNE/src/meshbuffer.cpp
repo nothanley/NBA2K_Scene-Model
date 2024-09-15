@@ -9,9 +9,7 @@ DataBuffer::DataBuffer()
 	:
 	DataStream(),
 	m_index(NULL),
-	m_size(NULL),
-	offset(std::vector<float>{ 0.0f, 0.0f, 0.0f, 0.0f }),
-	scale( std::vector<float>{ 1.0f, 1.0f, 1.0f, 1.0f })
+	m_size(NULL)
 {
 }
 

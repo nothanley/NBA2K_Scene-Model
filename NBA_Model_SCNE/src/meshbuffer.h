@@ -35,7 +35,7 @@ public:
 	void setOffset(int val);
 	std::string id;
 	std::vector<float> offset;
-	std::vector<float> scale ;
+	std::vector<float> scale;
 
 private:
 	bool decompressGzFile(const std::string& filePath, std::string& targetPath);

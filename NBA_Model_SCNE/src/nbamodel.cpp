@@ -107,7 +107,7 @@ void CNBAModel::loadMesh(StGeoPrim& prim)
 
 	m_meshes.push_back(mesh);
 	prim.mesh = &m_meshes.back();
-	prim.applyUVDisp();
+	//prim.applyUVDisp();
 }
 
 void CNBAModel::loadVertices(Mesh& mesh)
@@ -283,8 +283,8 @@ void StGeoPrim::applyUVDisp()
 		for (int i = 0; i < channel.map.size(); i++)
 		{
 			auto& texcoord = channel.map[i];
-			texcoord = (texcoord * .5) + .5;
-			texcoord = (i % 2 == 0) ? (-texcoord) + 1.0f : texcoord;
+			//texcoord = (texcoord * .5) + .5;
+			//texcoord = (i % 2 == 0) ? (-texcoord) + 1.0f : texcoord;
 		}
 	}
 }
@@ -366,17 +366,30 @@ void GeomDef::setMeshVtxs(DataBuffer* posBf, Mesh& mesh)
 	/* Format vertex coord mesh data - ignore every W position coord */
 	for (int i = 0; i < posBf->data.size(); i++)
 	{
-		// Apply Scale and Offset transforms -
 		auto& vtx = posBf->data[i];
-		float tfm = vtx;
 
 		if (!common::containsSubstring(posBf->getFormat(), "R16G16B16A16"))
 		{
-			mesh.vertices.push_back(tfm);
+			mesh.vertices.push_back(vtx);
 		}
 		else if ((i + 1) % 4 != 0)
 		{
-			mesh.vertices.push_back(tfm);
+			mesh.vertices.push_back(vtx);
+		}
+	}
+
+	// Update each vertex transform 
+	for (int i = 0; i < mesh.vertices.size(); i++)
+	{
+		auto& vtx = mesh.vertices[i];
+
+		if (!posBf->offset.empty() && !posBf->scale.empty())
+		{
+			// Apply Scale and Offset
+			auto& scale  = posBf->scale[i % 3];
+			auto& offset = posBf->offset[i % 3];
+
+			vtx = (vtx * scale) + offset;
 		}
 	}
 }
@@ -388,13 +401,21 @@ void GeomDef::addMeshUVMap(DataBuffer* texBf, Mesh& mesh)
 
 	for (int i = 0; i < texBf->data.size(); i++)
 	{
-		// Apply Scale and Offset transforms -
-		auto& coord = texBf->data[i];
-		float tfm = coord;
+		auto coord = texBf->data[i];
+		
+		if (!texBf->offset.empty() && !texBf->scale.empty())
+		{
+			// Apply Scale and Offset transforms
+			auto& scale  = texBf->scale[i%2];
+			auto& offset = texBf->offset[i%2];
 
-		channel.map.push_back(tfm);
+			coord = (coord * scale) + offset;
+		}
+
+		channel.map.push_back(coord);
 	}
 
 	mesh.uvs.push_back(channel);
 }
+
 
