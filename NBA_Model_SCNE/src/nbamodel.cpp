@@ -284,6 +284,7 @@ void StGeoPrim::applyUVDisp()
 		{
 			auto& texcoord = channel.map[i];
 			texcoord = (texcoord * .5) + .5;
+			texcoord = (i % 2 == 0) ? (-texcoord) + 1.0f : texcoord;
 		}
 	}
 }
