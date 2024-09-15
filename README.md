@@ -5,7 +5,7 @@ This is an early WIP C++ library designed to read, decode, and unpack `.scne` fi
 ### Prerequisites
 
 - Visual Studio (recommended version supporting C++14)
-- C++14 compatible compiler
+- C++17 compatible compiler
 - Blender (for usage with Blender/Python integration)
 
 ### Building the Project
