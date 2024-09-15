@@ -9,7 +9,7 @@ def GetDLLPath():
 
 class cmodellib():
 
-    global lib
+    global lib 
 
     @staticmethod
     def free_cskinmodel(cmodelfile):
@@ -39,6 +39,18 @@ class cmodellib():
         lib.freeMemory_skinData.argtypes = [ctypes.c_void_p]
         lib.freeMemory_skinData(cskin_ptr)
         return
+    
+    @staticmethod
+    def getNumModels(cscenefile):
+        lib.getModelTotal.restype  = ctypes.c_int
+        lib.getModelTotal.argtypes = [ctypes.c_void_p]
+        return lib.getModelTotal(cscenefile)
+    
+    @staticmethod
+    def getSceneModel(cscenefile, model_index):
+        lib.getSceneModel.restype  = ctypes.c_void_p
+        lib.getSceneModel.argtypes = [ctypes.c_void_p, ctypes.c_int]
+        return lib.getSceneModel(cscenefile, model_index)
     
     @staticmethod
     def getNumMeshes(cskinmodel):
@@ -107,9 +119,9 @@ class cmodellib():
 
 class ExternalLibary():
     def getLoadOperator(self):
-        # Defines Call for 'void* loadModelFile(const char* filePath, CNBAScene* pScene)'
+        # Defines Call for 'void* loadModelFile(const char* filePath, CNBAScene* pScene, bool arg)'
         self.dynamic_lib.loadModelFile.restype  = ctypes.c_void_p
-        self.dynamic_lib.loadModelFile.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p)]
+        self.dynamic_lib.loadModelFile.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p), ctypes.c_bool]
         return self.dynamic_lib.loadModelFile
     
     def getDeleteOperator(self):
@@ -123,6 +135,6 @@ class ExternalLibary():
         lib = ctypes.CDLL( GetDLLPath() )
         
         self.dynamic_lib          = lib
-        self.load_model           = self.getLoadOperator()
-        self.release_model_file   = self.getDeleteOperator()
+        self.load_scene           = self.getLoadOperator()
+        self.release_scene_file   = self.getDeleteOperator()
 

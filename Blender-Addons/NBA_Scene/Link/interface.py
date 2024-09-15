@@ -1,40 +1,47 @@
 import time
 import ctypes
 from .wrapper import ExternalLibary
-from ..SkinModel.skinmodel    import cNBASkinModel
+from ..SkinModel.skinmodel    import CNBAScene , cNBASkinModel
 from ..Blender.blender_scene  import cNBABlenderScene
 
-def buildModel(skin_model_pointer, model_path, args):
-    model = cNBASkinModel(skin_model_pointer)
+def buildScene(scene_pointer, model_path, args):
 
-    # Send loaded model to blender for import
-    scene = cNBABlenderScene([model])
+    # initialize scene models  
+    scene = CNBAScene(scene_pointer)
+    models = [None] * scene.num_models
+
+    for i in range(scene.num_models):
+        models[i] = cNBASkinModel(scene_pointer, i)
+    
+    # Send loaded models to blender for import
+    scene = cNBABlenderScene(models)
     scene.set_name(model_path)
     scene.set_load_args(args)
     scene.build()
+
     return
 
-def loadModelFile( filepath , args ):
+def loadSceneFile( filepath , args ):
     # begin timer
     start_time = time.time()
 
-    # setup all 'vcmodel' dll exports into a single class
+    # setup all 'nbamodel' dll exports into a single class
     module = ExternalLibary()
-
-    # loads the model from specified path and retrieves the skinmodel pointer 
-    model_file = ctypes.c_void_p()
-    skin_model = module.load_model( filepath.encode('utf-8'), ctypes.byref(model_file) )
+    
+    # loads the model from specified path and retrieves the cnbascene pointer 
+    scene_file = ctypes.c_void_p()
+    nba_scene = module.load_scene( filepath.encode('utf-8'), ctypes.byref(scene_file), args['include_lods'] )
 
     # evaluate result type
-    if (not model_file or not skin_model): 
+    if (not scene_file or not nba_scene): 
         print("Could not load invalid model.")
     else:
-        buildModel(skin_model, filepath, args)
-        module.release_model_file(model_file)  # clean model + file heap
+        buildScene(nba_scene, filepath, args)
+        module.release_scene_file(scene_file)  # clean model + file heap
 
    # end timer and print elapsed time
     end_time = time.time()
     elapsed_time = end_time - start_time
-    print(f"Elapsed time: {elapsed_time} seconds")
+    print(f"\nElapsed time: {elapsed_time} seconds")
     return
 

@@ -254,18 +254,18 @@ void StGeoLOD::parse(JSON& obj)
 		};
 	}
 }
-
+ 
 void CNBAModel::readPrim(JSON& obj)
 {
 	for (JSON::iterator it = obj.begin(); it != obj.end(); ++it)
 	{
 		if (it.value().is_object())
-		{
+		{ 
 			StGeoPrim grp{ m_name };
 			grp.load(it.value());
 
 			// default to global transform if non specified
-			grp.uv_deriv = (grp.uv_deriv.empty()) ? g_uvDeriv : grp.uv_deriv;
+			grp.uv_deriv = (grp.uv_deriv.empty()) ? g_uvDeriv : grp.uv_deriv; 
 
 			// push lods
 			GeomDef::pushPrimLods(grp, m_groups);

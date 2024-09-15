@@ -1,4 +1,5 @@
 import bpy
+import bmesh
 
 def setMeshSmoothing(bmesh):
     for f in bmesh.polygons:
@@ -6,7 +7,7 @@ def setMeshSmoothing(bmesh):
     return
 
 def setTexCoords(bmesh, uv_maps):
-    if (uv_maps == None):
+    if (uv_maps == None): 
         return
     
     # Iterate and create unique channels per given map array
@@ -35,6 +36,19 @@ def unpackVertex(verts, index):
     pos = (index*3)
     return  [ verts[pos], verts[pos+1], verts[pos+2] ]
 
+def remove_loose_verts(mesh):
+    bm = bmesh.new()
+    bm.from_mesh(mesh)
+
+    # Iterate over all vertices and remove those that aren't connected to any faces
+    loose_verts = [v for v in bm.verts if not v.link_faces]
+    bmesh.ops.delete(bm, geom=loose_verts, context='VERTS')
+
+    # Update the original mesh
+    bm.to_mesh(mesh)
+    bm.free()
+    return
+
 def loadSkinMesh(skinmesh, settings, model_path):
     # Create BPY mesh
     new_mesh = bpy.data.meshes.new( skinmesh.mesh_name )
@@ -44,6 +58,9 @@ def loadSkinMesh(skinmesh, settings, model_path):
     # Set mesh attributes
     setMeshNormals   (new_mesh,    skinmesh.vertex_normals)
     setTexCoords     (new_mesh,    skinmesh.texcoords)
+
+    # Debug to remove extraneous geo
+    remove_loose_verts(new_mesh)
 
     return new_object
 
