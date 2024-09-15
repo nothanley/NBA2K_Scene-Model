@@ -61,6 +61,9 @@
     <ClCompile Include="src\dll\dllmain.cpp">
       <Filter>Library</Filter>
     </ClCompile>
+    <ClCompile Include="src\datastream.cpp">
+      <Filter>NBA\Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\memoryreader.h">
@@ -102,9 +105,6 @@
     <ClInclude Include="include\gzip\utils.hpp">
       <Filter>Library\GZIP</Filter>
     </ClInclude>
-    <ClInclude Include="include\gzip\version.hpp">
-      <Filter>Library\GZIP</Filter>
-    </ClInclude>
     <ClInclude Include="include\gzip\compress.hpp">
       <Filter>Library\GZIP</Filter>
     </ClInclude>
@@ -142,6 +142,12 @@
       <Filter>Library\ZLIB</Filter>
     </ClInclude>
     <ClInclude Include="include\zlib\zconf.h">
+      <Filter>Library\ZLIB</Filter>
+    </ClInclude>
+    <ClInclude Include="src\datastream.h">
+      <Filter>NBA\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gzip\version.hpp">
       <Filter>Library\ZLIB</Filter>
     </ClInclude>
   </ItemGroup>

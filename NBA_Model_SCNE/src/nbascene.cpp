@@ -1,6 +1,7 @@
 #include <common.h>
 #include <nbamodel.h>
 #include <nbascene.h>
+#include <meshstructs.h>
 
 CNBAScene::CNBAScene(const char* id)
 	:
@@ -27,7 +28,12 @@ void CNBAScene::setName(const char* id) {
 	this->m_name = id;
 }
 
-std::vector<std::shared_ptr<CNBAModel>> CNBAScene::models()
+std::shared_ptr<CNBAModel>& CNBAScene::model(const int index)
+{
+	return m_models.at(index);
+}
+
+std::vector<std::shared_ptr<CNBAModel>>& CNBAScene::models()
 {
 	return m_models;
 }
@@ -53,6 +59,7 @@ void CNBAScene::parse()
 				readModels(ele.value());
 				break;
 			case enSceneData::MATERIAL:
+				readMaterials(ele.value());
 				break;
 			case enSceneData::TEXTURE:
 				break;
@@ -79,6 +86,50 @@ void CNBAScene::readModels(JSON& obj)
  		}
 	}
 
+}
+
+static Material loadMaterial(JSON& obj)
+{
+	Material mtl;
+
+	for (JSON::iterator it = obj.begin(); it != obj.end(); ++it)
+	{
+		if (it.value().is_object())
+		{
+			auto key = common::chash(it.key());
+			auto val = it.value();
+
+			switch (key)
+			{
+			case enMaterialTag::COLOR_MAP:
+				mtl.color_map = val["Pixelmap"];
+				break;
+			case enMaterialTag::NORMAL_MAP:
+				mtl.normal_map = val["Pixelmap"];
+				break;
+			case enMaterialTag::ROUGH_MAP:
+				mtl.roughness_map = val["Pixelmap"];
+				break;
+			default:
+				break;
+			};
+		}
+	}
+
+	return mtl;
+}
+
+void CNBAScene::readMaterials(JSON& obj)
+{
+	for (JSON::iterator it = obj.begin(); it != obj.end(); ++it)
+	{
+		if (it.value().is_object())
+		{
+			auto mtl = ::loadMaterial(it.value());
+			mtl.name = it.key();
+			m_materials.push_back(mtl);
+		}
+	}
 }
 
 

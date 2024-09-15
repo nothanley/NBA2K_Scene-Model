@@ -15,16 +15,14 @@ struct BoundingBox;
 class CSceneFile;
 using JSON = nlohmann::json;
 
-typedef std::array<float, 2> Array2D;
-
-enum enModelData {
-	UDIM_SCALE     = 2089048676,
-	UDIM_TRANSLATE = 2089048677,
-	PRIM		 = 2089476285,
-	VERTEXFORMAT = 4088860140,
-	VERTEXSTREAM = 308573839,
-	INDEXBUFFER  = 498649527,
+namespace GeomDef
+{
+	void pushPrimLods(StGeoPrim& prim, std::vector<StGeoPrim>& prim_vec);
+	void setMeshVtxs(DataBuffer* posBf, Mesh& mesh);
+	void addMeshUVMap(DataBuffer* texBf, Mesh& mesh);
 };
+
+extern bool INCLUDE_LODS; // toggles lower level meshes
 
 class CNBAModel
 {
@@ -34,13 +32,17 @@ public:
 	~CNBAModel();
 
 public:
-	Mesh* getMesh();
+	int getNumMeshes();
+	Mesh* getMesh(int index = 0);
 	void parse();
 
 private:
 	void loadMeshData();
-	void loadVertices();
-	void loadIndices();
+	void loadVertices(Mesh& mesh);
+	void loadIndices(Mesh& mesh, const int count);
+	void loadMesh(StGeoPrim& prim);
+
+private:
 	void readPrim(JSON& obj);
 	void readVertexFmt(JSON& obj);
 	void readVertexStream(JSON& obj);
@@ -55,13 +57,11 @@ private:
 	JSON m_json;
 	CSceneFile* m_parent;
 
-private:
-	float g_mOffset, g_mScale;
-	Array2D g_dUVscale, g_dUVoffset;
-
-	Mesh m_mesh;
+	std::vector<Mesh> m_meshes;
+	std::vector<StGeoPrim>  m_groups;
 	std::vector<DataBuffer> m_vtxBfs;
 	std::vector<DataBuffer> m_dataBfs;
+	std::vector<Array2D> g_uvDeriv;
 };
 
 

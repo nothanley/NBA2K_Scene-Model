@@ -5,6 +5,7 @@
 #include <json.hpp>
 #pragma once
 
+struct Material;
 class CNBAModel;
 using JSON = nlohmann::json;
 
@@ -14,6 +15,12 @@ enum enSceneData {
 	MATERIAL = 3427514740,
 	MODEL = 229569494,
 	OBJECT = 3343895260
+};
+
+enum enMaterialTag {
+	COLOR_MAP  = 0,
+	NORMAL_MAP = 1,
+	ROUGH_MAP  = 2
 };
 
 class CNBAScene
@@ -27,17 +34,20 @@ public:
 	const char* getName();
 	bool empty();
 	void setName(const char* id);
-	std::vector<std::shared_ptr<CNBAModel>> models();
+	std::shared_ptr<CNBAModel>& model(const int index);
+	std::vector<std::shared_ptr<CNBAModel>>& models();
 
 public:
 	void parse();
 
 private:
 	void readModels(JSON& json);
+	void readMaterials(JSON& json);
 
 private:
 	JSON m_json;
 	std::string m_name;
 	std::vector<std::shared_ptr<CNBAModel>> m_models;
+	std::vector<Material> m_materials;
 };
 

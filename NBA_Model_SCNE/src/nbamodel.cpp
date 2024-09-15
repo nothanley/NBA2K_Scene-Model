@@ -2,14 +2,15 @@
 #include <scenefile.h>
 #include <common.h>
 
+static int gPrimOffset = 0;
+bool INCLUDE_LODS = /* default LOD setting */ false;
+
 CNBAModel::CNBAModel(const char* id)
 	:
 	m_name(id),
-	m_parent(NULL),
-	g_mOffset(0.0f),
-	g_mScale(1.0f),
-	g_dUVscale(Array2D{ 1,1 }),
-	g_dUVoffset(Array2D{ 0,0 })
+	m_parent(NULL)
+	//g_mOffset(0.0f),
+	//g_mScale(1.0f)
 {
 }
 
@@ -18,11 +19,9 @@ CNBAModel::CNBAModel(const char* id, JSON& data)
 	:
 	m_name(id),
 	m_json(data),
-	m_parent(NULL),
-	g_mOffset(0.0f),
-	g_mScale(1.0f),
-	g_dUVscale(Array2D{ 1,1 }),
-	g_dUVoffset(Array2D{ 0,0 })
+	m_parent(NULL)
+	//g_mOffset(0.0f),
+	//g_mScale(1.0f),
 {
 }
 
@@ -31,9 +30,17 @@ CNBAModel::~CNBAModel()
 {
 }
 
-Mesh* CNBAModel::getMesh()
+int CNBAModel::getNumMeshes()
 {
-	return &m_mesh;
+	return m_meshes.size();
+}
+
+Mesh* CNBAModel::getMesh(int index)
+{
+	if (m_meshes.empty() || index > m_meshes.size())
+		return nullptr;
+
+	return &m_meshes[index];
 }
 
 void CNBAModel::parse()
@@ -44,12 +51,6 @@ void CNBAModel::parse()
 
 		switch (key)
 		{
-			case enModelData::UDIM_SCALE:
-				g_dUVscale = { it.value()[0], it.value()[1] };
-				break;
-			case enModelData::UDIM_TRANSLATE:
-				g_dUVoffset = { it.value()[0], it.value()[1] };
-				break;
 			case enModelData::PRIM:
 				readPrim(it.value());
 				break;
@@ -62,6 +63,15 @@ void CNBAModel::parse()
 				break;
 			case enModelData::VERTEXSTREAM:
 				readVertexStream(it.value());
+				break;
+			case enPrimTag::PM_DUV_0:
+				g_uvDeriv.push_back(it.value());
+				break;
+			case enPrimTag::PM_DUV_1:
+				g_uvDeriv.push_back(it.value());
+				break;
+			case enPrimTag::PM_DUV_2:
+				g_uvDeriv.push_back(it.value());
 				break;
 			default:
 				break;
@@ -76,83 +86,63 @@ void CNBAModel::loadMeshData()
 	if (m_dataBfs.empty() || m_vtxBfs.empty())
 		return;
 
-	this->loadIndices();
-	this->loadVertices();
-}
-
-static void setMeshVtxs(DataBuffer* posBf, Mesh& mesh)
-{
-	/* Format vertex coord mesh data - ignore every W position coord */
-	for (int i = 0; i < posBf->data.size(); i++)
+	for (auto& group : m_groups)
 	{
-		auto& vtx = posBf->data[i];
-
-		// Apply Scale and Offset transforms -
-		float tfm = vtx * posBf->scale[i % 4];
-		tfm      += posBf->offset[i % 4];
-
-		if ( !common::containsSubstring(posBf->getFormat(), "R16G16B16A16") )
-		{
-			mesh.vertices.push_back(tfm);
-		}
-		else if ((i + 1) % 4 != 0)
-		{
-			mesh.vertices.push_back(tfm);
-		}
-	}
-}
-
-static void addMeshUVMap(DataBuffer* texBf, Mesh& mesh, Array2D& scale, Array2D& offset)
-{
-	/* Format uv coord mesh data - ignore every W position coord */
-	UVMap channel{ texBf->id };
-
-	for (int i = 0; i < texBf->data.size(); i++)
-	{
-		auto& coord = texBf->data[i];
-
-		// Apply Scale and Offset transforms -
-		float tfm = coord * scale[i % 2] + offset[i % 2];
-
-		channel.map.push_back(tfm);
+		gPrimOffset = (group.begin > 0) ? group.begin : gPrimOffset;
+		this->loadMesh(group);
 	}
 
-	mesh.uvs.push_back(channel); 
+	gPrimOffset = NULL;
 }
 
-void CNBAModel::loadVertices()
+void CNBAModel::loadMesh(StGeoPrim& prim)
 {
-	auto posBf = this->findDataBuffer("POSITION0");
-	auto tanBf = this->findDataBuffer("TANGENTFRAME0");
-	auto texBf = this->findDataBuffer("TEXCOORD0");
+	Mesh mesh;
+	int numTris = prim.count;
+
+	mesh.definition = m_name;
+	mesh.name       = prim.name;
+	loadIndices(mesh, numTris);
+	loadVertices(mesh);
+
+	m_meshes.push_back(mesh);
+	prim.mesh = &m_meshes.back();
+	prim.applyUVDisp();
+}
+
+void CNBAModel::loadVertices(Mesh& mesh)
+{
+	auto posBf = findDataBuffer("POSITION0");
+	auto tanBf = findDataBuffer("TANGENTFRAME0");
+	auto texBf = findDataBuffer("TEXCOORD0");
 
 	if (!posBf || !tanBf || !texBf)
 		return;
 
-	// todo: handle when model has multiple pos,tan,tex etc. datasets ...
-	m_mesh.name     = m_name;
-	m_mesh.normals  = tanBf->data;
-	::setMeshVtxs(posBf, m_mesh);
+	mesh.name     = (mesh.name.empty()) ? m_name : mesh.name;
+	mesh.normals  = tanBf->data;
+	GeomDef::setMeshVtxs(posBf, mesh);
 
 	if (!texBf->data.empty())
-		::addMeshUVMap(texBf, m_mesh, g_dUVscale, g_dUVoffset);
+		GeomDef::addMeshUVMap(texBf, mesh);
 
 	// debug log ...
 	printf("\n[CNBAModel] Built 3D Mesh: \"%s\" | Points: %d | Tris: %d",
-		m_mesh.name.c_str(),
-		m_mesh.vertices.size() / 3,
-		m_mesh.triangles.size() 
+		mesh.name.c_str(),
+		mesh.vertices.size() / 3,
+		mesh.triangles.size() 
 	);
 }
 
-void CNBAModel::loadIndices()
+void CNBAModel::loadIndices(Mesh& mesh, const int count)
 {
-	auto triBf = this->findDataBuffer("IndexBuffer");
+	auto triBf = findDataBuffer("IndexBuffer");
+	int end    = count + gPrimOffset;
 
-	if (!triBf || triBf->data.size() % 3 != 0) // check valid tri list count
+	if (!triBf || end > triBf->data.size() || count % 3 != 0)
 		return;
 
-	for (int i = 0; i < triBf->data.size(); i+=3)
+	for (int i = gPrimOffset; i < end; i+=3)
 	{
 		Triangle face
 		{
@@ -161,22 +151,10 @@ void CNBAModel::loadIndices()
 			triBf->data[i+2]
 		};
 
-		m_mesh.triangles.push_back(face);
+		mesh.triangles.push_back(face);
 	}
-}
 
-void CNBAModel::readPrim(JSON& obj)
-{
-	int index = 0;
-
-	for (JSON::iterator it = obj.begin(); it != obj.end(); ++it)
-	{
-		if (it.value().is_object())
-		{
-			// todo: define material groups...
-			index++;
-		}
-	}
+	gPrimOffset += count;
 }
 
 void CNBAModel::readVertexFmt(JSON& obj)
@@ -255,5 +233,167 @@ void CNBAModel::readIndexBuffer(JSON& obj)
 	data.loadBinary();
 
 	m_dataBfs.push_back(data);
+}
+
+void StGeoLOD::parse(JSON& obj)
+{
+	for (JSON::iterator it = obj.begin(); it != obj.end(); ++it)
+	{
+		auto key = common::chash(it.key());
+
+		switch (key)
+		{
+		case enPrimTag::PM_START:
+			start = it.value();
+			break;
+		case enPrimTag::PM_COUNT:
+			count = it.value();
+			break;
+		default:
+			break;
+		};
+	}
+}
+
+void CNBAModel::readPrim(JSON& obj)
+{
+	for (JSON::iterator it = obj.begin(); it != obj.end(); ++it)
+	{
+		if (it.value().is_object())
+		{
+			StGeoPrim grp{ m_name };
+			grp.load(it.value());
+
+			// default to global transform if non specified
+			grp.uv_deriv = (grp.uv_deriv.empty()) ? g_uvDeriv : grp.uv_deriv;
+
+			// push lods
+			GeomDef::pushPrimLods(grp, m_groups);
+		}
+	}
+}
+
+void StGeoPrim::applyUVDisp()
+{
+	if (!mesh || mesh->uvs.empty())
+		return;
+
+	for (auto& channel : mesh->uvs)
+	{
+		for (int i = 0; i < channel.map.size(); i++)
+		{
+			auto& texcoord = channel.map[i];
+			texcoord = (texcoord * .5) + .5;
+		}
+	}
+}
+
+void StGeoPrim::load(JSON& obj)
+{
+	for (JSON::iterator it = obj.begin(); it != obj.end(); ++it)
+	{
+		auto key = common::chash(it.key());
+
+		switch (key)
+		{
+		case enPrimTag::PM_MATERIAL:
+			material_name = it.value();
+			break;		
+		case enPrimTag::PM_MESH:
+			name = it.value();
+			break;		
+		case enPrimTag::PM_TYPE:
+			type = it.value();
+			break;		
+		case enPrimTag::PM_START:
+			begin = it.value();
+			break;		
+		case enPrimTag::PM_COUNT:
+			count = it.value(); // (it.value() * UINT16_MAX ) / 3
+			break;		
+		case enPrimTag::PM_DUV_0:
+			uv_deriv.push_back( it.value() );
+			break;		
+		case enPrimTag::PM_DUV_1:
+			uv_deriv.push_back(it.value());
+			break;		
+		case enPrimTag::PM_DUV_2:
+			uv_deriv.push_back(it.value());
+			break;
+		case enPrimTag::PM_LODLIST:
+			for (auto& child : it.value())
+			{	// Get prim LOD data from JSON array
+				StGeoLOD geo;
+				geo.parse(child);
+				this->lods.push_back(geo);
+			}
+			break;
+		default:
+			break;
+		};
+	}
+}
+
+void GeomDef::pushPrimLods(StGeoPrim& prim, std::vector<StGeoPrim>& prim_vec)
+{
+	if (prim.lods.empty())
+	{
+		// No lods - only push main prim geo
+		prim_vec.push_back(prim);
+		return;
+	}
+
+	int num_lods = (INCLUDE_LODS) ? prim.lods.size() : 1;
+
+	for (int i = 0; i < num_lods; i++)
+	{
+		auto& lod = prim.lods[i];
+
+		// Inherit source geometry from primitive but alter triangle list
+		StGeoPrim newPrim = prim;
+		newPrim.begin = lod.start;
+		newPrim.count = lod.count;
+
+		// Format and push to scene.
+		newPrim.name += "_LOD" + std::to_string(i);
+		prim_vec.push_back(newPrim);
+	}
+}
+
+void GeomDef::setMeshVtxs(DataBuffer* posBf, Mesh& mesh)
+{
+	/* Format vertex coord mesh data - ignore every W position coord */
+	for (int i = 0; i < posBf->data.size(); i++)
+	{
+		// Apply Scale and Offset transforms -
+		auto& vtx = posBf->data[i];
+		float tfm = vtx;
+
+		if (!common::containsSubstring(posBf->getFormat(), "R16G16B16A16"))
+		{
+			mesh.vertices.push_back(tfm);
+		}
+		else if ((i + 1) % 4 != 0)
+		{
+			mesh.vertices.push_back(tfm);
+		}
+	}
+}
+
+void GeomDef::addMeshUVMap(DataBuffer* texBf, Mesh& mesh)
+{
+	/* Format uv coord mesh data - ignore every W position coord */
+	UVMap channel{ texBf->id };
+
+	for (int i = 0; i < texBf->data.size(); i++)
+	{
+		// Apply Scale and Offset transforms -
+		auto& coord = texBf->data[i];
+		float tfm = coord;
+
+		channel.map.push_back(tfm);
+	}
+
+	mesh.uvs.push_back(channel);
 }
 

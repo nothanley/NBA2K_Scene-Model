@@ -206,6 +206,7 @@
     <ClCompile Include="include\meshstructs.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\common.cpp" />
+    <ClCompile Include="src\datastream.cpp" />
     <ClCompile Include="src\dll\dllmain.cpp" />
     <ClCompile Include="src\dll\interfaceskinmodel.cpp" />
     <ClCompile Include="src\dll\pch.cpp" />
@@ -235,6 +236,7 @@
     <ClInclude Include="include\zlib\zlib.h" />
     <ClInclude Include="include\zlib\zutil.h" />
     <ClInclude Include="src\common.h" />
+    <ClInclude Include="src\datastream.h" />
     <ClInclude Include="src\dll\framework.h" />
     <ClInclude Include="src\dll\interfaceskinmodel.h" />
     <ClInclude Include="src\dll\pch.h" />

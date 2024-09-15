@@ -5,9 +5,14 @@
 #include <iostream>
 #include <array>
 #include <algorithm>
+#include <json.hpp>
 #pragma once
 
+using JSON = nlohmann::json;
+
 typedef std::array<uint32_t, 3> Triangle;
+typedef std::array<float, 2> Array2D;
+
 #undef max
 #undef min
 
@@ -159,6 +164,7 @@ struct Material
 	std::string name;
 	std::string color_map;
 	std::string normal_map;
+	std::string roughness_map;
 };
 
 struct VertexColorSet
@@ -242,4 +248,48 @@ struct Mesh
 struct MeshDefBf {
 	std::string property, format, type;
 	char* stream;
+};
+
+enum enModelData {
+	PRIM = 2089476285,
+	VERTEXFORMAT = 4088860140,
+	VERTEXSTREAM = 308573839,
+	INDEXBUFFER = 498649527,
+};
+
+enum enPrimTag {
+	PM_MATERIAL = 3427514740,
+	PM_MESH = 2089354642,
+	PM_TYPE = 2089627879,
+	PM_COUNT = 217729102,
+	PM_DUV_0 = 2089048676,
+	PM_DUV_1 = 2089048677,
+	PM_DUV_2 = 2089048678,
+	PM_LODLIST = 3895677344,
+	PM_START = 236861875
+};
+
+struct StGeoLOD
+{
+	int count = NULL;
+	int start = NULL;
+
+	void parse(JSON& json);
+};
+
+struct StGeoPrim
+{
+	std::string name;
+	std::string type;
+	std::string material_name;
+
+	int count = NULL;
+	int64_t begin = -1;
+
+	std::vector<Array2D> uv_deriv;
+	std::vector<StGeoLOD> lods;
+	Mesh* mesh = nullptr;
+
+	void applyUVDisp();
+	void load(JSON& json);
 };
