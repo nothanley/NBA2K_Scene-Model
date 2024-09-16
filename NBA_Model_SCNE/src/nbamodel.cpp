@@ -101,13 +101,12 @@ void CNBAModel::loadMesh(StGeoPrim& prim)
 	int numTris = prim.count;
 
 	mesh.definition = m_name;
-	mesh.name       = prim.name;
+	mesh.name = prim.name;
 	loadIndices(mesh, numTris);
 	loadVertices(mesh);
 
 	m_meshes.push_back(mesh);
 	prim.mesh = &m_meshes.back();
-	//prim.applyUVDisp();
 }
 
 void CNBAModel::loadVertices(Mesh& mesh)
@@ -273,22 +272,6 @@ void CNBAModel::readPrim(JSON& obj)
 	}
 }
 
-void StGeoPrim::applyUVDisp()
-{
-	if (!mesh || mesh->uvs.empty())
-		return;
-
-	for (auto& channel : mesh->uvs)
-	{
-		for (int i = 0; i < channel.map.size(); i++)
-		{
-			auto& texcoord = channel.map[i];
-			//texcoord = (texcoord * .5) + .5;
-			//texcoord = (i % 2 == 0) ? (-texcoord) + 1.0f : texcoord;
-		}
-	}
-}
-
 void StGeoPrim::load(JSON& obj)
 {
 	for (JSON::iterator it = obj.begin(); it != obj.end(); ++it)
@@ -412,10 +395,17 @@ void GeomDef::addMeshUVMap(DataBuffer* texBf, Mesh& mesh)
 			coord = (coord * scale) + offset;
 		}
 
+		
+		// Mirror Y-Axis
+		if (i % 2 != 0)
+			coord = -(coord - 1.0f);
+
 		channel.map.push_back(coord);
 	}
-
+	 
 	mesh.uvs.push_back(channel);
 }
+
+
 
 

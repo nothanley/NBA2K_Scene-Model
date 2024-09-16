@@ -290,6 +290,5 @@ struct StGeoPrim
 	std::vector<StGeoLOD> lods;
 	Mesh* mesh = nullptr;
 
-	void applyUVDisp();
 	void load(JSON& json);
 };

@@ -57,7 +57,8 @@ void Mesh::translateUVs(const int& index)
 
 	auto& map = this->uvs.at(index).map;
 	/* Flip Y axis and translate up by one unit */
-	for (int i = 0; i < map.size(); i += 2) {
+	for (int i = 0; i < map.size(); i += 2) 
+	{
 		map[i + 1] = -(map[i + 1] - 1.0f);
 	}
 }
