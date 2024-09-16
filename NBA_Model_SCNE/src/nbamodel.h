@@ -19,6 +19,7 @@ namespace GeomDef
 {
 	void pushPrimLods(StGeoPrim& prim, std::vector<StGeoPrim>& prim_vec);
 	void setMeshVtxs(DataBuffer* posBf, Mesh& mesh);
+	void calculateVtxNormals(DataBuffer* tanBf, Mesh& mesh);
 	void addMeshUVMap(DataBuffer* texBf, Mesh& mesh);
 };
 

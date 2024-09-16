@@ -29,7 +29,7 @@ def setMeshNormals(bmesh, normals):
 
     # initialize custom split normal dataset 
     setMeshSmoothing(bmesh)
-    # bmesh.normals_split_custom_set_from_vertices( normals )
+    bmesh.normals_split_custom_set_from_vertices( normals )
     return bmesh.update()
 
 def unpackVertex(verts, index):

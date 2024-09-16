@@ -23,6 +23,7 @@ public:
 public:
 	std::vector<float> data; // stores all data eg. pos, uvs, indices
 
+	static void convertPackVal(float& input, int num_bits, std::string type);
 	static char* roundPointerToNearest4(char* ptr);
 	static constexpr unsigned int hash(const char* s, int off = 0);
 	static int roundUp(int numToRound, int multiple);

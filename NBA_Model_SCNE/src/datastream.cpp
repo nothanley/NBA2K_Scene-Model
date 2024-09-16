@@ -25,7 +25,8 @@ static float unpackVarF(float value, int bit_len, std::string type)
 	return value;
 }
 
-static void convertPackVal(float& input, int num_bits, std::string type)
+void 
+DataStream::convertPackVal(float& input, int num_bits, std::string type)
 {
 	if (type == "snorm" || type == "unorm") {
 		input = unpackVarF(input, num_bits, type);
@@ -207,6 +208,30 @@ DataStream::getData_R8_G8_B8_A8(char*& src, int size, std::string type, std::str
 }
 
 
+static unsigned char lookup[16] = {
+0x0, 0x8, 0x4, 0xc, 0x2, 0xa, 0x6, 0xe,
+0x1, 0x9, 0x5, 0xd, 0x3, 0xb, 0x7, 0xf, };
+
+static constexpr uint8_t reverseBits(uint8_t n) {
+	// Reverse the top and bottom nibble then swap them.
+	return (lookup[n & 0b1111] << 4) | lookup[n >> 4];
+}
+
+static uint32_t flipDword(uint32_t value)
+{
+	uint32_t result = 0;
+	int8_t* data = (int8_t*)(&result);
+
+	for (int j = 0; j < 4; j++)
+	{
+		int8_t byte = value >> (j * 0x8);
+		*data = reverseBits(byte);
+		data++;
+	}
+
+	return result;
+}
+
 void
 DataStream::getData_R10_G10_B10_A2(char*& src, int size, std::string type, std::string encodeFmt, std::vector<float>& dataSet)
 {
@@ -216,17 +241,17 @@ DataStream::getData_R10_G10_B10_A2(char*& src, int size, std::string type, std::
 	for (int i = 0; i < size; i++)
 	{
 		char* data = src + (i * m_stride) + m_offset;
-		packedValue = ReadUInt32(data); // todo: check for bitswap requirements...
+		packedValue = ReadUInt32(data); 
 
-		r = (packedValue >> 22) & 0x3FF;
-		g = (packedValue >> 12) & 0x3FF;
-		b = (packedValue >> 2) & 0x3FF;
-		a = packedValue & 0x3;
+		r = (packedValue >> 0)  & 0x3FF;
+		g = (packedValue >> 10) & 0x3FF;
+		b = (packedValue >> 20) & 0x3FF;
+		a = (packedValue >> 30) & 0x3;
 
-		::convertPackVal(r, 10, type);
-		::convertPackVal(g, 10, type);
-		::convertPackVal(b, 10, type);
-		::convertPackVal(a, 02, type);
+		convertPackVal(r, 10, type);
+		convertPackVal(g, 10, type);
+		convertPackVal(b, 10, type);
+		convertPackVal(a, 02, type);
 
 		dataSet.push_back(r);
 		dataSet.push_back(g);

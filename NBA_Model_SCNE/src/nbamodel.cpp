@@ -119,9 +119,8 @@ void CNBAModel::loadVertices(Mesh& mesh)
 		return;
 
 	mesh.name     = (mesh.name.empty()) ? m_name : mesh.name;
-	mesh.normals  = tanBf->data;
 	GeomDef::setMeshVtxs(posBf, mesh);
-
+	GeomDef::calculateVtxNormals(tanBf, mesh);
 	if (!texBf->data.empty())
 		GeomDef::addMeshUVMap(texBf, mesh);
 
@@ -339,7 +338,7 @@ void GeomDef::pushPrimLods(StGeoPrim& prim, std::vector<StGeoPrim>& prim_vec)
 		newPrim.count = lod.count;
 
 		// Format and push to scene.
-		newPrim.name += "_LOD" + std::to_string(i);
+		newPrim.name += (i > 0) ? "_LOD" + std::to_string(i) : "";
 		prim_vec.push_back(newPrim);
 	}
 }
@@ -394,9 +393,8 @@ void GeomDef::addMeshUVMap(DataBuffer* texBf, Mesh& mesh)
 
 			coord = (coord * scale) + offset;
 		}
-
 		
-		// Mirror Y-Axis
+		// Flip Y-Axis
 		if (i % 2 != 0)
 			coord = -(coord - 1.0f);
 
@@ -407,5 +405,45 @@ void GeomDef::addMeshUVMap(DataBuffer* texBf, Mesh& mesh)
 }
 
 
+static void decodeOctahedralNorms(DataBuffer* tanFrameBf, Mesh& mesh)
+{
+	if (tanFrameBf->getFormat() != "R10G10B10A2_UINT")
+		return;
 
+	Vec3 normal;
+	Vec4 encoded;
+	auto& data = tanFrameBf->data;
+
+	for (int i = 0; i < data.size(); i += 4)
+	{
+		encoded = { data[i + 0], data[i + 1], data[i + 2], data[i + 3] };
+
+		normal.x = (encoded.x * (1.0f / 1023.0f)) * 2.0f - 1.0f;
+		normal.y = (encoded.y * (1.0f / 1023.0f)) * 2.0f - 1.0f;
+		normal.z = 1.0f - fabsf(normal.x) - fabsf(normal.y);
+
+		float t = fmaxf(-normal.z, 0.0f);
+		normal.x += (normal.x >= 0.0f) ? -t : t;
+		normal.y += (normal.y >= 0.0f) ? -t : t;
+		normal.normalize();
+
+		// push vertex data
+		mesh.normals.push_back(normal.x);
+		mesh.normals.push_back(normal.y);
+		mesh.normals.push_back(normal.z);
+	};
+
+};
+
+void GeomDef::calculateVtxNormals(DataBuffer* tanBf, Mesh& mesh)
+{
+	auto size = tanBf->data.size();
+	if (size == 0 || size % 4 != 0)
+		return;
+
+	// Unpack data
+	::decodeOctahedralNorms(tanBf, mesh);
+
+	// todo: handle more formats ...
+}
 

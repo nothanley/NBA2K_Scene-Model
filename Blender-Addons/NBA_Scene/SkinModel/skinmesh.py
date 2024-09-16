@@ -92,7 +92,7 @@ class vCSkinMesh():
         self.name            = getMeshName(self)
         self.mesh_name       = getMeshName(self)
         self.vertices        = getMeshVerts(self)
-        # self.vertex_normals  = getMeshNormals(self)
+        self.vertex_normals  = getMeshNormals(self)
         self.index_list      = getIndexList(self)
         self.texcoords       = getTexCoords(self)
 
