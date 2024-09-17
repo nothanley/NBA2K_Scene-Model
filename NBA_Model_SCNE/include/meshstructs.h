@@ -288,7 +288,7 @@ struct StGeoPrim
 
 	std::vector<Array2D> uv_deriv;
 	std::vector<StGeoLOD> lods;
-	Mesh* mesh = nullptr;
+	std::shared_ptr<Mesh> mesh;
 
 	void load(JSON& json);
 };

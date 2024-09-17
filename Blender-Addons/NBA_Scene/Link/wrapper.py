@@ -119,9 +119,9 @@ class cmodellib():
 
 class ExternalLibary():
     def getLoadOperator(self):
-        # Defines Call for 'void* loadModelFile(const char* filePath, CNBAScene* pScene, bool arg)'
+        # Defines Call for 'void* loadModelFile(const char* filePath, CNBAScene* pScene, bool use_lods, bool split_groups)'
         self.dynamic_lib.loadModelFile.restype  = ctypes.c_void_p
-        self.dynamic_lib.loadModelFile.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p), ctypes.c_bool]
+        self.dynamic_lib.loadModelFile.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p), ctypes.c_bool, ctypes.c_bool]
         return self.dynamic_lib.loadModelFile
     
     def getDeleteOperator(self):

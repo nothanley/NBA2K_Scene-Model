@@ -30,7 +30,12 @@ def loadSceneFile( filepath , args ):
     
     # loads the model from specified path and retrieves the cnbascene pointer 
     scene_file = ctypes.c_void_p()
-    nba_scene = module.load_scene( filepath.encode('utf-8'), ctypes.byref(scene_file), args['include_lods'] )
+    nba_scene = module.load_scene(
+         filepath.encode('utf-8'), 
+         ctypes.byref(scene_file), 
+         args['include_lods'] ,
+         args['split_groups'] 
+         )
 
     # evaluate result type
     if (not scene_file or not nba_scene): 

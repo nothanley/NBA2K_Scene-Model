@@ -3,7 +3,8 @@
 #include <common.h>
 
 static int gPrimOffset = 0;
-bool INCLUDE_LODS = /* default LOD setting */ false;
+bool INCLUDE_LODS = false;
+bool MERGE_MESH_PRIMS = false;
 
 CNBAModel::CNBAModel(const char* id)
 	:
@@ -25,7 +26,6 @@ CNBAModel::CNBAModel(const char* id, JSON& data)
 {
 }
 
-
 CNBAModel::~CNBAModel()
 {
 }
@@ -40,7 +40,7 @@ Mesh* CNBAModel::getMesh(int index)
 	if (m_meshes.empty() || index > m_meshes.size())
 		return nullptr;
 
-	return &m_meshes[index];
+	return m_meshes[index].get();
 }
 
 void CNBAModel::parse()
@@ -81,32 +81,67 @@ void CNBAModel::parse()
 	this->loadMeshData();
 }
 
-void CNBAModel::loadMeshData()
+void CNBAModel::mergeMeshGroups()
 {
-	if (m_dataBfs.empty() || m_vtxBfs.empty())
-		return;
+	// Inherit base mesh from primitive - merge all data
+	auto src  = *m_groups.front().mesh.get();
+	auto mesh = std::make_shared<Mesh>(src);
+
+	// Update mesh info
+	mesh->name = this->m_name;
+	mesh->definition = m_name;
+	mesh->triangles.clear();
 
 	for (auto& group : m_groups)
 	{
+		// Merge Faces
+		for (auto& triangle : group.mesh->triangles)
+			mesh->triangles.push_back(triangle);
+	}
+
+	// update scene collection
+	m_meshes.clear();
+	m_meshes.push_back(mesh);
+}
+
+void CNBAModel::createSkinMeshes()
+{
+	for (auto& group : m_groups)
+	{	
+		// build split meshes using material group data
 		gPrimOffset = (group.begin > 0) ? group.begin : gPrimOffset;
-		this->loadMesh(group);
+		loadMesh(group);
 	}
 
 	gPrimOffset = NULL;
 }
 
+void CNBAModel::loadMeshData()
+{
+	if (m_dataBfs.empty() || m_vtxBfs.empty() || m_groups.empty())
+		return;
+
+	createSkinMeshes();
+
+	if (MERGE_MESH_PRIMS)
+		this->mergeMeshGroups();
+
+	m_groups.clear();
+}
+
 void CNBAModel::loadMesh(StGeoPrim& prim)
 {
-	Mesh mesh;
-	int numTris = prim.count;
+	prim.mesh = std::make_shared<Mesh>();
+	auto& mesh = *prim.mesh;
 
+	int index       = m_meshes.size();
+	int numTris     = prim.count;
 	mesh.definition = m_name;
-	mesh.name = prim.name;
+	mesh.name       = prim.name;
+
 	loadIndices(mesh, numTris);
 	loadVertices(mesh);
-
-	m_meshes.push_back(mesh);
-	prim.mesh = &m_meshes.back();
+	m_meshes.push_back(prim.mesh);
 }
 
 void CNBAModel::loadVertices(Mesh& mesh)

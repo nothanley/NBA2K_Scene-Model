@@ -23,7 +23,10 @@ namespace GeomDef
 	void addMeshUVMap(DataBuffer* texBf, Mesh& mesh);
 };
 
+// GLOBAL EXPORT SETTINGS
 extern bool INCLUDE_LODS; // toggles lower level meshes
+extern bool MERGE_MESH_PRIMS; // splits all mesh primitives
+////////////////////////////
 
 class CNBAModel
 {
@@ -42,6 +45,8 @@ private:
 	void loadVertices(Mesh& mesh);
 	void loadIndices(Mesh& mesh, const int count);
 	void loadMesh(StGeoPrim& prim);
+	inline void mergeMeshGroups();
+	inline void createSkinMeshes();
 
 private:
 	void readPrim(JSON& obj);
@@ -58,7 +63,7 @@ private:
 	JSON m_json;
 	CSceneFile* m_parent;
 
-	std::vector<Mesh> m_meshes;
+	std::vector<std::shared_ptr<Mesh>> m_meshes;
 	std::vector<StGeoPrim>  m_groups;
 	std::vector<DataBuffer> m_vtxBfs;
 	std::vector<DataBuffer> m_dataBfs;

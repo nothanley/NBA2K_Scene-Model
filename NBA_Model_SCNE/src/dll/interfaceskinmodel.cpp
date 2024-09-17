@@ -2,10 +2,11 @@
 #include <nbascene>
 #include <vector>
 
-void* loadModelFile(const char* filePath, void** filePtr, bool use_lods)
+void* loadModelFile(const char* filePath, void** filePtr, bool use_lods, bool split_groups)
 {
     /* Initialize CModelFile Address */
     INCLUDE_LODS = use_lods;
+    MERGE_MESH_PRIMS = !split_groups;
     *filePtr = nullptr;
 
     /* Load file and scene-contents */

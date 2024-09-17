@@ -33,6 +33,12 @@ class vCNBAModelImport(Operator, ImportHelper):
         description="Imports all lower level LOD models to scene.",
         default=False,
     )
+
+    split_groups: BoolProperty(
+        name="Split material groups",
+        description="Splits mesh per material group",
+        default=False,
+    )
     
 
     def draw(self, context):
@@ -43,6 +49,8 @@ class vCNBAModelImport(Operator, ImportHelper):
         row.prop(self, "include_lods")
         row = box.row()
         row.prop(self, "convert_bin_to_gz")
+        row = box.row()
+        row.prop(self, "split_groups")
         return
 
     def convert_bin_files_to_gz(self, scne_path):
