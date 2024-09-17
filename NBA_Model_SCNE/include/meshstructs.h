@@ -224,10 +224,6 @@ struct Mesh
 	Material material;
 	BoundingBox bounds;
 
-	int sceneFlag,
-		motionFlag,
-		numVerts;
-
 	Skin skin;
 	std::vector<float> vertices, normals;
 	std::vector<float> binormals, tangents;
@@ -243,9 +239,4 @@ struct Mesh
 	void generateAABBs(); /* Generates mesh's axis aligned boundary box */
 	Vec3 vertex(const int index) const; /* Extracts position vector of coord array */
 	Vec3 normal(const int index) const; /* Extracts normal vector of coord array */
-};
-
-struct MeshDefBf {
-	std::string property, format, type;
-	char* stream;
 };

@@ -32,6 +32,9 @@
     <Filter Include="NBA\Scene">
       <UniqueIdentifier>{e07c9b01-58b8-48a3-bfac-fc5ccb2cba1b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PyInterface">
+      <UniqueIdentifier>{5544f610-5d32-450f-ba39-196489defd0c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -48,9 +51,6 @@
     </ClCompile>
     <ClCompile Include="include\meshstructs.cpp">
       <Filter>NBA\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="src\dll\interfaceskinmodel.cpp">
-      <Filter>Library</Filter>
     </ClCompile>
     <ClCompile Include="src\dll\pch.cpp">
       <Filter>Library</Filter>
@@ -79,6 +79,9 @@
     <ClCompile Include="src\nbamodel.cpp">
       <Filter>NBA\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\dll\interfaceskinmodel.cpp">
+      <Filter>PyInterface</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\memoryreader.h">
@@ -95,9 +98,6 @@
     </ClInclude>
     <ClInclude Include="include\meshstructs.h">
       <Filter>NBA\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="src\dll\interfaceskinmodel.h">
-      <Filter>Library</Filter>
     </ClInclude>
     <ClInclude Include="src\dll\pch.h">
       <Filter>Library</Filter>
@@ -173,6 +173,9 @@
     </ClInclude>
     <ClInclude Include="src\nbascene.h">
       <Filter>NBA\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dll\interfaceskinmodel.h">
+      <Filter>PyInterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

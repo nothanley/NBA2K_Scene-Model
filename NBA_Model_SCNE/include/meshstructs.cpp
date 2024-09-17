@@ -36,6 +36,7 @@ void Mesh::flipNormals()
 
 void Mesh::convertSplitNorms()
 {
+	int numVerts = vertices.size() / 3; // Assumes 'R32G32B32' format 
 	int array_size = (normals.size() == vertices.size()) ? 3 : 4;
 	std::vector<float> data;
 
@@ -119,6 +120,7 @@ Vec3 StBlendShape::vertex(const int index) const
 
 Vec3 Mesh::normal(const int index) const
 {
+	int numVerts    = vertices.size() / 3; // Assumes 'R32G32B32' format 
 	int array_width = normals.size() / numVerts;
 	int offset = (index * array_width);
 	return Vec3{ normals[offset],  normals[offset + 1],  normals[offset + 2] };
