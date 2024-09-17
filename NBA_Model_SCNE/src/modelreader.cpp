@@ -169,7 +169,7 @@ void CModelReader::readVertexFmt(JSON& obj)
 	{
 		if (it.value().is_object())
 		{
-			DataBuffer data;
+			CDataBuffer data;
 			data.id = it.key();
 			data.parse(it.value());
 			m_vtxBfs.push_back(data);
@@ -177,7 +177,7 @@ void CModelReader::readVertexFmt(JSON& obj)
 	}
 }
 
-DataBuffer* CModelReader::getVtxBuffer(int index)
+CDataBuffer* CModelReader::getVtxBuffer(int index)
 {
 	if (index > m_vtxBfs.size())
 		return nullptr;
@@ -192,7 +192,7 @@ DataBuffer* CModelReader::getVtxBuffer(int index)
 	return nullptr;
 }
 
-DataBuffer* CModelReader::findDataBuffer(const char* target)
+CDataBuffer* CModelReader::findDataBuffer(const char* target)
 {
 	for (auto& dataBf : m_dataBfs)
 	{
@@ -234,7 +234,7 @@ void CModelReader::readVertexStream(JSON& obj)
 
 void CModelReader::readIndexBuffer(JSON& obj)
 {
-	DataBuffer data;
+	CDataBuffer data;
 	data.parse(obj);
 	data.loadBinary();
 

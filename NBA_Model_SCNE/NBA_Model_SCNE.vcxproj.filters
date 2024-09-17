@@ -43,7 +43,7 @@
     <ClCompile Include="src\common.cpp">
       <Filter>Data</Filter>
     </ClCompile>
-    <ClCompile Include="src\meshbuffer.cpp">
+    <ClCompile Include="src\databuffer.cpp">
       <Filter>NBA\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="include\meshstructs.cpp">
@@ -90,7 +90,7 @@
     <ClInclude Include="include\json.hpp">
       <Filter>Data</Filter>
     </ClInclude>
-    <ClInclude Include="src\meshbuffer.h">
+    <ClInclude Include="src\databuffer.h">
       <Filter>NBA\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="include\meshstructs.h">

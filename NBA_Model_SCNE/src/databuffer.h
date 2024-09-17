@@ -18,10 +18,10 @@ enum enPropertyTag {
 	STRIDE = 3522075280,
 };
 
-class DataBuffer : public DataStream
+class CDataBuffer : public CDataStream
 {
 public:
-	DataBuffer();
+	CDataBuffer();
 
 public:
 	void parse(JSON& json);

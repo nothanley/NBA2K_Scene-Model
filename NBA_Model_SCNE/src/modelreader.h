@@ -32,13 +32,13 @@ private:
 	void readIndexBuffer(JSON& obj);
 
 private:
-	DataBuffer* findDataBuffer(const char* id);
-	DataBuffer* getVtxBuffer(int index);
+	CDataBuffer* findDataBuffer(const char* id);
+	CDataBuffer* getVtxBuffer(int index);
 
 private:
 	JSON m_json;
-	std::vector<DataBuffer> m_vtxBfs;
-	std::vector<DataBuffer> m_dataBfs;
+	std::vector<CDataBuffer> m_vtxBfs;
+	std::vector<CDataBuffer> m_dataBfs;
 	CSceneFile* m_parent;
 };
 

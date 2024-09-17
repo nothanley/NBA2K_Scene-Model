@@ -3,7 +3,7 @@
 
 using namespace memreader;
 
-DataStream::DataStream()
+CDataStream::CDataStream()
 	:
 	m_offset(NULL),
 	m_stride(NULL)
@@ -26,7 +26,7 @@ static float unpackVarF(float value, int bit_len, std::string type)
 }
 
 void 
-DataStream::convertPackVal(float& input, int num_bits, std::string type)
+CDataStream::convertPackVal(float& input, int num_bits, std::string type)
 {
 	if (type == "snorm" || type == "unorm") {
 		input = unpackVarF(input, num_bits, type);
@@ -40,7 +40,7 @@ DataStream::convertPackVal(float& input, int num_bits, std::string type)
 }
 
 char*
-DataStream::roundPointerToNearest4(char* ptr)
+CDataStream::roundPointerToNearest4(char* ptr)
 {
 	std::ptrdiff_t diff = ptr - reinterpret_cast<char*>(0); // Get the pointer difference from nullptr
 	std::ptrdiff_t roundedDiff = (diff + 3) & ~3; // Round up to the nearest multiple of 4
@@ -49,12 +49,12 @@ DataStream::roundPointerToNearest4(char* ptr)
 }
 
 constexpr unsigned int
-DataStream::hash(const char* s, int off) {
+CDataStream::hash(const char* s, int off) {
 	return !s[off] ? 5381 : (hash(s, off + 1) * 33) ^ s[off];
 }
 
 int
-DataStream::roundUp(int numToRound, int multiple) {
+CDataStream::roundUp(int numToRound, int multiple) {
 	int remainder;
 
 	if (multiple == 0)
@@ -67,7 +67,7 @@ DataStream::roundUp(int numToRound, int multiple) {
 }
 
 float
-DataStream::bitFloat(float value, std::string type) {
+CDataStream::bitFloat(float value, std::string type) {
 
 	if (type == "snorm")
 		value = float(value / 127.0);
@@ -77,7 +77,7 @@ DataStream::bitFloat(float value, std::string type) {
 }
 
 float
-DataStream::shortFloat(float value, std::string type) {
+CDataStream::shortFloat(float value, std::string type) {
 	if (type == "snorm")
 		value = float(value / 32767.0);
 	else if (type == "unorm")
@@ -86,7 +86,7 @@ DataStream::shortFloat(float value, std::string type) {
 }
 
 void
-DataStream::decodeBuffer(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet)
+CDataStream::decodeBuffer(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet)
 {
 	unsigned int key = hash(encoding.c_str());
 
@@ -127,7 +127,7 @@ DataStream::decodeBuffer(char*& src, int size, std::string type, std::string enc
 }
 
 void
-DataStream::getData_R32_G32_B32(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet) 
+CDataStream::getData_R32_G32_B32(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet) 
 {
 	float r32, g32, b32;
 
@@ -146,7 +146,7 @@ DataStream::getData_R32_G32_B32(char*& src, int size, std::string type, std::str
 }
 
 void
-DataStream::getData_R8_G8_B8_A8(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet) 
+CDataStream::getData_R8_G8_B8_A8(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet) 
 {
 	float r8f, g8f, b8f, a8f;
 
@@ -233,7 +233,7 @@ static uint32_t flipDword(uint32_t value)
 }
 
 void
-DataStream::getData_R10_G10_B10_A2(char*& src, int size, std::string type, std::string encodeFmt, std::vector<float>& dataSet)
+CDataStream::getData_R10_G10_B10_A2(char*& src, int size, std::string type, std::string encodeFmt, std::vector<float>& dataSet)
 {
 	float r, g, b, a;
 	uint32_t packedValue;
@@ -261,7 +261,7 @@ DataStream::getData_R10_G10_B10_A2(char*& src, int size, std::string type, std::
 }
 
 void
-DataStream::getData_R16_G16_B16_A16(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet) 
+CDataStream::getData_R16_G16_B16_A16(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet) 
 {
 	float r8f, g8f, b8f, a8f;
 
@@ -322,7 +322,7 @@ DataStream::getData_R16_G16_B16_A16(char*& src, int size, std::string type, std:
 }
 
 void
-DataStream::getData_R32_G32(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet) 
+CDataStream::getData_R32_G32(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet) 
 {
 	float r32, g32;
 
@@ -339,7 +339,7 @@ DataStream::getData_R32_G32(char*& src, int size, std::string type, std::string 
 }
 
 void
-DataStream::getData_R16_G16(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet)
+CDataStream::getData_R16_G16(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet)
 {
 	float r_f, g_f;
 
@@ -376,7 +376,7 @@ DataStream::getData_R16_G16(char*& src, int size, std::string type, std::string 
 }
 
 void
-DataStream::getData_R32(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet)
+CDataStream::getData_R32(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet)
 {
 	float result;
 
@@ -406,7 +406,7 @@ DataStream::getData_R32(char*& src, int size, std::string type, std::string enco
 }
 
 void
-DataStream::getData_R16(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet)
+CDataStream::getData_R16(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet)
 {
 	float result;
 
@@ -436,7 +436,7 @@ DataStream::getData_R16(char*& src, int size, std::string type, std::string enco
 }
 
 void
-DataStream::getData_R8(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet)
+CDataStream::getData_R8(char*& src, int size, std::string type, std::string encoding, std::vector<float>& dataSet)
 {
 	float r8f;
 
@@ -471,7 +471,7 @@ DataStream::getData_R8(char*& src, int size, std::string type, std::string encod
 
 
 size_t 
-DataStream::getDataLen(int items, std::string encoding)
+CDataStream::getDataLen(int items, std::string encoding)
 {
 	size_t size = items;
 	unsigned int buf = hash(encoding.c_str());

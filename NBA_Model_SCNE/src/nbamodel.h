@@ -1,6 +1,6 @@
 
 #include <meshprimitive.h>
-#include <meshbuffer.h>
+#include <databuffer.h>
 #pragma once
 
 struct RigBone;

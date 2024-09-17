@@ -14,11 +14,11 @@ enum {
 	R8 = 5859695,
 };
 
-class DataStream
+class CDataStream
 {
 
 public:
-	DataStream();
+	CDataStream();
 
 public:
 	std::vector<float> data; // stores all data eg. pos, uvs, indices

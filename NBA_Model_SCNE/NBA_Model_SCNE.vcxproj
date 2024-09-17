@@ -210,7 +210,7 @@
     <ClCompile Include="src\dll\dllmain.cpp" />
     <ClCompile Include="src\dll\interfaceskinmodel.cpp" />
     <ClCompile Include="src\dll\pch.cpp" />
-    <ClCompile Include="src\meshbuffer.cpp" />
+    <ClCompile Include="src\databuffer.cpp" />
     <ClCompile Include="src\meshprimitive.cpp" />
     <ClCompile Include="src\modelreader.cpp" />
     <ClCompile Include="src\nbamodel.cpp" />
@@ -243,7 +243,7 @@
     <ClInclude Include="src\dll\framework.h" />
     <ClInclude Include="src\dll\interfaceskinmodel.h" />
     <ClInclude Include="src\dll\pch.h" />
-    <ClInclude Include="src\meshbuffer.h" />
+    <ClInclude Include="src\databuffer.h" />
     <ClInclude Include="src\meshprimitive.h" />
     <ClInclude Include="src\modelreader.h" />
     <ClInclude Include="src\nbamodel.h" />

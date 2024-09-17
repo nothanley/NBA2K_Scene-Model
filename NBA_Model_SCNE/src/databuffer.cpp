@@ -1,19 +1,19 @@
-#include <meshbuffer.h>
+#include <databuffer.h>
 #include <nbamodel.h>
 #include <scenefile.h>
 #include <common.h>
 #include <gzip/decompress.hpp>
 #include <gzip/utils.hpp>
 
-DataBuffer::DataBuffer()
+CDataBuffer::CDataBuffer()
 	:
-	DataStream(),
+	CDataStream(),
 	m_index(NULL),
 	m_size(NULL)
 {
 }
 
-void DataBuffer::loadBinary()
+void CDataBuffer::loadBinary()
 {
 	if (m_format.empty() || !m_size || m_path.empty())
 		return;
@@ -23,7 +23,7 @@ void DataBuffer::loadBinary()
 	std::string binaryPath = this->findBinaryFile();
 	char* fileBf           = common::readFile(binaryPath, &fileLen);
 	if (binaryPath.empty())
-		printf("\n[DataBuffer] Invalid scene - missing model data file: %s\n", m_path.c_str());
+		printf("\n[CDataBuffer] Invalid scene - missing model data file: %s\n", m_path.c_str());
 
 	/* Missing model data so must throw exception */
 	if (binaryPath.empty() || !fileBf)
@@ -47,22 +47,22 @@ void DataBuffer::loadBinary()
 	delete[] fileBf;
 }
 
-int DataBuffer::getStreamIdx()
+int CDataBuffer::getStreamIdx()
 {
 	return m_index;
 }
 
-void DataBuffer::setStride(int val)
+void CDataBuffer::setStride(int val)
 {
 	m_stride = val;
 }
 
-void DataBuffer::setOffset(int val)
+void CDataBuffer::setOffset(int val)
 {
 	m_offset = val;
 }
 
-int DataBuffer::getStride()
+int CDataBuffer::getStride()
 {
 	if (m_stride > 0 || m_format.empty())
 		return m_stride;
@@ -74,7 +74,7 @@ int DataBuffer::getStride()
 	return m_stride;
 }
 
-void DataBuffer::parse(JSON& json)
+void CDataBuffer::parse(JSON& json)
 {
 	for (JSON::iterator it = json.begin(); it != json.end(); ++it)
 	{
@@ -130,7 +130,7 @@ bool writeDataToFile(const std::string& filePath, const std::string& data)
 	return true;
 }
 
-bool DataBuffer::decompressGzFile(const std::string& filePath, std::string& targetPath)
+bool CDataBuffer::decompressGzFile(const std::string& filePath, std::string& targetPath)
 {
 	size_t size;
 	char* data = common::readFile(filePath, &size);
@@ -138,7 +138,7 @@ bool DataBuffer::decompressGzFile(const std::string& filePath, std::string& targ
 
 	if (gzip::is_compressed(data, size))
 	{
-		printf("\n[DataBuffer] Decompressing .gz file...");
+		printf("\n[CDataBuffer] Decompressing .gz file...");
 		auto decompressed_data = gzip::decompress(data, size);
 		
 		common::replaceSubString(targetPath, ".gz", ".bin");
@@ -150,7 +150,7 @@ bool DataBuffer::decompressGzFile(const std::string& filePath, std::string& targ
 	return true;
 }
 
-std::string DataBuffer::findBinaryFile()
+std::string CDataBuffer::findBinaryFile()
 {
 	std::string targetName = std::filesystem::path(m_path).filename().string();
 	bool isCompressed = common::containsSubstring(m_path, ".gz");

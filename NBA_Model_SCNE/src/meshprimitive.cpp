@@ -1,11 +1,11 @@
 #include <meshprimitive.h>
-#include <meshbuffer.h>
+#include <databuffer.h>
 #include <common.h>
 
 bool INCLUDE_LODS = false;
 bool MERGE_MESH_PRIMS = false;
 
-inline static void decodeOctahedralNorms(DataBuffer* tanFrameBf, Mesh& mesh)
+inline static void decodeOctahedralNorms(CDataBuffer* tanFrameBf, Mesh& mesh)
 {
 	if (tanFrameBf->getFormat() != "R10G10B10A2_UINT")
 		return;
@@ -127,7 +127,7 @@ void GeomDef::pushPrimLods(StGeoPrim& prim, std::vector<StGeoPrim>& prim_vec)
 	}
 }
 
-void GeomDef::setMeshVtxs(DataBuffer* posBf, Mesh& mesh)
+void GeomDef::setMeshVtxs(CDataBuffer* posBf, Mesh& mesh)
 {
 	/* Format vertex coord mesh data - ignore every W position coord */
 	for (int i = 0; i < posBf->data.size(); i++)
@@ -160,7 +160,7 @@ void GeomDef::setMeshVtxs(DataBuffer* posBf, Mesh& mesh)
 	}
 }
 
-void GeomDef::addMeshUVMap(DataBuffer* texBf, Mesh& mesh)
+void GeomDef::addMeshUVMap(CDataBuffer* texBf, Mesh& mesh)
 {
 	/* Format uv coord mesh data - ignore every W position coord */
 	UVMap channel{ texBf->id };
@@ -188,7 +188,7 @@ void GeomDef::addMeshUVMap(DataBuffer* texBf, Mesh& mesh)
 	mesh.uvs.push_back(channel);
 }
 
-void GeomDef::calculateVtxNormals(DataBuffer* tanBf, Mesh& mesh)
+void GeomDef::calculateVtxNormals(CDataBuffer* tanBf, Mesh& mesh)
 {
 	auto size = tanBf->data.size();
 	if (size == 0 || size % 4 != 0)

@@ -54,12 +54,12 @@ struct StGeoPrim
 };
 
 // Prim Build+Helper Methods
-class DataBuffer;
+class CDataBuffer;
 namespace GeomDef
 {
 	void pushPrimLods(StGeoPrim& prim, std::vector<StGeoPrim>& prim_vec);
-	void setMeshVtxs(DataBuffer* posBf, Mesh& mesh);
-	void calculateVtxNormals(DataBuffer* tanBf, Mesh& mesh);
-	void addMeshUVMap(DataBuffer* texBf, Mesh& mesh);
+	void setMeshVtxs(CDataBuffer* posBf, Mesh& mesh);
+	void calculateVtxNormals(CDataBuffer* tanBf, Mesh& mesh);
+	void addMeshUVMap(CDataBuffer* texBf, Mesh& mesh);
 };
 
