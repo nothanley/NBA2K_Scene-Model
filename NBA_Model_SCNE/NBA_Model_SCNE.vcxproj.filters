@@ -26,6 +26,12 @@
     <Filter Include="Library\ZLIB">
       <UniqueIdentifier>{b6a2158f-aa5f-4db8-a401-1e1f178ce5ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NBA\Reader">
+      <UniqueIdentifier>{ece8f578-cdfc-4fc9-ba53-20b640e9f73d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NBA\Scene">
+      <UniqueIdentifier>{e07c9b01-58b8-48a3-bfac-fc5ccb2cba1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -34,17 +40,8 @@
     <ClCompile Include="include\memoryreader.cpp">
       <Filter>Memory</Filter>
     </ClCompile>
-    <ClCompile Include="src\scenefile.cpp">
-      <Filter>NBA</Filter>
-    </ClCompile>
-    <ClCompile Include="src\nbamodel.cpp">
-      <Filter>NBA</Filter>
-    </ClCompile>
     <ClCompile Include="src\common.cpp">
       <Filter>Data</Filter>
-    </ClCompile>
-    <ClCompile Include="src\nbascene.cpp">
-      <Filter>NBA</Filter>
     </ClCompile>
     <ClCompile Include="src\meshbuffer.cpp">
       <Filter>NBA\Mesh</Filter>
@@ -64,25 +61,34 @@
     <ClCompile Include="src\datastream.cpp">
       <Filter>NBA\Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="src\meshprimitive.cpp">
+      <Filter>NBA\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modelreader.cpp">
+      <Filter>NBA\Reader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scenereader.cpp">
+      <Filter>NBA\Reader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nbascene.cpp">
+      <Filter>NBA\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scenefile.cpp">
+      <Filter>NBA\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nbamodel.cpp">
+      <Filter>NBA\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\memoryreader.h">
       <Filter>Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="src\nbamodel.h">
-      <Filter>NBA</Filter>
-    </ClInclude>
-    <ClInclude Include="src\scenefile.h">
-      <Filter>NBA</Filter>
     </ClInclude>
     <ClInclude Include="src\common.h">
       <Filter>Data</Filter>
     </ClInclude>
     <ClInclude Include="include\json.hpp">
       <Filter>Data</Filter>
-    </ClInclude>
-    <ClInclude Include="src\nbascene.h">
-      <Filter>NBA</Filter>
     </ClInclude>
     <ClInclude Include="src\meshbuffer.h">
       <Filter>NBA\Mesh</Filter>
@@ -150,10 +156,28 @@
     <ClInclude Include="include\gzip\version.hpp">
       <Filter>Library\ZLIB</Filter>
     </ClInclude>
+    <ClInclude Include="src\meshprimitive.h">
+      <Filter>NBA\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modelreader.h">
+      <Filter>NBA\Reader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scenereader.h">
+      <Filter>NBA\Reader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scenefile.h">
+      <Filter>NBA\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nbamodel.h">
+      <Filter>NBA\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nbascene.h">
+      <Filter>NBA\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\nbascene">
-      <Filter>NBA</Filter>
+      <Filter>NBA\Scene</Filter>
     </None>
   </ItemGroup>
 </Project>

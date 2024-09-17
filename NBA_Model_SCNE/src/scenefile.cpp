@@ -1,8 +1,8 @@
 #include <scenefile.h>
-#include <json.hpp>
 #include <common.h>
-#include <nbamodel.h>
-#include <nbascene.h>
+#include <scenereader.h>
+#include <modelreader.h>
+
 #include <sstream>
 
 CSceneFile::CSceneFile(const char* path)
@@ -42,11 +42,13 @@ CSceneFile::parse()
 	/* Iterate through scene json structure */
 	for (JSON::iterator it = m_json.begin(); it != m_json.end(); ++it)
 	{
-		if (it.value().is_object()) {
+		if (it.value().is_object()) 
+		{
 			std::string scene_id = it.key();
 
-			m_scene = std::make_shared<CNBAScene>(scene_id.c_str(), it.value());
-			m_scene->parse();
+			auto scene = std::make_shared<CSceneReader>(scene_id.c_str(), it.value());
+			scene->parse();
+			this->m_scene = scene;
 		}
 	}
 }

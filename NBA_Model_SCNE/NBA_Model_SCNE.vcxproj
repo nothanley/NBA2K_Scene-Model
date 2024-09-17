@@ -211,9 +211,12 @@
     <ClCompile Include="src\dll\interfaceskinmodel.cpp" />
     <ClCompile Include="src\dll\pch.cpp" />
     <ClCompile Include="src\meshbuffer.cpp" />
+    <ClCompile Include="src\meshprimitive.cpp" />
+    <ClCompile Include="src\modelreader.cpp" />
     <ClCompile Include="src\nbamodel.cpp" />
     <ClCompile Include="src\nbascene.cpp" />
     <ClCompile Include="src\scenefile.cpp" />
+    <ClCompile Include="src\scenereader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\gzip\compress.hpp" />
@@ -241,9 +244,12 @@
     <ClInclude Include="src\dll\interfaceskinmodel.h" />
     <ClInclude Include="src\dll\pch.h" />
     <ClInclude Include="src\meshbuffer.h" />
+    <ClInclude Include="src\meshprimitive.h" />
+    <ClInclude Include="src\modelreader.h" />
     <ClInclude Include="src\nbamodel.h" />
     <ClInclude Include="src\nbascene.h" />
     <ClInclude Include="src\scenefile.h" />
+    <ClInclude Include="src\scenereader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\nbascene" />
