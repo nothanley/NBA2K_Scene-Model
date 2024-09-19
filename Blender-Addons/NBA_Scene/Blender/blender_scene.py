@@ -31,7 +31,7 @@ def loadSkinModel(model, parent, args, model_path):
     for mesh in model.getMeshes():
         object = loadSkinMesh(mesh, args, model_path)
         parent.objects.link(object)
-        object.rotation_euler[0] = radians(90) # Flip default axis
+        # object.rotation_euler[0] = radians(90) # Flip default axis
 
     return
 

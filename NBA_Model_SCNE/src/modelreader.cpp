@@ -126,18 +126,25 @@ void CModelReader::loadVertices(Mesh& mesh)
 	if (!posBf || !tanBf || !texBf)
 		return;
 
+	// Build mesh geometry - unpack data
 	mesh.name = (mesh.name.empty()) ? m_name : mesh.name;
 	GeomDef::setMeshVtxs(posBf, mesh);
 	GeomDef::calculateVtxNormals(tanBf, mesh);
 	if (!texBf->data.empty())
 		GeomDef::addMeshUVMap(texBf, mesh);
 
-	// debug log ...
-	printf("\n[CModelReader] Built 3D Mesh: \"%s\" | Points: %d | Tris: %d",
-		mesh.name.c_str(),
-		mesh.vertices.size() / 3,
-		mesh.triangles.size()
-	);
+	// Update mesh refs
+	mesh.vertex_ref   = posBf;
+	mesh.normals_ref  = tanBf;
+	mesh.texcoord_ref = texBf;
+
+	// System logs ...
+	if (USE_DEBUG_LOGS)
+		printf("\n[CModelReader] Built 3D Mesh: \"%s\" | Points: %d | Tris: %d",
+			mesh.name.c_str(),
+			mesh.vertices.size() / 3,
+			mesh.triangles.size()
+		);
 }
 
 void CModelReader::loadIndices(Mesh& mesh, const int count)

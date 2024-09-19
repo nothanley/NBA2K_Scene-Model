@@ -32,6 +32,12 @@
     <Filter Include="NBA\Scene">
       <UniqueIdentifier>{e07c9b01-58b8-48a3-bfac-fc5ccb2cba1b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PyInterface">
+      <UniqueIdentifier>{5544f610-5d32-450f-ba39-196489defd0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NBA\Codec">
+      <UniqueIdentifier>{1bfcf1cd-a86f-4063-a884-1c328d9fefe3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -48,9 +54,6 @@
     </ClCompile>
     <ClCompile Include="include\meshstructs.cpp">
       <Filter>NBA\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="src\dll\interfaceskinmodel.cpp">
-      <Filter>Library</Filter>
     </ClCompile>
     <ClCompile Include="src\dll\pch.cpp">
       <Filter>Library</Filter>
@@ -79,6 +82,21 @@
     <ClCompile Include="src\nbamodel.cpp">
       <Filter>NBA\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\dll\interface_save.cpp">
+      <Filter>PyInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dll\interface_mesh.cpp">
+      <Filter>PyInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sceneupdate.cpp">
+      <Filter>NBA</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bin_codec.cpp">
+      <Filter>NBA\Codec</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bin_format.cpp">
+      <Filter>NBA\Codec</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\memoryreader.h">
@@ -95,9 +113,6 @@
     </ClInclude>
     <ClInclude Include="include\meshstructs.h">
       <Filter>NBA\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="src\dll\interfaceskinmodel.h">
-      <Filter>Library</Filter>
     </ClInclude>
     <ClInclude Include="src\dll\pch.h">
       <Filter>Library</Filter>
@@ -173,6 +188,21 @@
     </ClInclude>
     <ClInclude Include="src\nbascene.h">
       <Filter>NBA\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dll\interface_mesh.h">
+      <Filter>PyInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sceneupdate.h">
+      <Filter>NBA</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dll\interface_save.h">
+      <Filter>PyInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bin_codec.h">
+      <Filter>NBA\Codec</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bin_format.h">
+      <Filter>NBA\Codec</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

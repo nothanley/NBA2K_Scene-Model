@@ -30,5 +30,7 @@ namespace common
 	std::string findFileInDirectory(const std::string& mainDir, const std::string& filename);
     void set_console_text_color(int val);
     std::vector<std::string> findMatchingExtensionFiles(const char* directory, const char* extension);
+    void ShowMessageBox(const std::string& message);
+    void createFileBackup(const char* path);
 }
 

@@ -25,26 +25,34 @@ public:
 
 public:
 	void parse(JSON& json);
+	bool saveBinary(char* data, const size_t size);
 	void loadBinary();
-	int getStreamIdx();
-	std::string getFormat() { return m_format; }
 
 public:
+	int getDataOffset();
 	int getStride();
+	int getStreamIdx();
 	void setStride(int val);
 	void setOffset(int val);
+
+public:
+	std::vector<uint8_t> getBinary(); // returns a copy of the source binary buffer
+	std::string getFormat();
+	std::string getEncoding();
+	std::string getType();
+
+public:
 	std::string id;
-	std::vector<float> offset;
+	std::vector<float> translate;
 	std::vector<float> scale;
 
 private:
-	bool decompressGzFile(const std::string& filePath, std::string& targetPath);
-	std::string findBinaryFile();
+	void loadFileData(char* src, const size_t& size);
+	void readFileData(char*& data, size_t& file_size);
 
 private:
 	int m_index;
 	std::string m_format;
-	std::string m_path;
 	int m_size;
 };
 

@@ -29,7 +29,7 @@ class vCNBAModelImport(Operator, ImportHelper):
     )
 
     include_lods: BoolProperty(
-        name="Import all mesh LODs",
+        name="Import LODs",
         description="Imports all lower level LOD models to scene.",
         default=False,
     )

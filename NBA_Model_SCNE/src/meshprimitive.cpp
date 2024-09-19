@@ -2,7 +2,8 @@
 #include <databuffer.h>
 #include <common.h>
 
-bool INCLUDE_LODS = false;
+bool USE_DEBUG_LOGS   = false;
+bool INCLUDE_LODS     = false;
 bool MERGE_MESH_PRIMS = false;
 
 inline static void decodeOctahedralNorms(CDataBuffer* tanFrameBf, Mesh& mesh)
@@ -149,11 +150,11 @@ void GeomDef::setMeshVtxs(CDataBuffer* posBf, Mesh& mesh)
 	{
 		auto& vtx = mesh.vertices[i];
 
-		if (!posBf->offset.empty() && !posBf->scale.empty())
+		if (!posBf->translate.empty() && !posBf->scale.empty())
 		{
 			// Apply Scale and Offset
-			auto& scale = posBf->scale[i % 3];
-			auto& offset = posBf->offset[i % 3];
+			auto& scale  = posBf->scale[i % 3];
+			auto& offset = posBf->translate[i % 3];
 
 			vtx = (vtx * scale) + offset;
 		}
@@ -169,11 +170,11 @@ void GeomDef::addMeshUVMap(CDataBuffer* texBf, Mesh& mesh)
 	{
 		auto coord = texBf->data[i];
 
-		if (!texBf->offset.empty() && !texBf->scale.empty())
+		if (!texBf->translate.empty() && !texBf->scale.empty())
 		{
 			// Apply Scale and Offset transforms
 			auto& scale = texBf->scale[i % 2];
-			auto& offset = texBf->offset[i % 2];
+			auto& offset = texBf->translate[i % 2];
 
 			coord = (coord * scale) + offset;
 		}
@@ -195,8 +196,7 @@ void GeomDef::calculateVtxNormals(CDataBuffer* tanBf, Mesh& mesh)
 		return;
 
 	// Unpack data
+	mesh.tangent_frames = tanBf->data;
 	::decodeOctahedralNorms(tanBf, mesh);
-
-	// todo: handle more formats ...
 }
 

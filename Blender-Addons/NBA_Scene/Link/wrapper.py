@@ -7,6 +7,43 @@ def GetDLLPath():
     dllPath = os.path.join(os.path.dirname(pyPath), "nbamodel.dll")
     return dllPath
 
+class cscnelib():
+    global lib
+
+    @staticmethod
+    def getFileStatus(file_path):
+        lib.getFileStatus.restype  = ctypes.c_bool
+        lib.getFileStatus.argtypes = [ctypes.c_char_p]
+        return lib.getFileStatus(file_path.encode('utf-8'))
+    
+    @staticmethod
+    def updateFileMesh(file_path, id, vertices, texcoords, normals, num_verts, num_tris, search_method):
+        lib.updateScneFileMeshData.restype  = ctypes.c_bool
+        lib.updateScneFileMeshData.argtypes = [ctypes.c_char_p, # file path
+                                               ctypes.c_char_p, # mesh id
+                                               ctypes.POINTER(ctypes.c_float), # position input
+                                               ctypes.POINTER(ctypes.c_float), # texcoords input
+                                               ctypes.POINTER(ctypes.c_float), # normals input
+                                               ctypes.c_int, # num verts
+                                               ctypes.c_int, # num tris
+                                               ctypes.c_int  # enum search method
+                                               ]
+        
+        # Convert python list to c array
+        c_verts     = (ctypes.c_float * num_verts)(*vertices)
+        c_texcoords = (ctypes.c_float * num_verts)(*texcoords)
+        c_norms     = (ctypes.c_float * num_verts)(*normals)
+
+        return lib.updateScneFileMeshData(
+            file_path.encode('utf-8'),
+            id.encode('utf-8'),
+            c_verts, 
+            c_texcoords,
+            c_norms,
+            num_verts, 
+            num_tris,
+            search_method)
+    
 class cmodellib():
 
     global lib 
@@ -138,3 +175,15 @@ class ExternalLibary():
         self.load_scene           = self.getLoadOperator()
         self.release_scene_file   = self.getDeleteOperator()
 
+#     @staticmethod
+#     def loadSCNEFile(file_path, pScene, use_lods, split_groups):
+#         # Defines Call for 'void* loadModelFile(const char* filePath, CNBAScene* pScene, bool use_lods, bool split_groups)'
+#         lib.loadModelFile.restype  = ctypes.c_void_p
+#         lib.loadModelFile.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p), ctypes.c_bool, ctypes.c_bool]
+#         return lib.loadModelFile(file_path, pScene, use_lods, split_groups)
+    
+#     @staticmethod
+#     def freeSCNEModel(cskinmodel):
+#         # Defines Call for 'void release_model_file(void* pModelFile)'
+#         lib.release_model_file.argtypes = [ctypes.c_void_p]
+#         return lib.release_model_file(cskinmodel)

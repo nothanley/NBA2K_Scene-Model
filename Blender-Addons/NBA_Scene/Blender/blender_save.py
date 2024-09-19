@@ -30,11 +30,11 @@ def makeSkinMesh(obj):
     skinmesh.vertices       = getMeshVertices(obj)
     skinmesh.vertex_normals = getVertexNorms(obj)
     skinmesh.texcoords      = getTexCoords(obj)
-    skinmesh.vertex_colors  = getVertexColors(obj)
-    skinmesh.skin           = getMeshSkin(obj)
-    skinmesh.blendshapes    = getShapeKeys(obj)
-    skinmesh.scene_flag     = getGameSceneFlag(obj)
-    skinmesh.motion_flag    = getGameMotionFlag(obj)
+    # skinmesh.vertex_colors  = getVertexColors(obj)
+    # skinmesh.skin           = getMeshSkin(obj)
+    # skinmesh.blendshapes    = getShapeKeys(obj)
+    # skinmesh.scene_flag     = getGameSceneFlag(obj)
+    # skinmesh.motion_flag    = getGameMotionFlag(obj)
     
     return skinmesh
 
@@ -46,7 +46,7 @@ def getSceneMeshes():
         return None
 
     # Preprocess all scene meshes to game-ready objs
-    format_game_objects(obj_selection)
+    # format_game_objects(obj_selection)
 
     models = []
     # Read all scene object data to skinmesh obj

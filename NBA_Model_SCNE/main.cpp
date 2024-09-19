@@ -3,11 +3,13 @@
 #include <scenefile.h>
 #include <nbascene.h>
 #include <nbamodel.h>
+#include <sceneupdate.h>
 
 #include <iostream>
 #include <memory>
 
-int main()
+
+void run_loader_debug()
 {
 	// Open and load a scene file given a local path.
 	CSceneFile inFile(
@@ -19,15 +21,43 @@ int main()
 	inFile.load();
 
 	// Access CNBAScene and CNBAModel children objects.
-	auto scene  = inFile.scene();
+	auto scene = inFile.scene();
 
 	// test usage - iter through models and meshes
 	for (auto& model : scene->models())
-	{
 		auto mesh = model->getMesh();
-		//printf("/n[DebugMsh] Browsing mesh: %s", mesh.name.c_str());
-	}
+};
 
+void run_update_debug()
+{
+	CSceneUpdate file("C:/Users/wauke/Downloads/NBA 2K25 Research/mods/balls/ball.SCNE", true);
+	file.load();
+
+	if (file.scene()->empty())
+		return;
+
+	auto mesh = file.scene()->models().front()->getMesh();
+
+	StUpdatePkg clientPkg
+	{
+		mesh->name,
+		mesh->vertices.data(),
+		mesh->uvs.front().map.data(),
+		mesh->normals.data(),
+		mesh->vertices.size(),
+		mesh->triangles.size(),
+		1 // ENUM VAL - VTX ID = 1
+	};
+
+	file.update(&clientPkg);
+};
+
+int main()
+{
+	USE_DEBUG_LOGS = true;
+
+	run_update_debug();
+	
 	printf("\n\n[DEBUG-MAIN] Finished debug reader...");
 }
 

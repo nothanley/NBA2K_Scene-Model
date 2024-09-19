@@ -205,10 +205,13 @@
     <ClCompile Include="include\memoryreader.cpp" />
     <ClCompile Include="include\meshstructs.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\bin_codec.cpp" />
+    <ClCompile Include="src\bin_format.cpp" />
     <ClCompile Include="src\common.cpp" />
     <ClCompile Include="src\datastream.cpp" />
     <ClCompile Include="src\dll\dllmain.cpp" />
-    <ClCompile Include="src\dll\interfaceskinmodel.cpp" />
+    <ClCompile Include="src\dll\interface_mesh.cpp" />
+    <ClCompile Include="src\dll\interface_save.cpp" />
     <ClCompile Include="src\dll\pch.cpp" />
     <ClCompile Include="src\databuffer.cpp" />
     <ClCompile Include="src\meshprimitive.cpp" />
@@ -217,6 +220,7 @@
     <ClCompile Include="src\nbascene.cpp" />
     <ClCompile Include="src\scenefile.cpp" />
     <ClCompile Include="src\scenereader.cpp" />
+    <ClCompile Include="src\sceneupdate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\gzip\compress.hpp" />
@@ -238,10 +242,13 @@
     <ClInclude Include="include\zlib\zconf.h" />
     <ClInclude Include="include\zlib\zlib.h" />
     <ClInclude Include="include\zlib\zutil.h" />
+    <ClInclude Include="src\bin_codec.h" />
+    <ClInclude Include="src\bin_format.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\datastream.h" />
     <ClInclude Include="src\dll\framework.h" />
-    <ClInclude Include="src\dll\interfaceskinmodel.h" />
+    <ClInclude Include="src\dll\interface_mesh.h" />
+    <ClInclude Include="src\dll\interface_save.h" />
     <ClInclude Include="src\dll\pch.h" />
     <ClInclude Include="src\databuffer.h" />
     <ClInclude Include="src\meshprimitive.h" />
@@ -250,6 +257,7 @@
     <ClInclude Include="src\nbascene.h" />
     <ClInclude Include="src\scenefile.h" />
     <ClInclude Include="src\scenereader.h" />
+    <ClInclude Include="src\sceneupdate.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\nbascene" />

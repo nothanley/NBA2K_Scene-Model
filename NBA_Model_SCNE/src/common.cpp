@@ -190,3 +190,37 @@ std::vector<std::string> common::findMatchingExtensionFiles(const char* director
 
 	return matchingFiles;
 }
+
+void common::ShowMessageBox(const std::string& message) {
+	// Convert std::string to a wide string (required by MessageBoxW)
+	std::wstring wideMessage(message.begin(), message.end());
+
+	// Create a message box with "OK" button
+	MessageBoxW(
+		nullptr,             // No parent window
+		wideMessage.c_str(), // Message to display (wide string)
+		L"Blender NBA Link",          // Title of the message box
+		MB_OK                // OK button type
+	);
+}
+
+void common::createFileBackup(const char* path) 
+{
+	try {
+		fs::path originalFilePath(path);
+
+		if (!fs::exists(originalFilePath))
+			return;
+
+		fs::path backupFilePath = originalFilePath;
+		backupFilePath += ".bak";
+
+		// Copy the original file to the backup file path
+		fs::copy_file(originalFilePath, backupFilePath, fs::copy_options::overwrite_existing);
+	}
+	catch (const std::exception& e) 
+	{
+		// ...
+	}
+}
+

@@ -27,3 +27,7 @@ Mesh* CNBAModel::getMesh(int index)
 	return m_meshes[index].get();
 }
 
+std::vector<std::shared_ptr<Mesh>> CNBAModel::getMeshes()
+{
+	return m_meshes;
+}

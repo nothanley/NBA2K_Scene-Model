@@ -36,6 +36,7 @@ void Mesh::flipNormals()
 
 void Mesh::convertSplitNorms()
 {
+	int numVerts = vertices.size() / 3; // Assumes 'R32G32B32' format 
 	int array_size = (normals.size() == vertices.size()) ? 3 : 4;
 	std::vector<float> data;
 
@@ -119,8 +120,57 @@ Vec3 StBlendShape::vertex(const int index) const
 
 Vec3 Mesh::normal(const int index) const
 {
+	int numVerts    = vertices.size() / 3; // Assumes 'R32G32B32' format 
 	int array_width = normals.size() / numVerts;
 	int offset = (index * array_width);
 	return Vec3{ normals[offset],  normals[offset + 1],  normals[offset + 2] };
+}
+
+void Mesh::alignPosition(const bool use_blender_scale, const int num_components)
+{
+	auto size = vertices.size();
+
+	for (int i = 0; i < size; i += num_components)
+	{
+		auto x = vertices[i];
+		auto y = vertices[i + 1];
+		auto z = vertices[i + 2];
+
+		if (use_blender_scale)
+		{
+			vertices[i] = y;
+			vertices[i + 1] = z;
+			vertices[i + 2] = x;
+		}
+		else {
+			vertices[i] = z;
+			vertices[i + 1] = x;
+			vertices[i + 2] = y;
+		}
+	}
+}
+
+void Mesh::alignNormals(const bool use_blender_scale, const int num_components)
+{
+	auto size = normals.size();
+
+	for (int i = 0; i < size; i += num_components)
+	{
+		auto x = normals[i];
+		auto y = normals[i + 1];
+		auto z = normals[i + 2];
+
+		if (use_blender_scale)
+		{
+			normals[i]     =  y;
+			normals[i + 1] =  z;
+			normals[i + 2] = -x;
+		}
+		else {
+			normals[i]     = z;
+			normals[i + 1] = x;
+			normals[i + 2] = y;
+		}
+	}
 }
 

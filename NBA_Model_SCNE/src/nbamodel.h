@@ -16,6 +16,7 @@ public:
 public:
 	int getNumMeshes();
 	Mesh* getMesh(int index = 0);
+	std::vector<std::shared_ptr<Mesh>> getMeshes();
 
 protected:
 	std::string m_name;

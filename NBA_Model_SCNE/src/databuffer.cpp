@@ -4,6 +4,7 @@
 #include <common.h>
 #include <gzip/decompress.hpp>
 #include <gzip/utils.hpp>
+#include <bin_codec.h>
 
 CDataBuffer::CDataBuffer()
 	:
@@ -11,40 +12,6 @@ CDataBuffer::CDataBuffer()
 	m_index(NULL),
 	m_size(NULL)
 {
-}
-
-void CDataBuffer::loadBinary()
-{
-	if (m_format.empty() || !m_size || m_path.empty())
-		return;
-
-	/* Load file data into memory */
-	size_t fileLen         = NULL;
-	std::string binaryPath = this->findBinaryFile();
-	char* fileBf           = common::readFile(binaryPath, &fileLen);
-	if (binaryPath.empty())
-		printf("\n[CDataBuffer] Invalid scene - missing model data file: %s\n", m_path.c_str());
-
-	/* Missing model data so must throw exception */
-	if (binaryPath.empty() || !fileBf)
-		throw std::runtime_error("");
-
-	/* Discern target data types */
-	auto type = common::splitString(m_format, '_').front();
-	auto pack = common::splitString(m_format, '_').back();
-	::common::str_to_lower(pack);
-
-	// Validate memory buffer size with target length
-	char* dataSrc   = fileBf;
-	size_t items    = m_size / getStride();
-	size_t dataSize = getDataLen(items, type);
-
-	// load data elemenets from binary
-	if (dataSize <= fileLen)
-		decodeBuffer(dataSrc, items, pack, type, this->data);
-
-	// free binary
-	delete[] fileBf;
 }
 
 int CDataBuffer::getStreamIdx()
@@ -62,16 +29,39 @@ void CDataBuffer::setOffset(int val)
 	m_offset = val;
 }
 
+std::string CDataBuffer::getEncoding()
+{
+	return common::splitString(m_format, '_').front();
+};
+
+std::string CDataBuffer::getType()
+{
+	auto type = common::splitString(m_format, '_').back();
+	::common::str_to_lower(type);
+	return type;
+};
+
+std::string CDataBuffer::getFormat() {
+	return m_format;
+}
+
 int CDataBuffer::getStride()
 {
 	if (m_stride > 0 || m_format.empty())
 		return m_stride;
 
 	// Manually calculate stride length if non available
-	auto type = common::splitString(m_format, '_').front();
-	m_stride  = getDataLen(1, type);
+	auto encoding = getEncoding();
+	auto type     = getType();
 
+	BinaryCodec codec(encoding,type);
+	m_stride = codec.size(1);
 	return m_stride;
+}
+
+int CDataBuffer::getDataOffset()
+{
+	return m_offset;
 }
 
 void CDataBuffer::parse(JSON& json)
@@ -90,7 +80,7 @@ void CDataBuffer::parse(JSON& json)
 				m_index  = value;
 				break;
 			case enPropertyTag::OFFSET:
-				offset = { it.value()[0], it.value()[1], it.value()[2], it.value()[3] };
+				translate = { it.value()[0], it.value()[1], it.value()[2], it.value()[3] };
 				break;
 			case enPropertyTag::SCALE:
 				scale  = { it.value()[0], it.value()[1], it.value()[2], it.value()[3] };
@@ -113,63 +103,80 @@ void CDataBuffer::parse(JSON& json)
 	}
 }
 
-
-
-bool writeDataToFile(const std::string& filePath, const std::string& data)
+void CDataBuffer::readFileData(char*& data, size_t& file_size)
 {
-	std::ofstream outFile(filePath, std::ios::binary);
-	if (!outFile) return false;
+	m_binaryPath = this->findBinaryFile();
+	data         = common::readFile(m_binaryPath, &file_size);
 
-	// write stream contents to file
-	outFile.write(data.c_str(), data.size());
-
-	// check write success...
-	if (!outFile) return false;
-
-	outFile.close();
-	return true;
-}
-
-bool CDataBuffer::decompressGzFile(const std::string& filePath, std::string& targetPath)
-{
-	size_t size;
-	char* data = common::readFile(filePath, &size);
-	if (!data) return false;
-
-	if (gzip::is_compressed(data, size))
-	{
-		printf("\n[CDataBuffer] Decompressing .gz file...");
-		auto decompressed_data = gzip::decompress(data, size);
-		
-		common::replaceSubString(targetPath, ".gz", ".bin");
-		::writeDataToFile(targetPath, decompressed_data);
+	/* Missing model data - must throw exception */
+	if (m_binaryPath.empty() || !data) {
+		printf("\n[CDataBuffer] Invalid scene - inaccessible data file: %s\n", m_path.c_str());
+		throw std::runtime_error("Invalid data buffer.");
 	}
-
-	// todo: handle already decompressed .gz files ... 
-	delete[] data;
-	return true;
 }
 
-std::string CDataBuffer::findBinaryFile()
+void CDataBuffer::loadFileData(char* src, const size_t& size)
 {
-	std::string targetName = std::filesystem::path(m_path).filename().string();
-	bool isCompressed = common::containsSubstring(m_path, ".gz");
+	std::string encoding = getEncoding();
+	std::string type     = getType();
 
-	if (isCompressed)
-	{
-		auto compressedPath = common::findFileInDirectory(WORKING_DIR, targetName);
+	// Validate memory buffer size with target length
+	BinaryCodec codec(encoding, type);
+	size_t items = m_size / getStride();
+	size_t dataSize = codec.size(items);
 
-		if (!compressedPath.empty())
-		{
-			std::string outPath = compressedPath;
-			return (decompressGzFile(compressedPath, outPath)) ? outPath : "";
-		}
-		else 
-		{
-			// file not in dir - default search to decompressed .bin file ...
-			common::replaceSubString(targetName, ".gz", ".bin");
-		}
-	}
+	// load data elemenets from binary
+	if (dataSize <= size)
+		codec.decode(src, items, data, m_offset, m_stride);
+};
 
-	return common::findFileInDirectory(WORKING_DIR, targetName);
+void CDataBuffer::loadBinary()
+{
+	if (m_format.empty() || !m_size || m_path.empty())
+		return;
+
+	size_t size(NULL);
+	char* binary;
+
+	// Process file binary
+	this->readFileData(binary, size);
+	this->loadFileData(binary, size);
+
+	// free binary
+	delete[] binary;
 }
+
+std::vector<uint8_t>
+CDataBuffer::getBinary()
+{
+	std::vector<uint8_t> data;
+	size_t size(NULL);
+	char* binary;
+
+	if (m_format.empty() || !m_size || m_path.empty())
+		return data;
+
+	// Process file binary
+	this->readFileData(binary, size);
+
+	// Copy data to target vector
+	data.resize(size);
+	memcpy(data.data(), binary, size);
+
+	// free allocated binary
+	delete[] binary;
+
+	return data;
+}
+
+bool CDataBuffer::saveBinary(char* data, const size_t size)
+{
+	if (!data || m_binaryPath.empty() || m_path.empty())
+		return false;
+	
+	common::createFileBackup(m_binaryPath.c_str());
+
+	return writeDataToFile(m_binaryPath, data, size);;
+}
+
+

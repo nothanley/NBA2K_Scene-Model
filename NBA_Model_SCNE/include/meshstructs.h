@@ -224,18 +224,22 @@ struct Mesh
 	Material material;
 	BoundingBox bounds;
 
-	int sceneFlag,
-		motionFlag,
-		numVerts;
-
 	Skin skin;
-	std::vector<float> vertices, normals;
+	std::vector<float> vertices, normals, tangent_frames;
 	std::vector<float> binormals, tangents;
 	std::vector<VertexColorSet> colors;
 	std::vector<Triangle> triangles;
 	std::vector<UVMap> uvs;
 	std::vector<StBlendShape> blendshapes;
 	std::vector<FaceGroup> groups;
+
+	// NBA Specific attributes
+	void* vertex_ref   = NULL;
+	void* normals_ref  = NULL;
+	void* texcoord_ref = NULL;
+	 
+	void alignPosition(const bool align_inverse = false, const int num_components = 3); /* Flips all mesh vertices to (x,-z,y) basis */
+	void alignNormals (const bool align_inverse = false, const int num_components = 3);
 
 	void flipNormals(); /* Flips all mesh triangle faces inside out. */
 	void convertSplitNorms(); /* Re-arrange normals for blender import/interface */
@@ -245,7 +249,5 @@ struct Mesh
 	Vec3 normal(const int index) const; /* Extracts normal vector of coord array */
 };
 
-struct MeshDefBf {
-	std::string property, format, type;
-	char* stream;
-};
+
+
