@@ -4,7 +4,8 @@ from bpy.props import StringProperty
 from bpy_extras.io_utils import ImportHelper
 
 # tool panels ...
-from .meshinject import *
+from .mesh_inject import *
+from .mesh_table import *
 
 # Operator to open the file browser
 class NS_Main_File_Sel(Operator, ImportHelper):
@@ -54,6 +55,7 @@ def register_panel():
 
     # Additional Widgets ...
     register_mesh_inject_tool()
+    register_mesh_table_panel()
 
 # Unregister properties and classes
 def unregister_panel():
@@ -64,3 +66,5 @@ def unregister_panel():
 
     # Additional Widgets ...
     unregister_mesh_inject_tool()
+    unregister_mesh_table_panel()
+

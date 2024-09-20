@@ -21,7 +21,7 @@ void* loadModelFile(const char* filePath, void** filePtr, bool use_lods, bool sp
         auto& scene = file->scene();
         *filePtr = file;
 
-        printf("\n[CNBAInterface] Found total models: %d" , file->scene()->getNumModels() );
+        printf("\n[CNBAInterface] Found total models: %d\n" , file->scene()->getNumModels() );
         return scene.get();
     }
     catch (...) {}

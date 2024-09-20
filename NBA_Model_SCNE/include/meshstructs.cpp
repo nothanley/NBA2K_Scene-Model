@@ -138,13 +138,13 @@ void Mesh::alignPosition(const bool use_blender_scale, const int num_components)
 
 		if (use_blender_scale)
 		{
-			vertices[i] = y;
+			vertices[i]     = x;
 			vertices[i + 1] = z;
-			vertices[i + 2] = x;
+			vertices[i + 2] = -y;
 		}
 		else {
-			vertices[i] = z;
-			vertices[i + 1] = x;
+			vertices[i]     = x;
+			vertices[i + 1] = -z;
 			vertices[i + 2] = y;
 		}
 	}
@@ -162,13 +162,13 @@ void Mesh::alignNormals(const bool use_blender_scale, const int num_components)
 
 		if (use_blender_scale)
 		{
-			normals[i]     =  y;
-			normals[i + 1] =  z;
-			normals[i + 2] = -x;
+			normals[i]     =   x;
+			normals[i + 1] =   z;
+			normals[i + 2] =   y;
 		}
 		else {
-			normals[i]     = z;
-			normals[i + 1] = x;
+			normals[i]     = x;
+			normals[i + 1] = -z;
 			normals[i + 2] = y;
 		}
 	}
