@@ -199,7 +199,7 @@ void Format_8Bit<Channels>::updateData(INJ_DT_PARAMS)
 
 			if (type == "snorm" || type == "sint")
 			{
-				uint8_t pack = (type == "snorm") ? (value * ::getMaxIntValue(m_bits, true)) : value;
+				int8_t pack = (type == "snorm") ? (value * ::getMaxIntValue(m_bits, true)) : value;
 				WriteSInt8(stream, pack);
 			}
 			else if (type == "unorm" || type == "uint")
