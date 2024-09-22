@@ -1,4 +1,6 @@
 #include <nbascene.h>
 #include <nbamodel.h>
+#include <modelreader.h>
+#include <scenereader.h>
 #include <scenefile.h>
 #pragma once

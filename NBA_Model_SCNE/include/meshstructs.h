@@ -150,15 +150,6 @@ struct Matrix4 {
 	Vec4 x, y, z, w;
 };
 
-struct StGotoPoint
-{
-	int16_t no_0;
-	int16_t no_1;
-	int16_t no_2;
-	int16_t no_3;
-};
-
-
 struct Material
 {
 	std::string name;
