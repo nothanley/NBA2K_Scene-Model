@@ -142,7 +142,6 @@ void setNewModelBone(
 	const char* parent,
 	bool reorder_matrix)
 {
-
 	//todo: add bone implemetation ...
 };
 
