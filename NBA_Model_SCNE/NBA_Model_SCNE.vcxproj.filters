@@ -38,6 +38,9 @@
     <Filter Include="NBA\Codec">
       <UniqueIdentifier>{1bfcf1cd-a86f-4063-a884-1c328d9fefe3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NBA\Cereal">
+      <UniqueIdentifier>{1852e3ef-a29d-4160-ab72-aa8e5fe9de9c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -96,6 +99,18 @@
     </ClCompile>
     <ClCompile Include="src\bin_format.cpp">
       <Filter>NBA\Codec</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cereal\modelserializer.cpp">
+      <Filter>NBA\Cereal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cereal\sceneserializer.cpp">
+      <Filter>NBA\Cereal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cereal\meshserializer.cpp">
+      <Filter>NBA\Cereal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dll\interface_export.cpp">
+      <Filter>PyInterface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -203,6 +218,18 @@
     </ClInclude>
     <ClInclude Include="src\bin_format.h">
       <Filter>NBA\Codec</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cereal\modelserializer.h">
+      <Filter>NBA\Cereal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cereal\sceneserializer.h">
+      <Filter>NBA\Cereal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cereal\meshserializer.h">
+      <Filter>NBA\Cereal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dll\interface_export.h">
+      <Filter>PyInterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

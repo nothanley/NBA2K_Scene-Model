@@ -15,11 +15,16 @@ public:
 
 public:
 	bool empty();
+	std::shared_ptr<CNBAModel>& model(const int index);
+	std::vector<std::shared_ptr<CNBAModel>>& models();
+	
+public:
 	int getNumModels();
 	const char* getName();
 	void setName(const char* id);
-	std::shared_ptr<CNBAModel>& model(const int index);
-	std::vector<std::shared_ptr<CNBAModel>>& models();
+
+public:
+	void pushModel(const CNBAModel& model);
 
 protected:
 	std::string m_name;

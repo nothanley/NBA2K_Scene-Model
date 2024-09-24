@@ -31,3 +31,10 @@ std::vector<std::shared_ptr<Mesh>> CNBAModel::getMeshes()
 {
 	return m_meshes;
 }
+
+void CNBAModel::pushMesh(const Mesh& mesh)
+{
+	auto newMesh = std::make_shared<Mesh>(mesh);
+	m_meshes.push_back( newMesh );
+}
+

@@ -36,4 +36,8 @@ bool CNBAScene::empty()
 	return m_models.empty();
 }
 
-
+void CNBAScene::pushModel(const CNBAModel& model)
+{
+	auto newModel = std::make_shared<CNBAModel>(model);
+	m_models.push_back(newModel);
+}

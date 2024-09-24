@@ -18,6 +18,9 @@ public:
 	Mesh* getMesh(int index = 0);
 	std::vector<std::shared_ptr<Mesh>> getMeshes();
 
+public:
+	void pushMesh(const Mesh& mesh);
+
 protected:
 	std::string m_name;
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
