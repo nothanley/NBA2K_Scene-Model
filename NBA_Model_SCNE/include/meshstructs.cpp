@@ -174,3 +174,28 @@ void Mesh::alignNormals(const bool use_blender_scale, const int num_components)
 	}
 }
 
+Vec3 Mesh::get_center() const
+{
+	auto& aabb = this->bounds;
+
+	// Calculate center
+	float centerX = (aabb.minX + aabb.maxX) / 2.0f;
+	float centerY = (aabb.minY + aabb.maxY) / 2.0f;
+	float centerZ = (aabb.minZ + aabb.maxZ) / 2.0f;
+
+	return { centerX, centerY, centerZ };
+}
+
+float Mesh::get_radius() const
+{
+	auto& aabb = this->bounds;
+
+	// Calculate radius (half-diagonal length)
+	float radiusX = (aabb.maxX - aabb.minX) / 2.0f;
+	float radiusY = (aabb.maxY - aabb.minY) / 2.0f;
+	float radiusZ = (aabb.maxZ - aabb.minZ) / 2.0f;
+	float radius = std::sqrt(radiusX * radiusX + radiusY * radiusY + radiusZ * radiusZ);
+
+	return radius;
+}
+

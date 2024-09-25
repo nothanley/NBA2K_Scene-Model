@@ -7,8 +7,9 @@
 #define DLLEX extern "C" __declspec(dllexport)
 
 /* Free memory allocated during interface */
+DLLEX void release_scene(void* scene);
 DLLEX void release_model(void* skinmodel);
-DLLEX void release_model_file(void* pModelFile);
+DLLEX void release_model_file(void* model_file);
 
 DLLEX void freeMemory_float32(float* data);
 DLLEX void freeMemory_intArr(int* data);

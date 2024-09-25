@@ -52,11 +52,33 @@ void run_update_debug()
 	file.update(&clientPkg);
 };
 
+
+#include <cereal/sceneserializer.h>
+void run_model_serialize()
+{
+	CSceneUpdate file("C:/Users/wauke/Downloads/NBA 2K25 Research/mods/balls/ball.SCNE", true);
+	file.load();
+
+	if (file.scene()->empty()) 
+		return;
+
+	// Serialize model to file
+	auto model = file.scene()->models().front();
+	auto scene = std::make_shared<CNBAScene>(model->name().c_str());
+
+	// Create new scene - add data 
+	scene->pushModel(*model.get());
+
+	CSceneSerializer serializer(scene);
+	serializer.save("C:/Users/wauke/Desktop/out_file.scne.json");
+}
+
 int main()
 {
 	USE_DEBUG_LOGS = true;
 
-	run_update_debug();
+	//run_update_debug();
+	run_model_serialize();
 	
 	printf("\n\n[DEBUG-MAIN] Finished debug reader...");
 }

@@ -38,3 +38,7 @@ void CNBAModel::pushMesh(const Mesh& mesh)
 	m_meshes.push_back( newMesh );
 }
 
+std::string CNBAModel::name()
+{
+	return m_name;
+}

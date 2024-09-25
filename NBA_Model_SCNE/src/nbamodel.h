@@ -17,6 +17,7 @@ public:
 	int getNumMeshes();
 	Mesh* getMesh(int index = 0);
 	std::vector<std::shared_ptr<Mesh>> getMeshes();
+	std::string name();
 
 public:
 	void pushMesh(const Mesh& mesh);

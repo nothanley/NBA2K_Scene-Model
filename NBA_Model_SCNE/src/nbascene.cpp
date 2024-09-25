@@ -21,7 +21,7 @@ void CNBAScene::setName(const char* id) {
 	this->m_name = id;
 }
 
-std::shared_ptr<CNBAModel>& CNBAScene::model(const int index)
+std::shared_ptr<CNBAModel> CNBAScene::model(const int index)
 {
 	return m_models.at(index);
 }

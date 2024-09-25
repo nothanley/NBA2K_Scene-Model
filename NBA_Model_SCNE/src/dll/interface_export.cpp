@@ -129,13 +129,25 @@ void setMeshSkinData(void* pMesh, int* indices, float* weights, int size, int nu
 	}
 }
 
-void saveModelToFile(void* pSkinModel, const char* savePath, int compile_target)
+void saveModelToFile(void* pModel, const char* savePath)
 {
 	// todo: add cereal implementation ...
+	auto model = static_cast<CNBAModel*>(pModel);
+	if (!model) return;
+	
+	
+
+
+	//printf("\n[CSkinModel] Saving model to file: %s\n", savePath);
+	//
+	//for (auto& mesh : model->getMeshes()) {
+	//	printf("\n[CSkinModel] Saving mesh: %s\n", mesh->name.c_str());
+	//	printf("\n[CSkinModel] Mesh has %d vertices and %d faces\n\n", mesh->vertices.size() / 3, mesh->triangles.size() / 3);
+	//};
 }
 
 void setNewModelBone(
-	void* pSkinModel,
+	void* pModel,
 	const char* name,
 	float* matrices,
 	const int index,
@@ -144,4 +156,19 @@ void setNewModelBone(
 {
 	//todo: add bone implemetation ...
 };
+
+void linkMeshToModel(void* pModel, void* pMesh)
+{
+	// Convert void pointer back to CNBAModel pointer
+	CNBAModel* model = static_cast<CNBAModel*>(pModel);
+	Mesh* mesh = static_cast<Mesh*>(pMesh);
+	model->pushMesh(*mesh);
+
+	// todo: doing a mesh copy is inefficient - need to optimize
+
+	// release mesh
+	::freeMesh(mesh);
+	return;
+}
+
 

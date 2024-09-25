@@ -38,7 +38,15 @@ void release_model_file(void* filePtr)
     delete file;
 }
 
-void release_model(void* pScene)
+void release_model(void* pModel)
+{
+    CNBAModel* model = static_cast<CNBAModel*>(pModel);
+    if (!model) return;
+
+    delete model;
+}
+
+void release_scene(void* pScene)
 {
     CNBAScene* scene = static_cast<CNBAScene*>(pScene);
     if (!scene) return;

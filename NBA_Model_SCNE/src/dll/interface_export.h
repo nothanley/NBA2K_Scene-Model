@@ -11,16 +11,20 @@ DLLEX void* getNewSkinModel(const char* name);
 DLLEX void* getNewSceneObj(const char* name);
 DLLEX void  freeMesh(void* pMesh);
 
-
 // Mesh Data Population Funcs
 DLLEX void setMeshNameInfo(void* pMesh, const char* meshName, const char* mtlName);
 DLLEX void setMeshData(void* pMesh, float* position, int* indexList, int numVerts, int numFaces);
 DLLEX void setMeshNormals(void* pMesh, float* normals, int size);
+DLLEX void addUvMap(void* pMesh, float* texcoords, int size);
 DLLEX void setNewModelBone(
-	void* pSkinModel,
+	void* pModel,
 	const char* name,
 	float* matrices,
 	const int index,
 	const char* parent,
 	bool reorder_matrix = true);
+
+// Model Serializer Funcs
+DLLEX void saveModelToFile(void* pModel, const char* savePath);
+DLLEX void linkMeshToModel(void* pModel, void* pMesh);
 

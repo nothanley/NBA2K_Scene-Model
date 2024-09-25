@@ -238,6 +238,8 @@ struct Mesh
 	void generateAABBs(); /* Generates mesh's axis aligned boundary box */
 	Vec3 vertex(const int index) const; /* Extracts position vector of coord array */
 	Vec3 normal(const int index) const; /* Extracts normal vector of coord array */
+	Vec3 get_center() const;
+	float get_radius() const;
 };
 
 

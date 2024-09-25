@@ -12,10 +12,10 @@ class CNBAScene
 {
 public:
 	CNBAScene(const char* name);
-
+	
 public:
 	bool empty();
-	std::shared_ptr<CNBAModel>& model(const int index);
+	std::shared_ptr<CNBAModel> model(const int index);
 	std::vector<std::shared_ptr<CNBAModel>>& models();
 	
 public:
