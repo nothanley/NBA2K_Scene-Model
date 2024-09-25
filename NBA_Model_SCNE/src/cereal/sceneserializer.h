@@ -12,6 +12,9 @@ public:
 	bool save(const char* path);
 	void setScene(std::shared_ptr<CNBAScene>& scene);
 	void setPath(const char* path);
+
+public:
+	const std::string& path() const;
 	std::shared_ptr<CNBAScene> scene();
 	const JSON& json() const;
 

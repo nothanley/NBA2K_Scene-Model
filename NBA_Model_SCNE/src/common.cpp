@@ -73,6 +73,14 @@ void common::str_to_lower(std::string& string)
 	std::transform(string.begin(), string.end(), string.begin(), [](unsigned char c) { return std::tolower(c); });
 }
 
+std::string common::to_lower(const std::string& string)
+{
+	std::string result = string;
+	std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) { return std::tolower(c); });
+
+	return result;
+}
+
 std::string common::format_path(const std::string& path)
 {
 	std::string result;

@@ -70,7 +70,7 @@ void run_model_serialize()
 	scene->pushModel(*model.get());
 
 	CSceneSerializer serializer(scene);
-	serializer.save("C:/Users/wauke/Desktop/out_file.scne.json");
+	serializer.save("C:/Users/wauke/Desktop/NBA2K_OUT_DEV/out_file.scne.json");
 }
 
 int main()

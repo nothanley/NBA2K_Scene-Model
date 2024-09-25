@@ -9,6 +9,7 @@
 
 #define FMT_DT_PARAMS char*& src, int size, std::vector<float>& target, const std::string type, const uint64_t offset, const uint8_t stride
 #define INJ_DT_PARAMS char*& src, int size, const std::vector<float>& target, const std::string type, const uint64_t offset, const uint8_t stride
+#define EXP_DT_PARAMS const std::vector<float>& target, const std::string type, size_t& length
 
 // Base class
 class Format {
@@ -16,6 +17,7 @@ public:
     virtual ~Format() = default;
     virtual void updateData(INJ_DT_PARAMS) = 0;
     virtual void decode(FMT_DT_PARAMS) = 0;
+    virtual char* encode(EXP_DT_PARAMS) = 0;
     virtual int get_size(const int items) = 0;
     virtual int get_channels() = 0;
 
@@ -30,6 +32,7 @@ public:
     Format_32Bit() { m_bits = 32; }
     void updateData(INJ_DT_PARAMS) override;
     void decode(FMT_DT_PARAMS) override;
+    char* encode(EXP_DT_PARAMS) override;
     int get_size(const int items) override;
     int get_channels() override;
 };
@@ -40,6 +43,7 @@ public:
     Format_16Bit() { m_bits = 16; }
     void updateData(INJ_DT_PARAMS) override;
     void decode(FMT_DT_PARAMS) override;
+    char* encode(EXP_DT_PARAMS) override;
     int get_size(const int items) override;
     int get_channels() override;
 };
@@ -50,6 +54,7 @@ public:
     Format_8Bit() { m_bits = 8; }
     void updateData(INJ_DT_PARAMS) override;
     void decode(FMT_DT_PARAMS) override;
+    char* encode(EXP_DT_PARAMS) override;
     int get_size(const int items) override;
     int get_channels() override;
 };
@@ -60,6 +65,7 @@ public:
     R10G10B10A2() { m_bits = 32; }
     void updateData(INJ_DT_PARAMS) override;
     void decode(FMT_DT_PARAMS) override;
+    char* encode(EXP_DT_PARAMS) override;
     int get_size(const int items) override;
     int get_channels() override;
 };

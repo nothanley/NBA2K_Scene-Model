@@ -24,6 +24,7 @@ namespace common
     void removeSubString(std::string& str, const std::string target);
     void replaceSubString(std::string& str, const std::string old_string, const std::string new_string);
     void str_to_lower(std::string& string);
+    std::string to_lower(const std::string& string);
     bool containsSubstring(const std::string& str, const std::string substring);
 	bool fileExists(const std::string& filePath);
 	std::string find_parent_directory(const std::string& path, const char* target_name);

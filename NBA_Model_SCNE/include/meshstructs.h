@@ -231,7 +231,6 @@ struct Mesh
 	 
 	void alignPosition(const bool align_inverse = false, const int num_components = 3); /* Flips all mesh vertices to (x,-z,y) basis */
 	void alignNormals (const bool align_inverse = false, const int num_components = 3);
-
 	void flipNormals(); /* Flips all mesh triangle faces inside out. */
 	void convertSplitNorms(); /* Re-arrange normals for blender import/interface */
 	void translateUVs(const int& index); /* Translates and aligns UV map to Blender/MAX 3D space*/
@@ -241,6 +240,7 @@ struct Mesh
 	Vec3 get_center() const;
 	float get_radius() const;
 };
+
 
 
 

@@ -28,6 +28,11 @@ const JSON& CSceneSerializer::json() const
 	return m_json;
 }
 
+const std::string& CSceneSerializer::path() const
+{
+	return m_path;
+}
+
 void CSceneSerializer::registerSerials()
 {
 	auto modelSerial = std::make_shared<CModelSerializer>(this);
@@ -52,7 +57,7 @@ bool CSceneSerializer::save(const char* path)
 		return false;
 
 	// send formatted json data to file
-	file << m_json.dump(2);
+	file << m_json.dump(4);
 	file.close();
 
 	return true;

@@ -20,6 +20,8 @@ static float unpackValue(const float input, const int num_bits, const std::strin
 	return input;
 }
 
+// GET CHANNELS FUNCTIONS //
+// ---------------- //
 template <int Channels>
 int Format_32Bit<Channels>::get_channels()
 {
@@ -42,6 +44,10 @@ int R10G10B10A2::get_channels()
 	return 4;
 }
 
+
+// GET SIZE FUNCTIONS //
+// ---------------- //
+
 template <int Channels>
 int Format_32Bit<Channels>::get_size(const int items)
 {
@@ -63,6 +69,10 @@ int R10G10B10A2::get_size(const int items)
 {
 	return items * sizeof(int32_t);
 }
+
+
+// DECODE FUNCTIONS //
+// ---------------- //
 
 template <int Channels>
 void Format_32Bit<Channels>::decode(FMT_DT_PARAMS)
@@ -137,6 +147,9 @@ void R10G10B10A2::decode(FMT_DT_PARAMS)
 		target.push_back( unpackValue(a, 02, type) );
 	}
 };
+
+// UPDATE FUNCTIONS //
+// ---------------- //
 
 template <int Channels>
 void Format_32Bit<Channels>::updateData(INJ_DT_PARAMS)
@@ -237,4 +250,67 @@ void R10G10B10A2::updateData(INJ_DT_PARAMS)
 		WriteUInt32(stream, packedValue);
 	}
 }
+
+
+
+// ENCODE FUNCTIONS //
+// ---------------- //
+
+template <int Channels>
+char* Format_8Bit<Channels>::encode(EXP_DT_PARAMS)
+{
+	// calculate totals
+	size_t size   = target.size();
+	size_t stride = Channels * sizeof(int8_t);
+	length        = (size / Channels) * stride;
+	char* stream  = new char[length]; // initialize data stream
+
+	// encode data
+	this->updateData(stream, size, target, type, 0, stride);
+	return stream;
+};
+
+template <int Channels>
+char* Format_16Bit<Channels>::encode(EXP_DT_PARAMS)
+{
+	// calculate totals
+	size_t size   = target.size();
+	size_t stride = Channels * sizeof(int16_t);
+	length        = (size / Channels) * stride;
+	char* stream  = new char[length]; // initialize data stream
+
+	// encode data
+	this->updateData(stream, size, target, type, 0, stride);
+	return stream;
+};
+
+template <int Channels>
+char* Format_32Bit<Channels>::encode(EXP_DT_PARAMS)
+{
+	// calculate totals
+	size_t size   = target.size();
+	size_t stride = Channels * sizeof(int32_t);
+	length        = (size / Channels) * stride;
+	char* stream  = new char[length]; // initialize data stream
+
+	// encode data
+	this->updateData(stream, size, target, type, 0, stride);
+	return stream;
+};
+
+char* R10G10B10A2::encode(EXP_DT_PARAMS)
+{
+	// calculate totals
+	size_t size   = target.size();
+	size_t stride = sizeof(int32_t);
+	length        = (size / get_channels()) * stride;
+	char* stream  = new char[length]; // initialize data stream
+
+	// encode data
+	this->updateData(stream, size, target, type, 0, stride);
+	return stream;
+};
+
+// ---------------- //
+
 

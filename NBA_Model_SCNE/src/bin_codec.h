@@ -26,6 +26,11 @@ public:
         const uint64_t offset,
         const uint8_t stride);
 
+    char* encode(
+        const std::vector<float>& target,
+        size_t& dataSize
+    );
+
 private:
     void registerTypes();
 

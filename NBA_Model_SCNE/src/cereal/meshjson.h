@@ -11,20 +11,25 @@ struct Vec4;
 // namespace
 namespace MeshJSON
 {
+	void skinDataToJson(const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
 	void AABBsToJson (const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
 	void dUVsToJson  (const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
 	void tfmToJson   (const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
 	void primsToJson (const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& prims);
 
-	void vertexDataToJson (const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
-	void indexDataToJson  (const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
+	void vertexDataToJson (const char* save_directory, const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
+	void indexDataToJson  (const char* save_directory, const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
 
+	void writeIndexBuffer(const void* data, const char* format, const char* type, const char* path);
+	void writeVertexBuffer(const std::vector<float>* data, const char* format, const char* type, const char* path);
 	void createVertexBuffer(
+		const char* dirPath,
 		const std::shared_ptr<Mesh>& mesh,
 		std::shared_ptr<JSON>& fmtObj,
 		std::shared_ptr<JSON>& srmObj,
 		const int index,
 		const char* format,
+		const char* type,
 		const char* stream_id,
 		const Vec4 offset,
 		const Vec4 scale);

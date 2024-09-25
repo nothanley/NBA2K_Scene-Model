@@ -1,9 +1,10 @@
 #include <bin_codec.h>
+#include <common.h>
 
 BinaryCodec::BinaryCodec(const char* encode_fmt, const char* data_type)
     :
     m_encodeFmt(encode_fmt),
-    m_type(data_type)
+    m_type(common::to_lower(data_type))
 {
     this->registerTypes();
 }
@@ -11,7 +12,7 @@ BinaryCodec::BinaryCodec(const char* encode_fmt, const char* data_type)
 BinaryCodec::BinaryCodec(const std::string& encode_fmt, const std::string& data_type)
     :
     m_encodeFmt(encode_fmt),
-    m_type(data_type)
+    m_type(common::to_lower(data_type))
 {
     this->registerTypes();
 }
@@ -86,5 +87,18 @@ BinaryCodec::num_channels()
     return it->second->get_channels();
 }
 
+char*
+BinaryCodec::encode(
+	const std::vector<float>& target,
+    size_t& dataSize
+)
+{
+	auto it = m_map.find(m_encodeFmt);
+	if (it == m_map.end()) {
+		throw std::invalid_argument("Unknown format key: " + m_encodeFmt);
+	}
+
+	return it->second->encode(target, m_type.c_str(), dataSize);
+}
 
 
