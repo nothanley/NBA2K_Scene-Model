@@ -41,6 +41,9 @@
     <Filter Include="NBA\Cereal">
       <UniqueIdentifier>{1852e3ef-a29d-4160-ab72-aa8e5fe9de9c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NBA\Inject">
+      <UniqueIdentifier>{226f31be-1237-462c-b245-17d883e1b445}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -91,9 +94,6 @@
     <ClCompile Include="src\dll\interface_mesh.cpp">
       <Filter>PyInterface</Filter>
     </ClCompile>
-    <ClCompile Include="src\sceneupdate.cpp">
-      <Filter>NBA</Filter>
-    </ClCompile>
     <ClCompile Include="src\bin_codec.cpp">
       <Filter>NBA\Codec</Filter>
     </ClCompile>
@@ -111,6 +111,9 @@
     </ClCompile>
     <ClCompile Include="src\cereal\meshjson.cpp">
       <Filter>NBA\Cereal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sceneupdate.cpp">
+      <Filter>NBA\Inject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -207,9 +210,6 @@
     <ClInclude Include="src\dll\interface_mesh.h">
       <Filter>PyInterface</Filter>
     </ClInclude>
-    <ClInclude Include="src\sceneupdate.h">
-      <Filter>NBA</Filter>
-    </ClInclude>
     <ClInclude Include="src\dll\interface_save.h">
       <Filter>PyInterface</Filter>
     </ClInclude>
@@ -231,6 +231,9 @@
     <ClInclude Include="src\cereal\genericserializer.h" />
     <ClInclude Include="src\cereal\meshjson.h">
       <Filter>NBA\Cereal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sceneupdate.h">
+      <Filter>NBA\Inject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

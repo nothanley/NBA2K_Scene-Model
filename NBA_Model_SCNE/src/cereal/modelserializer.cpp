@@ -28,6 +28,12 @@ CModelSerializer::addModelJson(const std::shared_ptr<CNBAModel>& model)
 	// collect mesh childs
 	for (auto& mesh : model->getMeshes()) 
 	{
+		// format mesh data
+		mesh->generateAABBs();
+		Mesh::createWAxis(mesh->vertices);
+		Mesh::createWAxis(mesh->normals);
+
+		// push mesh data to json
 		auto obj = getMeshJson(mesh);
 		(*m_json)[mesh->name.c_str()] = *obj.get();
 	}
@@ -45,12 +51,10 @@ CModelSerializer::getMeshJson(const std::shared_ptr<Mesh>& mesh)
 	MeshJSON::tfmToJson(mesh, json);
 	MeshJSON::skinDataToJson(mesh, json);
 	MeshJSON::primsToJson(mesh, prims);
-	(*json)["Prim"] = *prims.get();
-	
-	// get (mesh buffer) save directory
-	auto saveDir = common::get_parent_directory(m_parent->path());
+	(*json)["Prim"] = std::vector<JSON>{ *prims.get() };
 
 	// push vertex/face data buffers
+	auto saveDir = common::get_parent_directory(m_parent->path());
 	MeshJSON::vertexDataToJson(saveDir.c_str(), mesh, json);
 	MeshJSON::indexDataToJson( saveDir.c_str(), mesh, json);
 

@@ -8,7 +8,7 @@
 #include <json.hpp>
 #pragma once
 
-using JSON = nlohmann::json;
+using JSON = nlohmann::ordered_json;
 
 typedef std::array<uint32_t, 3> Triangle;
 typedef std::array<float, 2> Array2D;
@@ -229,6 +229,9 @@ struct Mesh
 	void* normals_ref  = NULL;
 	void* texcoord_ref = NULL;
 	 
+	static void createWAxis(std::vector<float>& data); // used for 2k meshes
+	static void removeWAxis(std::vector<float>& data); // used for 2k meshes
+
 	void alignPosition(const bool align_inverse = false, const int num_components = 3); /* Flips all mesh vertices to (x,-z,y) basis */
 	void alignNormals (const bool align_inverse = false, const int num_components = 3);
 	void flipNormals(); /* Flips all mesh triangle faces inside out. */
@@ -242,5 +245,15 @@ struct Mesh
 };
 
 
+// Forward declarations
+class CDataBuffer;
 
+namespace MeshCalc
+{
+	void buildTangentFrameVec(const Mesh& mesh, std::vector<float>& dst);
+	void updateTangentFrameVec(const std::vector<float>& tanFrames, const std::vector<float>& normals, std::vector<float>& dst);
+	void transformVertices(const CDataBuffer* vertexBuffer, std::vector<float>& verts, const int numChannels);
+	void EncodeOctahedralNormal(Vec4* Encoded, const Vec3& Normal);
+	Vec3 decodeOctahedralNormal(const Vec3& encoded);
+}
 

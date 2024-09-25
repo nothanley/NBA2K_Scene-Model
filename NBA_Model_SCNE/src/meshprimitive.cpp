@@ -1,12 +1,13 @@
 #include <meshprimitive.h>
 #include <databuffer.h>
 #include <common.h>
+#include <bin_codec.h>
 
 bool USE_DEBUG_LOGS   = false;
 bool INCLUDE_LODS     = false;
 bool MERGE_MESH_PRIMS = false;
 
-inline static void decodeOctahedralNorms(CDataBuffer* tanFrameBf, Mesh& mesh)
+void decodeOctahedralNorms(CDataBuffer* tanFrameBf, Mesh& mesh)
 {
 	if (tanFrameBf->getFormat() != "R10G10B10A2_UINT")
 		return;
@@ -130,17 +131,22 @@ void GeomDef::pushPrimLods(StGeoPrim& prim, std::vector<StGeoPrim>& prim_vec)
 
 void GeomDef::setMeshVtxs(CDataBuffer* posBf, Mesh& mesh)
 {
+	// calculate total components
+	BinaryCodec codec(posBf->getEncoding(), posBf->getType());
+	auto numChannels = codec.num_channels();
+	bool usingWAxis  = (numChannels == 4);
+
 	/* Format vertex coord mesh data - ignore every W position coord */
 	for (int i = 0; i < posBf->data.size(); i++)
 	{
 		auto& vtx = posBf->data[i];
 
-		if (!common::containsSubstring(posBf->getFormat(), "R16G16B16A16"))
+		if (!usingWAxis)
 		{
 			mesh.vertices.push_back(vtx);
 		}
 		else if ((i + 1) % 4 != 0)
-		{
+		{	// skip W
 			mesh.vertices.push_back(vtx);
 		}
 	}
@@ -180,8 +186,7 @@ void GeomDef::addMeshUVMap(CDataBuffer* texBf, Mesh& mesh)
 		}
 
 		// Flip Y-Axis
-		if (i % 2 != 0)
-			coord = -(coord - 1.0f);
+		coord = (i % 2 != 0) ? -(coord - 1.0f) : coord;
 
 		channel.map.push_back(coord);
 	}

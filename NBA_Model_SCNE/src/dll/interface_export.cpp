@@ -1,4 +1,5 @@
 #include <dll/interface_export.h>
+#include <cereal/sceneserializer.h>
 
 void freeMesh(void* pMesh)
 {
@@ -41,9 +42,9 @@ void setMeshData(void* pMesh, float* position, int* indexList, int numVerts, int
 	/* Populate position coords - (+X-Z+Y)*/
 	mesh->vertices.resize(numVerts);
 	for (int i = 0; i < numVerts; i += 3) {
-		mesh->vertices[i] = position[i];
-		mesh->vertices[i + 1] = -position[i + 2];
-		mesh->vertices[i + 2] = position[i + 1];
+		mesh->vertices[i]     = position[i];
+		mesh->vertices[i + 1] = position[i + 1];
+		mesh->vertices[i + 2] = position[i + 2];
 	}
 
 	/* Set triangle indices */
@@ -54,17 +55,18 @@ void setMeshData(void* pMesh, float* position, int* indexList, int numVerts, int
 		Triangle& face = mesh->triangles.at(i);
 		size_t index = (i * 3);
 
-		face[0] = indexList[index + 1];
-		face[1] = indexList[index];
+		face[0] = indexList[index];
+		face[1] = indexList[index + 1];
 		face[2] = indexList[index + 2];
 	}
-
-	/* Update counts */
-	mesh->generateAABBs();
 
 	/* Setup mesh default mtl */
 	FaceGroup faceMat{ mesh->material, 0, numFaces };
 	mesh->groups.push_back(faceMat);
+
+	/* Update counts */
+	mesh->alignPosition(true);
+	mesh->generateAABBs();
 }
 
 void setMeshNormals(void* pMesh, float* normals, int size)
@@ -72,23 +74,21 @@ void setMeshNormals(void* pMesh, float* normals, int size)
 	Mesh* mesh = static_cast<Mesh*>(pMesh);
 	if (!mesh) return;
 
-	int numVerts = mesh->vertices.size() / 3;
-	int numNorms = size / 3;
-
-	if (numNorms != numVerts) {
+	if ((mesh->vertices.size() / 3) != (size / 3)) {
 		printf("[CSkinModel] Vertex normal count mismatch.");
 		throw std::runtime_error("");
 	}
 
 	/* Populate vertex normals -- seems slow */
-	for (int i = 0; i < size; i += 3) {
-		mesh->normals.push_back(normals[i]);
-		mesh->normals.push_back(-normals[i + 2]);
-		mesh->normals.push_back(normals[i + 1]);
-		mesh->normals.push_back(0.0f);
-	}
+	mesh->normals.resize(size);
+	for (int i = 0; i < size; i++)
+		mesh->normals[i] = normals[i];
 
 	//mesh->generateTangentsBinormals(); // Update TBN buffers
+	mesh->alignNormals(true);
+
+	// Pack tangent frames
+	MeshCalc::buildTangentFrameVec(*mesh, mesh->tangent_frames);
 }
 
 void addUvMap(void* pMesh, float* texcoords, int size)
@@ -133,17 +133,15 @@ void saveModelToFile(void* pModel, const char* savePath)
 {
 	// todo: add cereal implementation ...
 	auto model = static_cast<CNBAModel*>(pModel);
-	if (!model) return;
+	if (!model || (model->getNumMeshes() == 0)) return;
 	
-	
+	printf("\n[CSkinModel] Saving model to file: %s\n", savePath);
+	auto scene_id = model->getMesh()->name;
+	auto scene = std::make_shared<CNBAScene>(scene_id.c_str());
+	scene->pushModel(*model);
 
-
-	//printf("\n[CSkinModel] Saving model to file: %s\n", savePath);
-	//
-	//for (auto& mesh : model->getMeshes()) {
-	//	printf("\n[CSkinModel] Saving mesh: %s\n", mesh->name.c_str());
-	//	printf("\n[CSkinModel] Mesh has %d vertices and %d faces\n\n", mesh->vertices.size() / 3, mesh->triangles.size() / 3);
-	//};
+	CSceneSerializer serializer(scene);
+	serializer.save(savePath);
 }
 
 void setNewModelBone(

@@ -21,7 +21,7 @@ public:
 private:
 	void serialize();
 	void registerSerials();
-	void serializeData(const std::string& key);
+	void serializeData(const std::string& key, JSON& parent);
 	std::unordered_map<std::string, std::shared_ptr<CSerializer>> m_serializers;
 
 private:

@@ -2,7 +2,7 @@
 #include <json.hpp>
 #pragma once
 
-using JSON = nlohmann::json;
+using JSON = nlohmann::ordered_json;
 
 enum enSceneData {
 	EFFECT = 2957141266,

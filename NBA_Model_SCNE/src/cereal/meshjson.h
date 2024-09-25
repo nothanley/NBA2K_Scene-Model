@@ -2,7 +2,7 @@
 #include <memory>
 #pragma once
 
-using JSON = nlohmann::json;
+using JSON = nlohmann::ordered_json;
 
 // forward declaration
 struct Mesh;
@@ -20,8 +20,8 @@ namespace MeshJSON
 	void vertexDataToJson (const char* save_directory, const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
 	void indexDataToJson  (const char* save_directory, const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
 
-	void writeIndexBuffer(const void* data, const char* format, const char* type, const char* path);
-	void writeVertexBuffer(const std::vector<float>* data, const char* format, const char* type, const char* path);
+	void writeIndexBuffer(const void* data, const char* format, const char* type, const char* path, size_t& size);
+	void writeVertexBuffer(const std::vector<float>* data, const char* format, const char* type, const char* path, size_t& size);
 	void createVertexBuffer(
 		const char* dirPath,
 		const std::shared_ptr<Mesh>& mesh,

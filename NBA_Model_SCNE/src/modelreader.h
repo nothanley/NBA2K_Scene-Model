@@ -7,7 +7,7 @@
 #pragma once
 
 class CSceneFile;
-using JSON = nlohmann::json;
+using JSON = nlohmann::ordered_json;
 
 class CModelReader : public CNBAModel
 {

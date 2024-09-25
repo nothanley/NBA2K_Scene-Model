@@ -7,7 +7,6 @@
 void
 MeshJSON::AABBsToJson(const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json)
 {
-	mesh->generateAABBs();
 	auto& aabb  = mesh->bounds;
 	auto center = mesh->get_center();
 	auto radius = mesh->get_radius();
@@ -48,22 +47,21 @@ MeshJSON::skinDataToJson(const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON
 void
 MeshJSON::primsToJson(const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& prims)
 {
-	(*prims)["Material"] = nullptr;
+	(*prims)["Material"] = mesh->material.name.c_str();
 	(*prims)["Mesh"]     = mesh->name.c_str();
 	(*prims)["Type"]     = "TRIANGLE_LIST";
-	(*prims)["Count"]    = mesh->triangles.size();
+	(*prims)["Count"]    = mesh->triangles.size() * 3;
 	MeshJSON::skinDataToJson(mesh, prims);
 	MeshJSON::AABBsToJson(mesh, prims);
 	MeshJSON::dUVsToJson(mesh, prims);
 }
 
 void 
-MeshJSON::writeVertexBuffer(const std::vector<float>* data, const char* format, const char* type, const char* path)
+MeshJSON::writeVertexBuffer(const std::vector<float>* data, const char* format, const char* type, const char* path, size_t& size)
 {
 	// create binary codec
 	if (!data) return;
 	BinaryCodec codec(format, type);
-	size_t size;
 	
 	// encode data
 	char* buffer = codec.encode(*data, size);
@@ -96,6 +94,12 @@ MeshJSON::createVertexBuffer(
 	auto data = ::getMeshData(mesh, stream_id);
 	if (!data) return;
 
+	// write vertex buffer to disk
+	size_t size            = 0;
+	std::string binaryName = mesh->name + "_" + std::string(stream_id) + ".bin";
+	std::string savePath   = std::string(dirPath) + "/" + binaryName;
+	MeshJSON::writeVertexBuffer(data, format, type, savePath.c_str(), size);
+
 	// Define vertex buffer format
 	JSON fmtInfo, stream;
 	fmtInfo["Format"] = std::string(format) + "_" + std::string(type);
@@ -104,14 +108,10 @@ MeshJSON::createVertexBuffer(
 	fmtInfo["Scale"]  = { scale.x, scale.y, scale.z, scale.w };
 
 	// Define vertex buffer stream
-	stream["Size"]       = data->size();
-	stream["Binary"]     = mesh->name + "_" + std::string(stream_id) + ".bin";
+	stream["Size"]       = size;
+	stream["Binary"]     = binaryName;
 	(*fmtObj)[stream_id] = fmtInfo;
 	(*srmObj)["VertexBuffer_" + std::to_string(index)] = stream;
-
-	// write vertex buffer to disk
-	std::string savePath = std::string(dirPath) + "/" + mesh->name + "_" + std::string(stream_id) + ".bin";
-	MeshJSON::writeVertexBuffer(data, format, type, savePath.c_str());
 }
 
 void
@@ -120,6 +120,7 @@ MeshJSON::vertexDataToJson(const char* save_directory, const std::shared_ptr<Mes
 	auto streamObj = std::make_shared<JSON>();
 	auto formatObj = std::make_shared<JSON>();
 
+	// serialize vertex data
 	MeshJSON::createVertexBuffer(save_directory, mesh, formatObj, streamObj, 0, "R32G32B32A32", "FLOAT", "POSITION0");
 	MeshJSON::createVertexBuffer(save_directory, mesh, formatObj, streamObj, 1, "R10G10B10A2", "UINT", "TANGENTFRAME0");
 	MeshJSON::createVertexBuffer(save_directory, mesh, formatObj, streamObj, 2, "R16G16", "SNORM", "TEXCOORD0");
@@ -131,27 +132,26 @@ MeshJSON::vertexDataToJson(const char* save_directory, const std::shared_ptr<Mes
 void
 MeshJSON::indexDataToJson(const char* dirPath, const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json)
 {
-	JSON indexBfObj;
-
-	size_t numTris  = mesh->triangles.size();
 	size_t numVerts = mesh->vertices.size() / 3;
-	size_t size     = (numTris * 3);
 	bool   is32Bit  = (numVerts > _UI16_MAX);
 
+	// write vertex buffer to disk
+	size_t size            = 0;
+	std::string binaryName = mesh->name + "_IndexBuffer.bin";
+	std::string savePath   = std::string(dirPath) + "/" + binaryName;
+	MeshJSON::writeIndexBuffer(&mesh->triangles, (is32Bit ? "R32" : "R16"), "UINT", savePath.c_str(), size);
+
 	// use unaltered transform
+	JSON indexBfObj;
 	indexBfObj["Format"] = (is32Bit) ? "R32_UINT" : "R16_UINT";
-	indexBfObj["Size"]   = size * (is32Bit ? sizeof(uint32_t) : sizeof(uint16_t));
+	indexBfObj["Size"]   = size;
 	indexBfObj["Binary"] = mesh->name + "_IndexBuffer.bin";
 
 	(*json)["IndexBuffer"] = indexBfObj;
-
-	// write vertex buffer to disk
-	std::string savePath = std::string(dirPath) + "/" + mesh->name + "_IndexBuffer.bin";
-	MeshJSON::writeIndexBuffer( &mesh->triangles , (is32Bit ? "R32" : "R16") , "UINT" , savePath.c_str() );
 }
 
 void
-MeshJSON::writeIndexBuffer(const void* data, const char* format, const char* type, const char* path)
+MeshJSON::writeIndexBuffer(const void* data, const char* format, const char* type, const char* path, size_t& size)
 {
 	// get triangle data
 	std::vector<float> indexList;
@@ -163,12 +163,9 @@ MeshJSON::writeIndexBuffer(const void* data, const char* format, const char* typ
 		indexList.push_back(tri[1]);
 		indexList.push_back(tri[2]);
 	}
-
-	// create binary codec
-	BinaryCodec codec(format, type);
-	size_t size;
 	
 	// encode data
+	BinaryCodec codec(format, type);
 	char* buffer = codec.encode(indexList, size);
 	CDataStream::writeDataToFile(path, buffer, size);
 	

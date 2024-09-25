@@ -24,59 +24,6 @@ void CSceneUpdate::clear()
 	m_data = nullptr;
 }
 
-inline static void transformVertices( const CDataBuffer* vertexBuffer, std::vector<float>& verts, const int numChannels)
-{
-	auto& tfmScale  = vertexBuffer->scale;
-	auto& tfmOffset = vertexBuffer->translate;
-
-	// Perform object transforms
-	for (int i = 0; i < verts.size(); i++)
-	{
-		auto& vtx = verts[i];
-
-		if (!tfmOffset.empty() && !tfmScale.empty())
-		{
-			// Apply Scale and Offset
-			auto& scale  = tfmScale [i % numChannels];
-			auto& offset = tfmOffset[i % numChannels];
-
-			vtx = (vtx - offset) / scale;
-		}
-	}
-}
-
-inline static void EncodeOctahedralNormal(Vec4* Encoded, const Vec3& Normal)
-{
-	float s = 1.0f / (fabsf(Normal.x) + fabsf(Normal.y) + fabsf(Normal.z));
-	float nx = Normal.x * s;
-	float ny = Normal.y * s;
-	float nz = Normal.z * s;
-	if (nz >= 0.0) {
-		float octWrapX = (1.0f - fabsf(ny)) * (nx >= 0.0f ? 1.0f : -1.0f);
-		float octWrapY = (1.0f - fabsf(nx)) * (ny >= 0.0f ? 1.0f : -1.0f);
-		nx = octWrapX;
-		ny = octWrapY;
-	}
-	Encoded->x = int((nx * 0.5f + 0.5f) * 1023.0f);
-	Encoded->y = int((ny * 0.5f + 0.5f) * 1023.0f);
-}
-
-inline static Vec3 decodeOctahedralNormal(const Vec3& encoded)
-{
-	Vec3 normal;
-
-	normal.x = (encoded.x * (1.0f / 1023.0f)) * 2.0f - 1.0f;
-	normal.y = (encoded.y * (1.0f / 1023.0f)) * 2.0f - 1.0f;
-	normal.z = 1.0f - fabsf(normal.x) - fabsf(normal.y);
-
-	float t = fmaxf(-normal.z, 0.0f);
-	normal.x += (normal.x >= 0.0f) ? -t : t;
-	normal.y += (normal.y >= 0.0f) ? -t : t;
-	normal.normalize();
-
-	return normal;
-};
-
 void CSceneUpdate::update(StUpdatePkg* data)
 {
 	/* Update scene source*/
@@ -170,41 +117,10 @@ void CSceneUpdate::getUpdatedVertices()
 	}
 
 	// Perform transforms
-	::transformVertices(posBf, verts, m_numVtxComponents);
+	MeshCalc::transformVertices(posBf, verts, m_numVtxComponents);
 	if (doMeshFix) m_updateMesh->alignPosition(true, m_numVtxComponents);
 };
 
-inline static void updateTangentFrameVec(const std::vector<float>& tanFrames, const std::vector<float>& normals, std::vector<float>& dst)
-{
-	// Validate mesh vectors
-	int numTans = tanFrames.size() / 4;
-	int numNrms = normals.size() / 3;
-	if (numTans != numNrms)
-		throw std::runtime_error("Unsupported tangent frame encoding. Failed to update.");
-
-	// Encode octahedral normals...
-	for (int i = 0; i < numTans; i++)
-	{
-		Vec4 encoded{
-			tanFrames[(i * 4)],
-			tanFrames[(i * 4) + 1],
-			tanFrames[(i * 4) + 2],
-			tanFrames[(i * 4) + 3]
-		};
-
-		Vec3 normal{
-			normals[(i * 3)],
-			normals[(i * 3) + 1],
-			normals[(i * 3) + 2] };
-
-		EncodeOctahedralNormal(&encoded, normal);
-
-		dst.push_back(encoded.x);
-		dst.push_back(encoded.y);
-		dst.push_back(encoded.z);
-		dst.push_back(encoded.w);
-	}
-}
 void CSceneUpdate::getUpdatedNormals()
 {
 	// Initialize vertex buffer
@@ -225,7 +141,7 @@ void CSceneUpdate::getUpdatedNormals()
 	if (doMeshFix) m_updateMesh->alignNormals(true);
 
 	// Update tangent frame vectors 
-	updateTangentFrameVec(tanFrames, normals, m_updateMesh->tangent_frames);
+	MeshCalc::updateTangentFrameVec(tanFrames, normals, m_updateMesh->tangent_frames);
 }
 
 void CSceneUpdate::updateVertexBuffer()

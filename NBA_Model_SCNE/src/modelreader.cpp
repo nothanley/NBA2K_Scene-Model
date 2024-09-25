@@ -130,8 +130,8 @@ void CModelReader::loadVertices(Mesh& mesh)
 	mesh.name = (mesh.name.empty()) ? m_name : mesh.name;
 	GeomDef::setMeshVtxs(posBf, mesh);
 	GeomDef::calculateVtxNormals(tanBf, mesh);
-	if (!texBf->data.empty())
-		GeomDef::addMeshUVMap(texBf, mesh);
+
+	if (!texBf->data.empty()) GeomDef::addMeshUVMap(texBf, mesh);
 
 	// Update mesh refs
 	mesh.vertex_ref   = posBf;

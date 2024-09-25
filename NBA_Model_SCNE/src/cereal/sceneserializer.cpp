@@ -41,6 +41,14 @@ void CSceneSerializer::registerSerials()
 	m_serializers["Model"] = modelSerial;
 }
 
+static inline std::string formatJsonStream(const JSON& json)
+{
+	auto data = json.dump(4);
+	data.erase(data.begin());
+	data.pop_back();
+	return data;
+};
+
 bool CSceneSerializer::save(const char* path)
 {
 	// Initialize save path
@@ -57,7 +65,7 @@ bool CSceneSerializer::save(const char* path)
 		return false;
 
 	// send formatted json data to file
-	file << m_json.dump(4);
+	file << ::formatJsonStream(m_json);
 	file.close();
 
 	return true;
@@ -66,21 +74,23 @@ bool CSceneSerializer::save(const char* path)
 void CSceneSerializer::serialize()
 {
 	// clear json
-	m_json = JSON();
+	this->m_json  = JSON();
+	auto rootJson = JSON();
 
 	// Collect Child JSON obj's
-	this->serializeData("Model");
+	this->serializeData("Model", rootJson);
 
-	// todo: add more json data ...
+	// define parent json obj
+	m_json[m_scene->getName()] = rootJson;
 	return;
 }
 
-void CSceneSerializer::serializeData(const std::string& key) 
+void CSceneSerializer::serializeData(const std::string& key, JSON& parent) 
 {
 	if (m_serializers.find(key) != m_serializers.end())
 	{
 		auto child  = m_serializers[key]->serialize();
-		m_json[key] = *child.get();
+		parent[key] = *child.get();
 	}
 
 	return;

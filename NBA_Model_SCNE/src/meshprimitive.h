@@ -2,7 +2,7 @@
 #include <json.hpp>
 #pragma once
 
-using JSON = nlohmann::json;
+using JSON = nlohmann::ordered_json;
 
 // GLOBAL EXPORT SETTINGS
 extern bool USE_DEBUG_LOGS;   // toggles debug logs  - (could be preprocessor def but this lets client toggle)
