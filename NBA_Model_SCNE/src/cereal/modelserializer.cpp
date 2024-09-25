@@ -29,7 +29,6 @@ CModelSerializer::addModelJson(const std::shared_ptr<CNBAModel>& model)
 	for (auto& mesh : model->getMeshes()) 
 	{
 		// format mesh data
-		mesh->generateAABBs();
 		Mesh::createWAxis(mesh->vertices);
 		Mesh::createWAxis(mesh->normals);
 

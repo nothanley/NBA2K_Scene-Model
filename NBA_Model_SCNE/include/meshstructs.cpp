@@ -5,7 +5,7 @@ void Mesh::generateAABBs()
 {
 	/* Validate coordinate vector */
 	const auto& coords = this->vertices;
-	if (coords.size() % 3 == 0) return;
+	if (coords.size() % 3 != 0) return;
 
 	// Create default bounding box
 	BoundingBox& box = this->bounds;
