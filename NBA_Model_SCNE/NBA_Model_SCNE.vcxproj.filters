@@ -44,6 +44,9 @@
     <Filter Include="NBA\Inject">
       <UniqueIdentifier>{226f31be-1237-462c-b245-17d883e1b445}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\MikkT">
+      <UniqueIdentifier>{5b64f551-c57d-4424-99b3-d3285b1cdb31}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -114,6 +117,12 @@
     </ClCompile>
     <ClCompile Include="src\sceneupdate.cpp">
       <Filter>NBA\Inject</Filter>
+    </ClCompile>
+    <ClCompile Include="include\MikkGen.cpp">
+      <Filter>Library\MikkT</Filter>
+    </ClCompile>
+    <ClCompile Include="include\mikktspace.c">
+      <Filter>Library\MikkT</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -234,6 +243,12 @@
     </ClInclude>
     <ClInclude Include="src\sceneupdate.h">
       <Filter>NBA\Inject</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MikkGen.h">
+      <Filter>Library\MikkT</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mikktspace.h">
+      <Filter>Library\MikkT</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

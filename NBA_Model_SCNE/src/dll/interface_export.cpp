@@ -84,10 +84,9 @@ void setMeshNormals(void* pMesh, float* normals, int size)
 	for (int i = 0; i < size; i++)
 		mesh->normals[i] = normals[i];
 
-	//mesh->generateTangentsBinormals(); // Update TBN buffers
-	mesh->alignNormals(true);
-
 	// Pack tangent frames
+	mesh->alignNormals(true);
+	MeshCalc::calculateTangentsBinormals(*mesh);
 	MeshCalc::buildTangentFrameVec(*mesh, mesh->tangent_frames);
 }
 
@@ -161,8 +160,6 @@ void linkMeshToModel(void* pModel, void* pMesh)
 	CNBAModel* model = static_cast<CNBAModel*>(pModel);
 	Mesh* mesh = static_cast<Mesh*>(pMesh);
 	model->pushMesh(*mesh);
-
-	// todo: doing a mesh copy is inefficient - need to optimize
 
 	// release mesh
 	::freeMesh(mesh);

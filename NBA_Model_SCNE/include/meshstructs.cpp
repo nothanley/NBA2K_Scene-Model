@@ -1,5 +1,6 @@
 #include "meshstructs.h"
 #include <databuffer.h>
+#include <MikkGen.h>
 
 void Mesh::generateAABBs()
 {
@@ -357,6 +358,34 @@ Vec3 MeshCalc::decodeOctahedralNormal(const Vec3& encoded)
 	return normal;
 };
 
+void MeshCalc::setFlatTangentBinormals(Mesh& mesh)
+{
+	int numVerts = mesh.vertices.size() / 3;
+
+	for (int i = 0; i < numVerts; ++i) 
+	{
+		mesh.tangents.push_back(1.0f);
+		mesh.tangents.push_back(1.0f);
+		mesh.tangents.push_back(1.0f);
+		mesh.tangents.push_back(0.0f);
+		mesh.binormals.push_back(1.0f);
+	}
+}
 
 
+void MeshCalc::calculateTangentsBinormals(Mesh& mesh, const bool use_tangents)
+{
+	mesh.tangents.clear();
+	mesh.binormals.clear();
+
+	if (!use_tangents || mesh.uvs.empty()) 
+	{
+		printf("\n[Debug] No tangent uv data.");
+		MeshCalc::setFlatTangentBinormals(mesh);
+		return;
+	}
+
+	MikkTCalc mikkcalculator(&mesh);
+	mikkcalculator.generate();
+}
 

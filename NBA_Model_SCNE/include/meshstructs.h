@@ -255,5 +255,7 @@ namespace MeshCalc
 	void transformVertices(const CDataBuffer* vertexBuffer, std::vector<float>& verts, const int numChannels);
 	void EncodeOctahedralNormal(Vec4* Encoded, const Vec3& Normal);
 	Vec3 decodeOctahedralNormal(const Vec3& encoded);
+	void setFlatTangentBinormals(Mesh& mesh);
+	void calculateTangentsBinormals(Mesh& mesh, const bool use_tangents=true);
 }
 
