@@ -47,6 +47,9 @@
     <Filter Include="Library\MikkT">
       <UniqueIdentifier>{5b64f551-c57d-4424-99b3-d3285b1cdb31}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NBA\Material">
+      <UniqueIdentifier>{99ea061d-b343-4b08-b864-f7512c8a58cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -123,6 +126,21 @@
     </ClCompile>
     <ClCompile Include="include\mikktspace.c">
       <Filter>Library\MikkT</Filter>
+    </ClCompile>
+    <ClCompile Include="src\material\material_reader.cpp">
+      <Filter>NBA\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="src\material\material.cpp">
+      <Filter>NBA\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="src\material\asset_texture.cpp">
+      <Filter>NBA\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common_json.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\material\effect.cpp">
+      <Filter>NBA\Material</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -251,6 +269,21 @@
     </ClInclude>
     <ClInclude Include="src\cereal\genericserializer.h">
       <Filter>NBA\Cereal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\material\material_reader.h">
+      <Filter>NBA\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\material\material.h">
+      <Filter>NBA\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\material\asset_texture.h">
+      <Filter>NBA\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common_json.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="src\material\effect.h">
+      <Filter>NBA\Material</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

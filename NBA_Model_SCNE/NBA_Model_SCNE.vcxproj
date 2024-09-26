@@ -213,6 +213,7 @@
     <ClCompile Include="src\cereal\modelserializer.cpp" />
     <ClCompile Include="src\cereal\sceneserializer.cpp" />
     <ClCompile Include="src\common.cpp" />
+    <ClCompile Include="src\common_json.cpp" />
     <ClCompile Include="src\datastream.cpp" />
     <ClCompile Include="src\dll\dllmain.cpp" />
     <ClCompile Include="src\dll\interface_export.cpp" />
@@ -220,6 +221,10 @@
     <ClCompile Include="src\dll\interface_save.cpp" />
     <ClCompile Include="src\dll\pch.cpp" />
     <ClCompile Include="src\databuffer.cpp" />
+    <ClCompile Include="src\material\asset_texture.cpp" />
+    <ClCompile Include="src\material\effect.cpp" />
+    <ClCompile Include="src\material\material.cpp" />
+    <ClCompile Include="src\material\material_reader.cpp" />
     <ClCompile Include="src\meshprimitive.cpp" />
     <ClCompile Include="src\modelreader.cpp" />
     <ClCompile Include="src\nbamodel.cpp" />
@@ -257,6 +262,7 @@
     <ClInclude Include="src\cereal\modelserializer.h" />
     <ClInclude Include="src\cereal\sceneserializer.h" />
     <ClInclude Include="src\common.h" />
+    <ClInclude Include="src\common_json.h" />
     <ClInclude Include="src\datastream.h" />
     <ClInclude Include="src\dll\framework.h" />
     <ClInclude Include="src\dll\interface_export.h" />
@@ -264,6 +270,10 @@
     <ClInclude Include="src\dll\interface_save.h" />
     <ClInclude Include="src\dll\pch.h" />
     <ClInclude Include="src\databuffer.h" />
+    <ClInclude Include="src\material\asset_texture.h" />
+    <ClInclude Include="src\material\effect.h" />
+    <ClInclude Include="src\material\material.h" />
+    <ClInclude Include="src\material\material_reader.h" />
     <ClInclude Include="src\meshprimitive.h" />
     <ClInclude Include="src\modelreader.h" />
     <ClInclude Include="src\nbamodel.h" />

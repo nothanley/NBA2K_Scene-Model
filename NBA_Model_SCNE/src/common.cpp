@@ -232,3 +232,15 @@ void common::createFileBackup(const char* path)
 	}
 }
 
+std::string common::findTargetFileExt(const char* directory, const char* extension)
+{
+	for (const auto& entry : std::filesystem::directory_iterator(directory)) 
+	{
+		if (entry.is_regular_file() && entry.path().extension() == extension) {
+			return entry.path().string(); // Return the first matching file
+		}
+	}
+
+	return "";
+}
+

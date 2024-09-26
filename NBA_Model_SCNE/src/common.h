@@ -33,5 +33,6 @@ namespace common
     std::vector<std::string> findMatchingExtensionFiles(const char* directory, const char* extension);
     void ShowMessageBox(const std::string& message);
     void createFileBackup(const char* path);
+    std::string findTargetFileExt(const char* directory, const char* extension);
 }
 
