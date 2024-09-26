@@ -7,6 +7,104 @@ def GetDLLPath():
     dllPath = os.path.join(os.path.dirname(pyPath), "nbamodel.dll")
     return dllPath
 
+class cmesh():
+    global lib
+
+    @staticmethod
+    def new():
+        return cmesh()
+    
+    def __build_cmesh(self):
+        lib.getNewSkinMesh.restype = ctypes.c_void_p
+        return lib.getNewSkinMesh()
+    
+    def set_data(self, vertices, index_list):
+        lib.setMeshData.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_float), ctypes.POINTER(ctypes.c_int), ctypes.c_int, ctypes.c_int]
+
+        # Convert python list to c array
+        verts     = (ctypes.c_float * len(vertices))(*vertices)
+        face_list = (ctypes.c_int   * len(index_list))(*index_list)
+
+        return lib.setMeshData(self.__struct, verts, face_list, len(vertices), len(index_list))
+    
+    def set_normals(self, normals):
+        lib.setMeshNormals.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_float), ctypes.c_int]
+
+        # Convert python list to c array
+        cnorms = (ctypes.c_float * len(normals))(*normals)
+
+        # Send data to cmesh struct
+        return lib.setMeshNormals(self.__struct, cnorms, len(cnorms))
+    
+    def add_uv_channel(self, texcoords):
+        lib.addUvMap.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_float), ctypes.c_int]
+
+        # Convert python list to c array
+        ctexcoords = (ctypes.c_float * len(texcoords))(*texcoords)
+
+        # Send data to cmesh struct
+        return lib.addUvMap(self.__struct, ctexcoords, len(ctexcoords))
+    
+    def add_vertex_colors(self, color_map):
+        if (color_map == None): return
+        lib.addMeshColorMap.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_float), ctypes.c_int]
+
+        # Convert python list to c array
+        cmap = (ctypes.c_float * len(color_map))(*color_map)
+
+        # Send data to cmesh struct
+        return lib.addMeshColorMap(self.__struct, cmap, len(cmap))
+    
+    def set_skin_data(self, skin):
+        if (skin == None):
+            return
+        
+        lib.setMeshSkinData.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_float), ctypes.c_int, ctypes.c_int]
+        
+        # Convert python list to c array
+        cindices = (ctypes.c_int   * len(skin.blendindices))(*skin.blendindices)
+        cweights = (ctypes.c_float * len(skin.blendweights))(*skin.blendweights)
+
+        # Send data to cmesh struct
+        return lib.setMeshSkinData(self.__struct, cindices, cweights, len(cindices), skin.weights_per_vertex)
+    
+    def set_name_info(self, mesh_name, material_name):
+        lib.setMeshNameInfo.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p]
+        lib.setMeshNameInfo(self.__struct, mesh_name.encode("utf-8"), material_name.encode("utf-8"))
+        return
+    
+    def set_model_game_flags(self, scene_flag, motion_flag):
+        lib.setModelGameFlags.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
+        lib.setModelGameFlags(self.__struct, scene_flag, motion_flag)
+        return
+
+    def add_blendshape(self, shape):
+        if (not shape):
+            return
+
+        num_coords = len(shape.verts)
+        cvertices = (ctypes.c_float * num_coords)(*shape.verts)
+
+        lib.addBlendShape.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_float), ctypes.c_int]
+        return lib.addBlendShape(self.__struct, shape.name.encode("utf-8"), cvertices, num_coords)
+
+    def set_blendshapes(self, shapes):
+        if (not shapes): return
+        for shape in shapes:
+            self.add_blendshape(shape)
+        return
+    
+    def get_cstruct(self):
+        return self.__struct
+    
+    def free(self):
+        lib.freeMesh.argtypes = [ctypes.c_void_p]
+        lib.freeMesh(self.__struct)
+        return
+    
+    def __init__(self):
+        self.__struct = self.__build_cmesh()
+
 class cscnelib():
     global lib
 
@@ -49,10 +147,20 @@ class cmodellib():
     global lib 
 
     @staticmethod
-    def free_cskinmodel(cmodelfile):
+    def saveModelToFile(cmodel, path):
+        lib.saveModelToFile.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+        return lib.saveModelToFile(cmodel, path.encode("utf-8"))
+
+    @staticmethod
+    def free_model(cmodelfile):
         lib.release_model.argtypes = [ctypes.c_void_p]
         return lib.release_model(cmodelfile)
-
+    
+    @staticmethod
+    def free_scene(cmodelfile):
+        lib.release_scene.argtypes = [ctypes.c_void_p]
+        return lib.release_scene(cmodelfile)
+    
     @staticmethod
     def free_float_array(cfloat_arr):
         lib.freeMemory_float32.argtypes = [ctypes.POINTER(ctypes.c_float)] 
@@ -154,6 +262,11 @@ class cmodellib():
         lib.getNumUvChannels.argtypes = [ctypes.c_void_p, ctypes.c_int] 
         return lib.getNumUvChannels(cskinmodel, mesh_index)
 
+    @staticmethod
+    def addMeshToModel(cskinmodel, cskinmesh):
+        lib.linkMeshToModel.argtypes  = [ctypes.c_void_p, ctypes.c_void_p]
+        return lib.linkMeshToModel(cskinmodel, cskinmesh)
+    
 class ExternalLibary():
     def getLoadOperator(self):
         # Defines Call for 'void* loadModelFile(const char* filePath, CNBAScene* pScene, bool use_lods, bool split_groups)'
@@ -175,15 +288,4 @@ class ExternalLibary():
         self.load_scene           = self.getLoadOperator()
         self.release_scene_file   = self.getDeleteOperator()
 
-#     @staticmethod
-#     def loadSCNEFile(file_path, pScene, use_lods, split_groups):
-#         # Defines Call for 'void* loadModelFile(const char* filePath, CNBAScene* pScene, bool use_lods, bool split_groups)'
-#         lib.loadModelFile.restype  = ctypes.c_void_p
-#         lib.loadModelFile.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p), ctypes.c_bool, ctypes.c_bool]
-#         return lib.loadModelFile(file_path, pScene, use_lods, split_groups)
-    
-#     @staticmethod
-#     def freeSCNEModel(cskinmodel):
-#         # Defines Call for 'void release_model_file(void* pModelFile)'
-#         lib.release_model_file.argtypes = [ctypes.c_void_p]
-#         return lib.release_model_file(cskinmodel)
+

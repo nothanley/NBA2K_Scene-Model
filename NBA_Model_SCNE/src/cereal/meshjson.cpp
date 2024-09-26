@@ -57,13 +57,14 @@ MeshJSON::primsToJson(const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& 
 }
 
 void 
-MeshJSON::writeVertexBuffer(const std::vector<float>* data, const char* format, const char* type, const char* path, size_t& size)
+MeshJSON::writeVertexBuffer(const std::vector<float>* data, const char* format, const char* type, const char* path, size_t& size, size_t& stride)
 {
 	// create binary codec
 	if (!data) return;
 	BinaryCodec codec(format, type);
 	
 	// encode data
+	stride       = codec.size(1);
 	char* buffer = codec.encode(*data, size);
 	CDataStream::writeDataToFile(path, buffer, size);
 	
@@ -95,10 +96,10 @@ MeshJSON::createVertexBuffer(
 	if (!data) return;
 
 	// write vertex buffer to disk
-	size_t size            = 0;
+	size_t size, stride;
 	std::string binaryName = mesh->name + "_" + std::string(stream_id) + ".bin";
 	std::string savePath   = std::string(dirPath) + "/" + binaryName;
-	MeshJSON::writeVertexBuffer(data, format, type, savePath.c_str(), size);
+	MeshJSON::writeVertexBuffer(data, format, type, savePath.c_str(), size, stride);
 
 	// Define vertex buffer format
 	JSON fmtInfo, stream;
@@ -107,7 +108,9 @@ MeshJSON::createVertexBuffer(
 	fmtInfo["Offset"] = { offset.x, offset.y, offset.z, offset.w };
 	fmtInfo["Scale"]  = { scale.x, scale.y, scale.z, scale.w };
 
+
 	// Define vertex buffer stream
+	stream["Stride"]     = stride;
 	stream["Size"]       = size;
 	stream["Binary"]     = binaryName;
 	(*fmtObj)[stream_id] = fmtInfo;

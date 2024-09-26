@@ -1,5 +1,6 @@
 import bpy
 from .vcnbamodel_import import *
+from .vcnbamodel_export import *
 from .Blender.Panel.blender_panel import *
 
 bl_info = {
@@ -13,10 +14,12 @@ bl_info = {
 
 def register():
     register_vcs_import()
+    register_vcs_export()
     register_panel()
 
 def unregister():
     unregister_vcs_import()
+    unregister_vcs_export()
     unregister_panel()
 
 if __name__ == "__main__":

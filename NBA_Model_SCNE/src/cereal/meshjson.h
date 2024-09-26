@@ -21,7 +21,7 @@ namespace MeshJSON
 	void indexDataToJson  (const char* save_directory, const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
 
 	void writeIndexBuffer(const void* data, const char* format, const char* type, const char* path, size_t& size);
-	void writeVertexBuffer(const std::vector<float>* data, const char* format, const char* type, const char* path, size_t& size);
+	void writeVertexBuffer(const std::vector<float>* data, const char* format, const char* type, const char* path, size_t& size, size_t& stride);
 	void createVertexBuffer(
 		const char* dirPath,
 		const std::shared_ptr<Mesh>& mesh,
