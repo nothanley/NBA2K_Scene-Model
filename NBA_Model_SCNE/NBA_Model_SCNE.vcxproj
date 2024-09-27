@@ -151,13 +151,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);WIN32_LEAN_AND_MEAN</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)NBA_Model_SCNE\src;$(SolutionDir)NBA_Model_SCNE\include;$(SolutionDir)NBA_Model_SCNE\include\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NBA_Model_SCNE\src;$(SolutionDir)NBA_Model_SCNE\include;$(SolutionDir)NBA_Model_SCNE\include\zlib;$(SolutionDir)NBA_Model_SCNE\include\DirectXTex;$(SolutionDir)NBA_Model_SCNE\include\DirectXTex\Shaders;$(SolutionDir)NBA_Model_SCNE\include\DirectXTex\Shaders\Compiled;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies);$(SolutionDir)NBA_Model_SCNE\lib\zlib.lib</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);$(SolutionDir)NBA_Model_SCNE\lib\zlib.lib;$(SolutionDir)NBA_Model_SCNE\lib\debug\DirectXTex.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -168,7 +168,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);WIN32_LEAN_AND_MEAN</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)NBA_Model_SCNE\src;$(SolutionDir)NBA_Model_SCNE\include;$(SolutionDir)NBA_Model_SCNE\include\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NBA_Model_SCNE\src;$(SolutionDir)NBA_Model_SCNE\include;$(SolutionDir)NBA_Model_SCNE\include\zlib;$(SolutionDir)NBA_Model_SCNE\include\DirectXTex;$(SolutionDir)NBA_Model_SCNE\include\DirectXTex\Shaders;$(SolutionDir)NBA_Model_SCNE\include\DirectXTex\Shaders\Compiled;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -176,7 +176,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);$(SolutionDir)NBA_Model_SCNE\lib\zlib.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);$(SolutionDir)NBA_Model_SCNE\lib\zlib.lib;$(SolutionDir)NBA_Model_SCNE\lib\release\DirectXTex.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DLL-Library|x64'">
@@ -187,7 +187,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);WIN32_LEAN_AND_MEAN</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)NBA_Model_SCNE\src;$(SolutionDir)NBA_Model_SCNE\include;$(SolutionDir)NBA_Model_SCNE\include\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NBA_Model_SCNE\src;$(SolutionDir)NBA_Model_SCNE\include;$(SolutionDir)NBA_Model_SCNE\include\zlib;$(SolutionDir)NBA_Model_SCNE\include\DirectXTex;$(SolutionDir)NBA_Model_SCNE\include\DirectXTex\Shaders;$(SolutionDir)NBA_Model_SCNE\include\DirectXTex\Shaders\Compiled;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -195,13 +195,18 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);$(SolutionDir)NBA_Model_SCNE\lib\zlib.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);$(SolutionDir)NBA_Model_SCNE\lib\zlib.lib;$(SolutionDir)NBA_Model_SCNE\lib\release\DirectXTex.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(TargetDir)$(TargetName).dll" "C:\Users\wauke\AppData\Roaming\Blender Foundation\Blender\4.1\scripts\addons\NBA_Scene\Link\$(TargetName).dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\DirectXTex\BC.cpp" />
+    <ClCompile Include="include\DirectXTex\BC4BC5.cpp" />
+    <ClCompile Include="include\DirectXTex\BC6HBC7.cpp" />
+    <ClCompile Include="include\DirectXTex\BCDirectCompute.cpp" />
+    <ClCompile Include="include\hash\hash.cpp" />
     <ClCompile Include="include\memoryreader.cpp" />
     <ClCompile Include="include\meshstructs.cpp" />
     <ClCompile Include="include\MikkGen.cpp" />
@@ -209,9 +214,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\bin_codec.cpp" />
     <ClCompile Include="src\bin_format.cpp" />
+    <ClCompile Include="src\cereal\effectserializer.cpp" />
+    <ClCompile Include="src\cereal\materialserializer.cpp" />
     <ClCompile Include="src\cereal\meshjson.cpp" />
     <ClCompile Include="src\cereal\modelserializer.cpp" />
+    <ClCompile Include="src\cereal\objectserializer.cpp" />
     <ClCompile Include="src\cereal\sceneserializer.cpp" />
+    <ClCompile Include="src\cereal\textureserializer.cpp" />
     <ClCompile Include="src\common.cpp" />
     <ClCompile Include="src\common_json.cpp" />
     <ClCompile Include="src\datastream.cpp" />
@@ -221,7 +230,6 @@
     <ClCompile Include="src\dll\interface_save.cpp" />
     <ClCompile Include="src\dll\pch.cpp" />
     <ClCompile Include="src\databuffer.cpp" />
-    <ClCompile Include="src\material\asset_texture.cpp" />
     <ClCompile Include="src\material\effect.cpp" />
     <ClCompile Include="src\material\material.cpp" />
     <ClCompile Include="src\material\material_reader.cpp" />
@@ -232,13 +240,24 @@
     <ClCompile Include="src\scenefile.cpp" />
     <ClCompile Include="src\scenereader.cpp" />
     <ClCompile Include="src\sceneupdate.cpp" />
+    <ClCompile Include="src\texture\texture.cpp" />
+    <ClCompile Include="src\texture\texture_compress.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DirectXTex\BC.h" />
+    <ClInclude Include="include\DirectXTex\BCDirectCompute.h" />
+    <ClInclude Include="include\DirectXTex\d3dx12.h" />
+    <ClInclude Include="include\DirectXTex\DDS.h" />
+    <ClInclude Include="include\DirectXTex\DirectXTex.h" />
+    <ClInclude Include="include\DirectXTex\DirectXTexP.h" />
+    <ClInclude Include="include\DirectXTex\filters.h" />
+    <ClInclude Include="include\DirectXTex\scoped.h" />
     <ClInclude Include="include\gzip\compress.hpp" />
     <ClInclude Include="include\gzip\config.hpp" />
     <ClInclude Include="include\gzip\decompress.hpp" />
     <ClInclude Include="include\gzip\utils.hpp" />
     <ClInclude Include="include\gzip\version.hpp" />
+    <ClInclude Include="include\hash\hash.h" />
     <ClInclude Include="include\json.hpp" />
     <ClInclude Include="include\memoryreader.h" />
     <ClInclude Include="include\meshstructs.h" />
@@ -257,10 +276,14 @@
     <ClInclude Include="include\zlib\zutil.h" />
     <ClInclude Include="src\bin_codec.h" />
     <ClInclude Include="src\bin_format.h" />
+    <ClInclude Include="src\cereal\effectserializer.h" />
     <ClInclude Include="src\cereal\genericserializer.h" />
+    <ClInclude Include="src\cereal\materialserializer.h" />
     <ClInclude Include="src\cereal\meshjson.h" />
     <ClInclude Include="src\cereal\modelserializer.h" />
+    <ClInclude Include="src\cereal\objectserializer.h" />
     <ClInclude Include="src\cereal\sceneserializer.h" />
+    <ClInclude Include="src\cereal\textureserializer.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\common_json.h" />
     <ClInclude Include="src\datastream.h" />
@@ -270,7 +293,6 @@
     <ClInclude Include="src\dll\interface_save.h" />
     <ClInclude Include="src\dll\pch.h" />
     <ClInclude Include="src\databuffer.h" />
-    <ClInclude Include="src\material\asset_texture.h" />
     <ClInclude Include="src\material\effect.h" />
     <ClInclude Include="src\material\material.h" />
     <ClInclude Include="src\material\material_reader.h" />
@@ -281,8 +303,11 @@
     <ClInclude Include="src\scenefile.h" />
     <ClInclude Include="src\scenereader.h" />
     <ClInclude Include="src\sceneupdate.h" />
+    <ClInclude Include="src\texture\texture.h" />
+    <ClInclude Include="src\texture\texture_compress.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="include\DirectXTex\DirectXTex.inl" />
     <None Include="src\nbascene" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

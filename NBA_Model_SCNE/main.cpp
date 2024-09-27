@@ -76,13 +76,23 @@ void run_model_serialize()
 	serializer.save("C:/Users/wauke/Desktop/NBA2K_OUT_DEV/out_file.scne");
 }
 
+
+#include <material/material.h>
+void run_material_reader()
+{
+	auto mats = CNSMaterial::getMaterialLib("C:/Users/wauke/source/repos/NBA2K_Scene-Model_PUBLIC/Preset-Mats");
+
+	printf("");
+}
+
 int main()
 {
 	USE_DEBUG_LOGS = true;
 
-	run_loader_debug();
+	//run_material_reader();
+	//run_loader_debug();
 	//run_update_debug();
-	//run_model_serialize();
+	run_model_serialize();
 	
 	printf("\n\n[DEBUG-MAIN] Finished debug reader...");
 }

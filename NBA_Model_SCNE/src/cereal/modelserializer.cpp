@@ -53,9 +53,17 @@ CModelSerializer::getMeshJson(const std::shared_ptr<Mesh>& mesh)
 	(*json)["Prim"] = std::vector<JSON>{ *prims.get() };
 
 	// push vertex/face data buffers
-	auto saveDir = common::get_parent_directory(m_parent->path());
-	MeshJSON::vertexDataToJson(saveDir.c_str(), mesh, json);
-	MeshJSON::indexDataToJson( saveDir.c_str(), mesh, json);
+	std::string saveDir = common::get_parent_directory(m_parent->path());
+	std::string subDir  = "meshbuffers/";
+	
+	// generate mesh buffers
+	if (!subDir.empty() && !common::create_folder(saveDir + "/" + subDir))
+	{
+		throw std::runtime_error("Failed to create mesh buffers directory"); 
+	}
+
+	MeshJSON::vertexDataToJson ( saveDir.c_str(), subDir.c_str(), mesh, json );
+	MeshJSON::indexDataToJson  ( saveDir.c_str(), subDir.c_str(), mesh, json );
 
 	return json;
 }

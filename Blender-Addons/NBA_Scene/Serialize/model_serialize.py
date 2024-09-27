@@ -9,6 +9,14 @@ class CModelSerializer():
         cmodel.build()
         return cmodel
 
+    def set_material_link(self, cskinmesh, material):        
+        # set textures
+        cskinmesh.set_material(material.name)
+        cskinmesh.add_texture(material.color_map)
+        cskinmesh.add_texture(material.normal_map)
+        cskinmesh.add_texture(material.rdmo_map)
+        return
+    
     def build(self):
         # Link all child mesh data to new cmodel
         for mesh in self.meshes:
@@ -16,14 +24,18 @@ class CModelSerializer():
             cskinmesh.set_name_info(mesh.mesh_name, mesh.name)
             cskinmesh.set_data(mesh.vertices, mesh.index_list)
             cskinmesh.set_normals(mesh.vertex_normals)
+
             # cskinmesh.add_vertex_colors(mesh.vertex_colors)
             # cskinmesh.set_skin_data(mesh.skin)
             # cskinmesh.set_blendshapes(mesh.blendshapes)
             # cskinmesh.set_model_game_flags(mesh.scene_flag, mesh.motion_flag)
             
+            for mat in mesh.materials:
+                self.set_material_link(cskinmesh, mat)
+            
             for map in mesh.texcoords:
                 cskinmesh.add_uv_channel(map)
-                
+
             self.__add_cmesh(cskinmesh) # parent model to new cmesh
         return
     

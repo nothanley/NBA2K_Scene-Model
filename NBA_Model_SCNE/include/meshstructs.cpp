@@ -380,7 +380,6 @@ void MeshCalc::calculateTangentsBinormals(Mesh& mesh, const bool use_tangents)
 
 	if (!use_tangents || mesh.uvs.empty()) 
 	{
-		printf("\n[Debug] No tangent uv data.");
 		MeshCalc::setFlatTangentBinormals(mesh);
 		return;
 	}

@@ -1,5 +1,6 @@
 #include <dll/interface_export.h>
 #include <cereal/sceneserializer.h>
+#include <material/material.h>
 
 void freeMesh(void* pMesh)
 {
@@ -30,7 +31,7 @@ void setMeshNameInfo(void* pMesh, const char* meshName, const char* mtlName)
 	if (!mesh) return;
 
 	mesh->name = meshName;
-	mesh->material.name = mtlName;
+	mesh->material.setName(mtlName);
 	return;
 }
 
@@ -59,10 +60,6 @@ void setMeshData(void* pMesh, float* position, int* indexList, int numVerts, int
 		face[1] = indexList[index + 1];
 		face[2] = indexList[index + 2];
 	}
-
-	/* Setup mesh default mtl */
-	FaceGroup faceMat{ mesh->material, 0, numFaces };
-	mesh->groups.push_back(faceMat);
 
 	/* Update counts */
 	mesh->alignPosition(true);
@@ -165,5 +162,29 @@ void linkMeshToModel(void* pModel, void* pMesh)
 	::freeMesh(mesh);
 	return;
 }
+
+void setMeshMaterial(void* pMesh, const char* name)
+{
+	Mesh* mesh = static_cast<Mesh*>(pMesh);
+	if (!mesh) return;
+
+	mesh->material.setName(name);
+}
+ 
+void setMaterialTexture(void* pMesh, const char* name, const char* type, const int width, const int height, const int size, float* pixmap)
+{
+	Mesh* mesh = static_cast<Mesh*>(pMesh);
+	if (!mesh) return;
+
+	// Create a new texture map
+	auto& material = mesh->material;
+	auto  texture  = std::make_shared<CNSTexture>(name, width, height);
+
+	// Set texture pixmap
+	texture->setPixmap(pixmap, size);
+	texture->setType(type);
+	material.addTexture(texture);
+}
+
 
 

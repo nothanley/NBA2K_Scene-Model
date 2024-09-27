@@ -6,6 +6,7 @@
 #include <array>
 #include <algorithm>
 #include <json.hpp>
+#include <material/material.h>
 #pragma once
 
 using JSON = nlohmann::ordered_json;
@@ -176,6 +177,7 @@ struct BlendWeight {
 	std::vector<float> weights;
 };
 
+
 struct StBlendShape {
 	std::string name;
 	std::vector<float> vertices;
@@ -201,28 +203,20 @@ struct UVMap {
 	float baseU, baseV;
 };
 
-struct FaceGroup
-{
-	Material material;
-	int faceBegin;
-	int numTriangles;
-};
-
+// Game mesh struct - todo: make this a full class
 struct Mesh
 {
 	std::string name;
 	std::string definition;
-	Material material;
 	BoundingBox bounds;
 
 	Skin skin;
+	CNSMaterial material;
 	std::vector<float> vertices, normals, tangent_frames;
 	std::vector<float> binormals, tangents;
 	std::vector<VertexColorSet> colors;
 	std::vector<Triangle> triangles;
 	std::vector<UVMap> uvs;
-	std::vector<StBlendShape> blendshapes;
-	std::vector<FaceGroup> groups;
 
 	// NBA Specific attributes
 	void* vertex_ref   = NULL;

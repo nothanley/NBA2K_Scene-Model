@@ -26,7 +26,31 @@ class cmesh():
         face_list = (ctypes.c_int   * len(index_list))(*index_list)
 
         return lib.setMeshData(self.__struct, verts, face_list, len(vertices), len(index_list))
-    
+
+    def set_material(self, material_name):
+        lib.setMeshMaterial.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+        return lib.setMeshMaterial(self.__struct, material_name.encode("utf-8"))
+
+    def add_texture(self, texture):
+        if not texture: return
+
+        lib.setMaterialTexture.argtypes = [ctypes.c_void_p, 
+                                           ctypes.c_char_p,
+                                           ctypes.c_char_p, 
+                                           ctypes.c_int, 
+                                           ctypes.c_int, 
+                                           ctypes.c_int, 
+                                           ctypes.POINTER(ctypes.c_float)]
+        
+        name   = texture.name
+        type   = texture.type
+        width  = texture.width
+        height = texture.height
+        size   = width * height * 4
+        pixmap = texture.get_pixel_buffer()
+        
+        return lib.setMaterialTexture(self.__struct, name.encode("utf-8"), type.encode("utf-8"), width, height, size, pixmap)
+
     def set_normals(self, normals):
         lib.setMeshNormals.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_float), ctypes.c_int]
 

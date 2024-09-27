@@ -104,13 +104,14 @@ void CModelReader::loadMeshData()
 
 void CModelReader::loadMesh(StGeoPrim& prim)
 {
-	prim.mesh = std::make_shared<Mesh>();
+	prim.mesh  = std::make_shared<Mesh>();
 	auto& mesh = *prim.mesh;
 
-	int index = m_meshes.size();
-	int numTris = prim.count;
-	mesh.definition = m_name;
-	mesh.name = prim.name;
+	int index          = m_meshes.size();
+	int numTris        = prim.count;
+	mesh.definition    = m_name;
+	mesh.name          = prim.name;
+	mesh.material.setName(prim.material_name.c_str());
 
 	loadIndices(mesh, numTris);
 	loadVertices(mesh);

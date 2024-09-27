@@ -88,7 +88,7 @@ class vCSkinMesh():
         return
     
     def __setup(self):
-        # Populate mesh data 
+        # Populate mesh data from c model library
         self.name            = getMeshName(self)
         self.mesh_name       = getMeshName(self)
         self.vertices        = getMeshVerts(self)
@@ -112,7 +112,7 @@ class vCSkinMesh():
         self.skin            = None
         self.vertex_colors   = None
         self.blendshapes     = None
-        self.material_groups = None
+        self.materials       = []
 
         if (self.data != None):
             self.__setup()

@@ -50,6 +50,15 @@
     <Filter Include="NBA\Material">
       <UniqueIdentifier>{99ea061d-b343-4b08-b864-f7512c8a58cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\Hash">
+      <UniqueIdentifier>{516c8141-ce86-493f-8491-4c989705e5c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NBA\Texture">
+      <UniqueIdentifier>{4667490e-7180-486b-912d-a54fd7b5ffc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\DirectXTex">
+      <UniqueIdentifier>{fb0ddcfc-64bc-4806-aa42-3a41ed4103a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -133,14 +142,44 @@
     <ClCompile Include="src\material\material.cpp">
       <Filter>NBA\Material</Filter>
     </ClCompile>
-    <ClCompile Include="src\material\asset_texture.cpp">
-      <Filter>NBA\Material</Filter>
-    </ClCompile>
     <ClCompile Include="src\common_json.cpp">
       <Filter>Data</Filter>
     </ClCompile>
     <ClCompile Include="src\material\effect.cpp">
       <Filter>NBA\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="include\hash\hash.cpp">
+      <Filter>Library\Hash</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cereal\objectserializer.cpp">
+      <Filter>NBA\Cereal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cereal\materialserializer.cpp">
+      <Filter>NBA\Cereal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cereal\effectserializer.cpp">
+      <Filter>NBA\Cereal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cereal\textureserializer.cpp">
+      <Filter>NBA\Cereal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\texture\texture_compress.cpp">
+      <Filter>NBA\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\texture\texture.cpp">
+      <Filter>NBA\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="include\DirectXTex\BC.cpp">
+      <Filter>Library\DirectXTex</Filter>
+    </ClCompile>
+    <ClCompile Include="include\DirectXTex\BC4BC5.cpp">
+      <Filter>Library\DirectXTex</Filter>
+    </ClCompile>
+    <ClCompile Include="include\DirectXTex\BC6HBC7.cpp">
+      <Filter>Library\DirectXTex</Filter>
+    </ClCompile>
+    <ClCompile Include="include\DirectXTex\BCDirectCompute.cpp">
+      <Filter>Library\DirectXTex</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -276,19 +315,64 @@
     <ClInclude Include="src\material\material.h">
       <Filter>NBA\Material</Filter>
     </ClInclude>
-    <ClInclude Include="src\material\asset_texture.h">
-      <Filter>NBA\Material</Filter>
-    </ClInclude>
     <ClInclude Include="src\common_json.h">
       <Filter>Data</Filter>
     </ClInclude>
     <ClInclude Include="src\material\effect.h">
       <Filter>NBA\Material</Filter>
     </ClInclude>
+    <ClInclude Include="include\hash\hash.h">
+      <Filter>Library\Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cereal\objectserializer.h">
+      <Filter>NBA\Cereal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cereal\materialserializer.h">
+      <Filter>NBA\Cereal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cereal\effectserializer.h">
+      <Filter>NBA\Cereal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cereal\textureserializer.h">
+      <Filter>NBA\Cereal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\texture\texture_compress.h">
+      <Filter>NBA\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\texture\texture.h">
+      <Filter>NBA\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DirectXTex\BC.h">
+      <Filter>Library\DirectXTex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DirectXTex\BCDirectCompute.h">
+      <Filter>Library\DirectXTex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DirectXTex\d3dx12.h">
+      <Filter>Library\DirectXTex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DirectXTex\DDS.h">
+      <Filter>Library\DirectXTex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DirectXTex\DirectXTex.h">
+      <Filter>Library\DirectXTex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DirectXTex\DirectXTexP.h">
+      <Filter>Library\DirectXTex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DirectXTex\filters.h">
+      <Filter>Library\DirectXTex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DirectXTex\scoped.h">
+      <Filter>Library\DirectXTex</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\nbascene">
       <Filter>NBA\Scene</Filter>
+    </None>
+    <None Include="include\DirectXTex\DirectXTex.inl">
+      <Filter>Library\DirectXTex</Filter>
     </None>
   </ItemGroup>
 </Project>

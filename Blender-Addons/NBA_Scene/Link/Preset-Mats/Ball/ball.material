@@ -1,0 +1,131 @@
+{
+	"Parameter": {
+		"ColorizeRefraction": 0.5,
+		"IoR": 1.01,
+		"Occlusion": 1.0,
+		"RefractionRoughness": 0.0,
+		"Roughness": 0.6,
+		"RoughnessDensityMetalnessMap_ENABLE": 1
+	},
+	"Resource": {
+		"ColorTexture": {
+			"Pixelmap": "%databuild_art_root%/asset_library/ball_gameplay_official/texture/ball_2k23twokday_color.png"
+		},
+		"NormalTexture": {
+			"Pixelmap": "%databuild_art_root%/asset_library/ball_gameplay_official/texture/ball_gameplay_default_normal.png"
+		},
+		"RoughnessDensityMetalnessMap": {
+			"Pixelmap": "%databuild_art_root%/asset_library/ball_gameplay_official/texture/ball_2k23twokday_rdmo.png"
+		}
+	},
+	"Technique": {
+		"Basketball": {
+			"EnableMask": 2,
+			"Pass": {
+				"Final": {
+					"EnableMask": 1
+				},
+				"ProjectTexture": {
+					"EnableMask": 2
+				},
+				"UseSoftShadowMaps": {
+					"EnableMask": 4
+				},
+				"UseHardShadowMaps": {
+					"EnableMask": 8
+				},
+				"GBuffer": {
+					"EnableMask": 512
+				},
+				"OnlyDepthDoubleSided": {
+					"EnableMask": 32
+				},
+				"OnlyDepthCSM": {
+					"EnableMask": 64
+				},
+				"DepthOnlyPrepass": {
+					"EnableMask": 128
+				},
+				"DepthNormalPrepass": {
+					"EnableMask": 16
+				}
+			}
+		},
+		"BasketballLores": {
+			"EnableMask": 1,
+			"Pass": {
+				"Final": {
+					"EnableMask": 1
+				},
+				"ProjectTexture": {
+					"EnableMask": 2
+				},
+				"UseSoftShadowMaps": {
+					"EnableMask": 4
+				},
+				"UseHardShadowMaps": {
+					"EnableMask": 8
+				},
+				"GBuffer": {
+					"EnableMask": 512
+				},
+				"OnlyDepthDoubleSided": {
+					"EnableMask": 32
+				},
+				"OnlyDepthCSM": {
+					"EnableMask": 64
+				},
+				"DepthOnlyPrepass": {
+					"EnableMask": 128
+				},
+				"DepthNormalPrepass": {
+					"EnableMask": 16
+				}
+			}
+		},
+		"BasketballVelocity": {
+			"EnableMask": 1024,
+			"Pass": {
+				"Default": {
+					"EnableMask": 15
+				}
+			}
+		},
+		"BallMirror": {
+			"EnableMask": 8,
+			"Pass": {
+				"UseHardShadowMaps": {
+					"EnableMask": 8
+				}
+			}
+		},
+		"Reflection": {
+			"EnableMask": 256,
+			"Pass": {
+				"Default": {
+					"EnableMask": 1
+				},
+				"ProjectTexture": {
+					"EnableMask": 2
+				},
+				"UseShadowMapPass": {
+					"EnableMask": 12
+				}
+			}
+		},
+		"BasketReflection": {
+			"EnableMask": 2048,
+			"Pass": {
+				"Default": {
+					"EnableMask": 1
+				},
+				"ProjectTexture": {
+					"EnableMask": 2
+				},
+				"UseShadowMaps": {
+					"EnableMask": 12
+				}
+			}
+		}
+	}
+}

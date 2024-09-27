@@ -3,6 +3,10 @@
 #include <Windows.h>
 #include <algorithm>
 #include <filesystem>
+#include <hash/hash.h>
+#include <sstream>
+#include <chrono>
+#include <random>
 
 #define _HAS_STD_BYTE 0
 namespace fs = std::filesystem;
@@ -32,6 +36,25 @@ uint32_t common::chash(const std::string& str) {
 		hash = ((hash << 5) + hash) + static_cast<uint32_t>(c);
 
 	return hash;
+}
+
+std::string common::get_module_directory()
+{
+	char path[MAX_PATH] = { 0 };
+	HMODULE hModule = NULL;
+
+	// Get the handle to the DLL module
+	if (GetModuleHandleEx(
+		GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | 
+		GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+		(LPCTSTR)common::get_module_directory, &hModule)
+		) 
+	{
+		// Get the full path of the DLL
+		GetModuleFileNameA(hModule, path, MAX_PATH);
+	}
+
+	return common::get_parent_directory(path);
 }
 
 std::string common::get_exe_path()
@@ -242,5 +265,75 @@ std::string common::findTargetFileExt(const char* directory, const char* extensi
 	}
 
 	return "";
+}
+
+
+
+void common::get_all_subdirectories(const char* directory, std::vector<std::string>& dirs)
+{
+	if (!fs::exists(directory) || !fs::is_directory(directory))
+		return;
+
+	try {
+		for (const auto& entry : fs::directory_iterator(directory)) {
+			if (entry.is_directory()) {
+				dirs.push_back(entry.path().string());
+			}
+		}
+	}
+	catch (const std::filesystem::filesystem_error& e) 
+	{
+	}
+}
+
+std::string common::get_abs_dir_name(const char* path)
+{
+	std::string dir = path;
+	auto pos = dir.find_last_of("\\/");
+	if (pos != std::string::npos)
+		dir = dir.substr(pos + 1);
+
+	return dir;
+}
+
+
+std::string common::get_u64_hash_str(const std::string& str)
+{
+	uint64_t hash = Hash::fnv1a64(str.c_str());
+
+	std::stringstream ss;
+	ss << std::setw(8) << std::setfill('0') << std::hex << hash;
+
+	return ss.str();
+}
+
+uint64_t common::get_random_value()
+{
+	// Get the current time since epoch in nanoseconds
+	auto now = std::chrono::high_resolution_clock::now();
+	auto now_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(now.time_since_epoch()).count();
+
+	// Generate a random number
+	std::random_device rd;
+	std::mt19937_64 gen(rd());
+	std::uniform_int_distribution<uint64_t> dis;
+
+	return dis(gen);
+}
+
+bool common::create_folder(const std::string& path) 
+{
+	try {
+		// Check if the directory already exists
+		if (std::filesystem::exists(path)) {
+			return true;
+		}
+		// Try to create the directory
+		return std::filesystem::create_directory(path);
+	}
+	catch (const std::filesystem::filesystem_error& e) 
+	{
+		return false;
+	}
 }
 

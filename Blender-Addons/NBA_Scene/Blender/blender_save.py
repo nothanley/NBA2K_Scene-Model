@@ -2,6 +2,7 @@ import bpy
 import re
 from ..SkinModel.skinmodel import vCSkinMesh
 from .blender_utils import *
+from .blender_materials import *
 
 def getMeshSelection():
     selection_objs = bpy.context.selected_objects
@@ -30,6 +31,7 @@ def makeSkinMesh(obj):
     skinmesh.vertices       = getMeshVertices(obj)
     skinmesh.vertex_normals = getVertexNorms(obj)
     skinmesh.texcoords      = getTexCoords(obj)
+    skinmesh.materials      = getMaterials(obj)
     # skinmesh.vertex_colors  = getVertexColors(obj)
     # skinmesh.skin           = getMeshSkin(obj)
     # skinmesh.blendshapes    = getShapeKeys(obj)

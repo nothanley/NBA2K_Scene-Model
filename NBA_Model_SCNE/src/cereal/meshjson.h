@@ -17,13 +17,14 @@ namespace MeshJSON
 	void tfmToJson   (const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
 	void primsToJson (const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& prims);
 
-	void vertexDataToJson (const char* save_directory, const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
-	void indexDataToJson  (const char* save_directory, const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
+	void vertexDataToJson (const char* save_directory, const char* subdirectory, const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
+	void indexDataToJson  (const char* save_directory, const char* subdirectory, const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& json);
 
 	void writeIndexBuffer(const void* data, const char* format, const char* type, const char* path, size_t& size);
 	void writeVertexBuffer(const std::vector<float>* data, const char* format, const char* type, const char* path, size_t& size, size_t& stride);
 	void createVertexBuffer(
 		const char* dirPath,
+		const char* subdir,
 		const std::shared_ptr<Mesh>& mesh,
 		std::shared_ptr<JSON>& fmtObj,
 		std::shared_ptr<JSON>& srmObj,

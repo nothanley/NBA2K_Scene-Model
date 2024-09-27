@@ -16,10 +16,12 @@ namespace common
 {
     char* readFile(const std::string& filename, size_t* data_length = nullptr);
     uint32_t chash(const std::string& str);
+    std::string get_module_directory();
     std::string get_exe_path();
     std::string format_path(const std::string& path);
     std::string get_parent_directory(const std::string& filePath);
 	std::string get_relative_file_path(const std::string& name);
+    void get_all_subdirectories(const char* path, std::vector<std::string>& subdirs);
     std::vector<std::string> splitString(const std::string& str, const char delimiter);
     void removeSubString(std::string& str, const std::string target);
     void replaceSubString(std::string& str, const std::string old_string, const std::string new_string);
@@ -34,5 +36,9 @@ namespace common
     void ShowMessageBox(const std::string& message);
     void createFileBackup(const char* path);
     std::string findTargetFileExt(const char* directory, const char* extension);
+    std::string get_abs_dir_name(const char* path);
+    std::string get_u64_hash_str(const std::string& str);
+    uint64_t    get_random_value();
+    bool create_folder(const std::string& path);
 }
 
