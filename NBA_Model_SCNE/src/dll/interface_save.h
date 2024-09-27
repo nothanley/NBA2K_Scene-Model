@@ -6,7 +6,7 @@
 
 /* Interface methods for saving or updating .SCNE data */
 DLLEX bool getFileStatus(const char* path);
-DLLEX bool updateScneFileMeshData(
+DLLEX bool updateMeshData(
     const char* path,
     const char* id, 
     float* position,
@@ -15,5 +15,4 @@ DLLEX bool updateScneFileMeshData(
     const int numVerts,
     const int numFaces,
     const int search_method);
-
 

@@ -1,6 +1,7 @@
 #include <sceneupdate.h>
 #include <nbascene>
 #include <vector>
+#include <dll/interface_save.h>
 
 bool getFileStatus(const char* path)
 {
@@ -26,7 +27,7 @@ bool getFileStatus(const char* path)
     return false;
 };
 
-bool updateScneFileMeshData(
+bool updateMeshData(
     const char* path,
     const char* id,
     float* position,

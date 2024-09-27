@@ -30,6 +30,13 @@ DLLEX void linkMeshToModel(void* pModel, void* pMesh);
 
 // Material Serializer Funcs
 DLLEX void setMeshMaterial      ( void* pMesh, const char* name );
-DLLEX void setMaterialTexture   (void* pMesh, const char* name, const char* type, const int width, const int height, const int size, float* pixmap);
+DLLEX void setMaterialTexture   ( 
+	void* pMesh,
+	const char* name,
+	const char* type,
+	const int width,
+	const int height,
+	const int size, 
+	float* pixmap);
 
 
