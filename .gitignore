@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /NBA_Model_SCNE/src/material/resources - (delete me)/common/Effects/Generic-PBR
+/Preset-Mats/Ball
