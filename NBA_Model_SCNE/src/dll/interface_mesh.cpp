@@ -92,8 +92,8 @@ const float* getVertexData(void* pNbaModel, const int index)
     return mesh->vertices.data();
 }
 
-int getNumVerts(void* pModel, const int index) {
-    
+int getNumVerts(void* pModel, const int index) 
+{    
     CNBAModel* model= static_cast<CNBAModel*>(pModel);
     if (!model || index > model->getNumMeshes())
         return 0;
@@ -105,7 +105,6 @@ int getNumVerts(void* pModel, const int index) {
 
 int getNumUvChannels(void* pNbaModel, const int index)
 {
- 
     CNBAModel* model = static_cast<CNBAModel*>(pNbaModel);
     if (!model || index > model->getNumMeshes())
         return 0;
@@ -117,7 +116,6 @@ int getNumUvChannels(void* pNbaModel, const int index)
 
 const float* getMeshUvChannel(void* pNbaModel, const int meshIndex, const int channelIndex)
 {
-    
     CNBAModel* model = static_cast<CNBAModel*>(pNbaModel);
     if (!model || meshIndex > model->getNumMeshes())
         return 0;
@@ -216,12 +214,141 @@ void freeMemory_charArrPtr(const char** set)
 
 void freeMemory_skinData(void* pSkinData)
 {
-    
-    std::vector<BlendWeight>* skin = static_cast<std::vector<BlendWeight>*>(pSkinData);
-    if (!skin)
-        return;
+    // ...
+}
 
-    delete skin;
+int getNumBones(void* pNbaModel)
+{
+    CNBAModel* model = static_cast<CNBAModel*>(pNbaModel);
+    if (!model) return 0;
+
+    auto skel = model->getSkeleton();
+    return skel.joints.size();
+}
+
+int getBoneParentIndex(void* pNbaModel, int joint_index)
+{
+    CNBAModel* model = static_cast<CNBAModel*>(pNbaModel);
+	if (!model)
+        return -1;
+
+	auto& skel = model->getSkeleton();
+    if (joint_index > skel.joints.size())
+		return -1;
+
+    auto& joint  = skel.joints[joint_index];
+    auto& parent = joint->parent;
+    return (parent) ? parent->index : -1;
+}
+
+float* getBoneMatrix(void* pNbaModel, int joint_index)
+{
+    CNBAModel* model = static_cast<CNBAModel*>(pNbaModel);
+    if (!model) 
+        return nullptr;
+
+    auto& skel = model->getSkeleton();
+    if (joint_index > skel.joints.size())
+        return nullptr;
+
+    auto& joint = skel.joints[joint_index];
+    float* matrix = new float[16];
+ 
+    matrix[0] = joint->translate.x;
+    matrix[1] = joint->translate.y;
+    matrix[2] = joint->translate.z;
+    return matrix; 
+}
+
+const char* getBoneName(void* pNbaModel, int joint_index)
+{
+    CNBAModel* model = static_cast<CNBAModel*>(pNbaModel);
+    if (!model)
+        return "";
+
+    auto& skel = model->getSkeleton();
+    if (joint_index > skel.joints.size())
+        return "";;
+
+    auto& joint = skel.joints[joint_index];
+    return joint->name.c_str();
+}
+
+
+void* getSkinData(void* pNbaModel, int mesh_index)
+{
+    CNBAModel* model = static_cast<CNBAModel*>(pNbaModel);
+    if (!model)
+        return nullptr;
+
+    if (mesh_index > model->getNumMeshes())
+		return nullptr;
+
+    auto mesh = model->getMesh(mesh_index);
+    return &mesh->skin;
+}
+
+inline bool hasGroup(const std::vector<std::string*>& vec, const std::string* target)
+{
+    for (auto& string : vec)
+        if (*string == *target)
+            return true;
+
+    return false;
+}
+
+const char** getAllSkinGroups(void* pSkin, int* num_groups)
+{
+    Skin* skin = static_cast<Skin*>(pSkin);
+    if (!pSkin)
+        return nullptr;
+
+    // Get all bones from skin
+    std::vector<std::string*> groups;
+    for (auto& vertex : skin->blendverts) {
+        for (auto& bone : vertex.bones)
+        {
+            if (!hasGroup(groups, &bone))
+                groups.push_back(&bone);
+        }
+    }
+
+    // Convert std::vector<std::string> to array of char pointers
+    *num_groups = static_cast<int>(groups.size());
+    const char** arr = new const char* [*num_groups];
+    for (size_t i = 0; i < *num_groups; ++i) {
+        arr[i] = groups[i]->c_str();
+    }
+
+    return arr;
+}
+
+float* getAllJointWeights(void* pSkin, const char* joint_name, int* size)
+{
+    Skin* skin = static_cast<Skin*>(pSkin);
+    if (!pSkin)
+        return nullptr;
+
+    int numVerts      = skin->blendverts.size();
+    float* vtxWeights = new float[numVerts];
+
+    // Iterate through skin data and get a weight list for all verts of specified bone..
+    for (int i = 0; i < numVerts; i++)
+    {
+        auto& skinVtx   = skin->blendverts.at(i);
+        int numVtxBones = skinVtx.bones.size();
+        vtxWeights[i]   = 0.0f;
+
+        for (int j = 0; j < numVtxBones; j++)
+            if (skinVtx.bones.at(j) == joint_name)
+            {
+                vtxWeights[i] = skinVtx.weights.at(j);
+                break;
+            }
+    }
+
+    *size = numVerts;
+    return vtxWeights;
 }
 
 

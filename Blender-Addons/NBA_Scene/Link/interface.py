@@ -2,6 +2,7 @@ import time
 import ctypes
 from .wrapper import ExternalLibary
 from ..SkinModel.skinmodel    import CNBAScene , cNBASkinModel
+from ..SkinModel.skinrig      import vCSkeleton, vCRigJoint
 from ..Blender.blender_scene  import cNBABlenderScene
 
 def buildScene(scene_pointer, model_path, args):

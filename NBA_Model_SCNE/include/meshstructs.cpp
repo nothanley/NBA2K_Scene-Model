@@ -1,6 +1,7 @@
 #include "meshstructs.h"
 #include <databuffer.h>
 #include <MikkGen.h>
+#include <armature/armature.h>	
 
 void Mesh::generateAABBs()
 {
@@ -66,41 +67,6 @@ void Mesh::translateUVs(const int& index)
 	}
 }
 
-inline void
-LoadVertexSkin(const Skin* skin, BlendWeight& skinVertex,
-	const std::vector<std::string>& stringTable, int& begin, const int& numWeights)
-{
-	/* Iterate through all specified weights for current vertex */
-	for (int j = 0; j < numWeights; j++)
-	{
-		int index = skin->indices[begin];
-		float influence = skin->weights[begin];
-
-		std::string boneName = stringTable.at(index);
-		skinVertex.bones.push_back(boneName);
-		skinVertex.weights.push_back(influence);
-
-		begin++; // Update skin pointer to next index
-	}
-}
-
-std::vector<BlendWeight>*
-Skin::unpack(const std::vector<std::string>& stringTable)
-{
-	int numVerts = this->weights.size() / numWeights;
-	std::vector<BlendWeight>* skinData = new std::vector<BlendWeight>;
-	skinData->resize(numVerts);
-
-	/* Iterate through all skin vertices */
-	for (int i = 0; i < numVerts; i++)
-	{
-		BlendWeight& skinVtx = skinData->at(i);
-		int skinPtr = (i * numWeights);
-		LoadVertexSkin(this, skinVtx, stringTable, skinPtr, numWeights);
-	}
-
-	return skinData;
-}
 
 Vec2 UVMap::texcoord(const int index) const
 {
@@ -114,7 +80,7 @@ Vec3 Mesh::vertex(const int index) const
 	return Vec3{ vertices[offset],  vertices[offset + 1],  vertices[offset + 2] };
 }
 
-Vec3 StBlendShape::vertex(const int index) const 
+Vec3 BlendShape::vertex(const int index) const 
 {
 	int offset = (index * 3);
 	return Vec3{ vertices[offset],  vertices[offset + 1],  vertices[offset + 2] };
@@ -386,5 +352,26 @@ void MeshCalc::calculateTangentsBinormals(Mesh& mesh, const bool use_tangents)
 
 	MikkTCalc mikkcalculator(&mesh);
 	mikkcalculator.generate();
+}
+
+inline bool hasString(const std::vector<std::string>& vec, const std::string& target)
+{
+	return std::find(vec.begin(), vec.end(), target) != vec.end();
+}
+
+void Skin::updateIndices(const NSSkeleton* skeleton)
+{
+	// Update blend indices
+	for (auto& vertex : this->blendverts)
+		for (int i = 0; i < vertex.indices.size(); i++)
+		{
+			int index = vertex.indices[i];
+			if (index > skeleton->joints.size())
+				continue;
+
+			auto& joint = skeleton->joints[index];
+			if (!::hasString(vertex.bones, joint->name))
+				vertex.bones.push_back(joint->name);
+		}
 }
 

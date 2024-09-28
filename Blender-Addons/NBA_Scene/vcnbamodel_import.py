@@ -81,6 +81,7 @@ class vCNBAModelImport(Operator, ImportHelper):
         """
         Attempts to load the scene file after converting .bin files to .gz.
         """
+        
         try:
             loadSceneFile(filepath, keywords)
             print("[Success] Scene loaded successfully.")

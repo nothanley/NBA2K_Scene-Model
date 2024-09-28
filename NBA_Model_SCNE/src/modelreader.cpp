@@ -1,6 +1,7 @@
 #include <modelreader.h>
 #include <scenefile.h>
 #include <common.h>
+#include <armature/bone_reader.h>
 
 static int gPrimOffset = 0;
 
@@ -24,12 +25,20 @@ void CModelReader::parse()
 
 		switch (key)
 		{
+		case enModelData::WEIGHTBITS:
+			m_weightBits = it.value();
+			break;
+		case enModelData::TRANSFORM:
+			readTfms(it.value());
+			break;
 		case enModelData::PRIM:
 			readPrim(it.value());
 			break;
 		case enModelData::INDEXBUFFER:
 			readIndexBuffer(it.value());
-			m_dataBfs.back().id = it.key();
+			break;
+		case enModelData::MATRIXWEIGHTBUFFER:
+			readMtxWeightBuffer(it.value());
 			break;
 		case enModelData::VERTEXFORMAT:
 			readVertexFmt(it.value());
@@ -73,6 +82,8 @@ void CModelReader::mergeMeshGroups()
 	}
 
 	// update scene collection
+	loadWeights(*mesh); // load skin weights
+
 	m_meshes.clear();
 	m_meshes.push_back(mesh);
 }
@@ -94,8 +105,8 @@ void CModelReader::loadMeshData()
 	if (m_dataBfs.empty() || m_vtxBfs.empty() || m_groups.empty())
 		return;
 
+	// todo: implement this better, this is slow ...
 	createSkinMeshes();
-
 	if (MERGE_MESH_PRIMS)
 		this->mergeMeshGroups();
 
@@ -240,11 +251,24 @@ void CModelReader::readVertexStream(JSON& obj)
 	}
 }
 
+void CModelReader::readMtxWeightBuffer(JSON& obj)
+{
+	// find weight data stream
+	CDataBuffer data;
+	data.parse(obj);
+	data.loadBinary();
+	data.id = "MatrixWeightBuffer";
+
+	m_dataBfs.push_back(data);
+};
+
+
 void CModelReader::readIndexBuffer(JSON& obj)
 {
 	CDataBuffer data;
 	data.parse(obj);
 	data.loadBinary();
+	data.id = "IndexBuffer";
 
 	m_dataBfs.push_back(data);
 }
@@ -267,4 +291,73 @@ void CModelReader::readPrim(JSON& obj)
 	}
 }
 
+
+void CModelReader::readTfms(JSON& obj)
+{
+	// Load bone data
+	CBoneReader::fromJSON(obj, m_skeleton);
+}
+
+
+inline static float unpackWeight(const uint16_t& packedWeight)
+{
+	return (float)packedWeight / 0xFFFF;
+}
+
+inline static void loadPackedWeights(const uint32_t& index, const std::vector<float>& mtxData, const int num_weights, BlendVertex& skinVtx)
+{
+	uint32_t encodedValue, blendIdx, skinVal;
+	size_t   numPackVals = mtxData.size();
+
+	// load weight data
+	for (int i = 0; i < (num_weights+1); i++)
+		if ((index + i) <= numPackVals)
+		{
+			encodedValue = mtxData[index + i];
+			blendIdx = encodedValue >> 0x10;
+			skinVal  = encodedValue & 0xFFFF;
+
+			skinVtx.indices.push_back(blendIdx);
+			skinVtx.weights.push_back(::unpackWeight(skinVal));
+		};
+}
+
+inline static void loadMatrixBufferWeights(
+	Mesh& mesh, const size_t& numVerts, const size_t& numElems,
+	const CDataBuffer* weightBf, const CDataBuffer* matrixBf)
+{
+	// Load vertex weights + indices
+	uint32_t packedVtxSkin, numVtxWeights, matrixIndex;
+	mesh.skin.blendverts.resize(numVerts);
+
+	for (size_t i = 0; i < numVerts; i++)
+	{
+		packedVtxSkin = weightBf->data[i];
+		numVtxWeights = packedVtxSkin & 0xFF;
+		matrixIndex   = packedVtxSkin >> 0x8;
+
+		// unpack weight data
+		::loadPackedWeights(matrixIndex, matrixBf->data, numVtxWeights, mesh.skin.blendverts[i]);
+	}
+}
+
+void CModelReader::loadWeights(Mesh& mesh)
+{
+	// Retrieve weight buffers
+	auto weightBf = findDataBuffer("WEIGHTDATA0");
+	auto matrixBf = findDataBuffer("MatrixWeightBuffer");
+	if (!weightBf || !matrixBf)
+		return;
+
+	// Get num total elements
+	size_t numBfElems = matrixBf->data.size();
+	size_t numVerts   = mesh.vertices.size() / 3;
+	if (numVerts > weightBf->data.size())
+		return;
+
+	::loadMatrixBufferWeights(mesh, numVerts, numBfElems, weightBf, matrixBf);
+
+	// System logs ...
+	mesh.skin.updateIndices(&m_skeleton);
+}
 

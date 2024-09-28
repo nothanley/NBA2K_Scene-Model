@@ -134,14 +134,20 @@ class cscnelib():
 
     @staticmethod
     def getFileStatus(file_path):
+        
+        lib = ctypes.CDLL( GetDLLPath() )
+        
         lib.getFileStatus.restype  = ctypes.c_bool
         lib.getFileStatus.argtypes = [ctypes.c_char_p]
         return lib.getFileStatus(file_path.encode('utf-8'))
     
     @staticmethod
     def updateFileMesh(file_path, id, vertices, texcoords, normals, num_verts, num_tris, search_method):
-        lib.updateScneFileMeshData.restype  = ctypes.c_bool
-        lib.updateScneFileMeshData.argtypes = [ctypes.c_char_p, # file path
+
+        lib = ctypes.CDLL( GetDLLPath() )
+
+        lib.updateMeshData.restype  = ctypes.c_bool
+        lib.updateMeshData.argtypes = [ctypes.c_char_p, # file path
                                                ctypes.c_char_p, # mesh id
                                                ctypes.POINTER(ctypes.c_float), # position input
                                                ctypes.POINTER(ctypes.c_float), # texcoords input
@@ -156,7 +162,7 @@ class cscnelib():
         c_texcoords = (ctypes.c_float * num_verts)(*texcoords)
         c_norms     = (ctypes.c_float * num_verts)(*normals)
 
-        return lib.updateScneFileMeshData(
+        return lib.updateMeshData(
             file_path.encode('utf-8'),
             id.encode('utf-8'),
             c_verts, 
@@ -291,6 +297,48 @@ class cmodellib():
         lib.linkMeshToModel.argtypes  = [ctypes.c_void_p, ctypes.c_void_p]
         return lib.linkMeshToModel(cskinmodel, cskinmesh)
     
+    @staticmethod
+    def getNumBones(cskinmodel):
+        lib.getNumBones.restype  = ctypes.c_int
+        lib.getNumBones.argtypes = [ctypes.c_void_p]
+        return lib.getNumBones(cskinmodel)
+
+    @staticmethod
+    def getBoneParentIndex(cskinmodel, joint_index):
+        lib.getBoneParentIndex.restype  = ctypes.c_int
+        lib.getBoneParentIndex.argtypes = [ctypes.c_void_p, ctypes.c_int]
+        return lib.getBoneParentIndex(cskinmodel, joint_index)
+
+    @staticmethod
+    def getBoneMatrix(cskinmodel, joint_index):
+        lib.getBoneMatrix.restype  = ctypes.POINTER(ctypes.c_float)
+        lib.getBoneMatrix.argtypes = [ctypes.c_void_p, ctypes.c_int]
+        return lib.getBoneMatrix(cskinmodel, joint_index)
+
+    @staticmethod
+    def getBoneName(cskinmodel, joint_index):
+        lib.getBoneName.restype  = ctypes.c_char_p
+        lib.getBoneName.argtypes = [ctypes.c_void_p, ctypes.c_int]
+        return lib.getBoneName(cskinmodel, joint_index)
+
+    @staticmethod
+    def getSkinData(cskinmodel, mesh_index):
+        lib.getSkinData.restype  = ctypes.c_void_p
+        lib.getSkinData.argtypes = [ctypes.c_void_p, ctypes.c_int] 
+        return lib.getSkinData(cskinmodel, mesh_index)
+
+    @staticmethod
+    def getAllSkinGroups(cskinmodel, num_bones_p):
+        lib.getAllSkinGroups.restype  = ctypes.POINTER(ctypes.c_char_p)
+        lib.getAllSkinGroups.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int)] 
+        return lib.getAllSkinGroups(cskinmodel, num_bones_p)
+
+    @staticmethod
+    def getAllJointWeights(cskinmodel, bone_name, size_p):
+        lib.getAllJointWeights.restype  = ctypes.POINTER(ctypes.c_float)
+        lib.getAllJointWeights.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_int)] 
+        return lib.getAllJointWeights(cskinmodel, bone_name, size_p)
+
 class ExternalLibary():
     def getLoadOperator(self):
         # Defines Call for 'void* loadModelFile(const char* filePath, CNBAScene* pScene, bool use_lods, bool split_groups)'

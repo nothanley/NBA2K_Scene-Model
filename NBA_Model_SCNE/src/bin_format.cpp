@@ -82,7 +82,14 @@ void Format_32Bit<Channels>::decode(FMT_DT_PARAMS)
 		char* data = src + (i * stride) + offset;
 
 		for (int j = 0; j < Channels; j++) // Loop through RBGA Channels
-			target.push_back( ReadFloat(data) );
+		{
+			if (type == "sint" || type == "uint") {
+				target.push_back(ReadInt32(data));
+			}
+			else {
+				target.push_back(ReadFloat(data));
+			}
+		}
 	}
 }
 

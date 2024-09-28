@@ -23,13 +23,16 @@ private:
 
 private:
 	void loadMeshData();
+	void loadWeights(Mesh& mesh);
 	void loadVertices(Mesh& mesh);
 	void loadIndices(Mesh& mesh, const int count);
 	void loadMesh(StGeoPrim& prim);
+	void readTfms(JSON& obj);
 	void readPrim(JSON& obj);
 	void readVertexFmt(JSON& obj);
 	void readVertexStream(JSON& obj);
 	void readIndexBuffer(JSON& obj);
+	void readMtxWeightBuffer(JSON& obj);
 
 private:
 	CDataBuffer* findDataBuffer(const char* id);

@@ -159,12 +159,6 @@ struct Material
 	std::string roughness_map;
 };
 
-struct VertexColorSet
-{
-	std::string name;
-	std::vector<float> map;
-};
-
 struct BoundingBox
 {
 	float minX, minY, minZ;
@@ -172,13 +166,13 @@ struct BoundingBox
 	float radius;
 };
 
-struct BlendWeight {
+struct BlendVertex {
+	std::vector<int> indices;
 	std::vector<std::string> bones;
 	std::vector<float> weights;
 };
 
-
-struct StBlendShape {
+struct BlendShape {
 	std::string name;
 	std::vector<float> vertices;
 	std::vector<int>   vtxMorphs;
@@ -186,13 +180,12 @@ struct StBlendShape {
 	Vec3 vertex(const int index) const;
 };
 
-struct Skin {
-	int numWeights = 0;
-	std::vector<float> weights, indices;
+struct NSSkeleton;
 
-	/* Unpacks all weights and indices into a bw struct vector */
-	std::vector<BlendWeight>* unpack(
-		const std::vector<std::string>& stringTable);
+struct Skin 
+{
+	std::vector<BlendVertex> blendverts;
+	void updateIndices(const NSSkeleton* skeleton);
 };
 
 struct UVMap {
@@ -212,9 +205,8 @@ struct Mesh
 
 	Skin skin;
 	CNSMaterial material;
-	std::vector<float> vertices, normals, tangent_frames;
-	std::vector<float> binormals, tangents;
-	std::vector<VertexColorSet> colors;
+	std::vector<float> vertices, tangent_frames;
+	std::vector<float> normals, binormals, tangents;
 	std::vector<Triangle> triangles;
 	std::vector<UVMap> uvs;
 

@@ -13,10 +13,10 @@ void run_loader_debug()
 {
 	// Open and load a scene file given a local path.
 	CSceneFile inFile(
-		//"C:/SteamLibrary/steamapps/common/NBA 2K25/mods/char/sig/hihead.scne" );
+		"C:/SteamLibrary/steamapps/common/NBA 2K25/mods/png1013/hihead.scne" );
 		//"C:/Users/wauke/Downloads/NBA 2K25 Research/mods/props/appliance_boombox_generic-2/appliance_boombox_generic.SCNE");
 		//"C:/Users/wauke/Downloads/NBA 2K25 Research/mods/balls/ball.SCNE");
-		"C:/Users/wauke/Desktop/NBA2K_OUT_DEV/nba_test.scne");
+		//"C:/Users/wauke/Desktop/NBA2K_OUT_DEV/nba_test.scne");
 
 	// Parse all scene data from file path
 	inFile.load();
@@ -28,7 +28,6 @@ void run_loader_debug()
 	for (auto& model : scene->models())
 		auto mesh = model->getMesh();
 
-	printf("");
 };
 
 void run_update_debug()
@@ -90,9 +89,9 @@ int main()
 	USE_DEBUG_LOGS = true;
 
 	//run_material_reader();
-	//run_loader_debug();
+	run_loader_debug();
 	//run_update_debug();
-	run_model_serialize();
+	//run_model_serialize();
 	
 	printf("\n\n[DEBUG-MAIN] Finished debug reader...");
 }

@@ -30,4 +30,13 @@ DLLEX const uint32_t* getMeshTriangleList(void* pNbaScene, const int index);
 DLLEX int getNumTriangles(void* pNbaScene, const int index);
 DLLEX const float* getMeshUvChannel(void* pNbaScene, const int meshIndex, const int channelIndex);
 
+/* Interface methods for updating 'CSkinModel' rig data */
+DLLEX int         getNumBones(void* pNbaModel);
+DLLEX int         getBoneParentIndex(void* pNbaModel, int joint_index);
+DLLEX float*      getBoneMatrix(void* pNbaModel, int joint_index);
+DLLEX const char* getBoneName(void* pNbaModel, int joint_index);
 
+/* Interface methods for updating 'CSkinModel' skin data */
+DLLEX void*        getSkinData(void* pNbaModel, int mesh_index);
+DLLEX const char** getAllSkinGroups(void* pSkin, int* num_groups);
+DLLEX float*       getAllJointWeights(void* pSkin, const char* joint_name, int* size);

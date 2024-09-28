@@ -5,7 +5,7 @@
 
 bool USE_DEBUG_LOGS   = false;
 bool INCLUDE_LODS     = false;
-bool MERGE_MESH_PRIMS = false;
+bool MERGE_MESH_PRIMS = true;
 
 void decodeOctahedralNorms(CDataBuffer* tanFrameBf, Mesh& mesh)
 {

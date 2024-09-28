@@ -110,19 +110,7 @@ void setMeshSkinData(void* pMesh, int* indices, float* weights, int size, int nu
 		return;
 
 	//printf("\n[CSkinModel] Populating Skin with limit: %d\n", numWeightsPerVtx);
-	auto& blendindices = mesh->skin.indices;
-	auto& blendweights = mesh->skin.weights;
-	mesh->skin.numWeights = numWeightsPerVtx;
-
-	blendindices.resize(size);
-	for (int i = 0; i < size; i++) {
-		blendindices.at(i) = indices[i];
-	}
-
-	blendweights.resize(size);
-	for (int i = 0; i < size; i++) {
-		blendweights.at(i) = weights[i];
-	}
+	
 }
 
 void saveModelToFile(void* pModel, const char* savePath)

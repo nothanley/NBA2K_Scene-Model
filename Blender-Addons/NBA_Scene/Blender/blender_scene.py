@@ -1,6 +1,7 @@
 import bpy # type: ignore
 import os
 from .blender_mesh import *
+from .blender_skeleton import *
 from math import radians
 
 def getNewSceneCollection(name, link_to_scene=True):
@@ -27,12 +28,19 @@ def loadSkinModel(model, parent, args, model_path):
     if model.getNumMeshes() == 0:
         return
     
+    # construct skeleton
+    if model.has_skeleton():
+        armature_obj = loadSkeleton(parent, model.getSkeleton() )
+    
     # construct all child meshes
     for mesh in model.getMeshes():
         object = loadSkinMesh(mesh, args, model_path)
         parent.objects.link(object)
-        # object.rotation_euler[0] = radians(90) # Flip default axis
 
+        if ( model.has_skeleton() ): # Link to skeleton if model has armature
+            object.parent   = armature_obj
+            modifier        = object.modifiers.new(type='ARMATURE', name="Armature")
+            modifier.object = armature_obj
     return
 
 

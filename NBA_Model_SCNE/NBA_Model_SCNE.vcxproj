@@ -212,6 +212,8 @@
     <ClCompile Include="include\MikkGen.cpp" />
     <ClCompile Include="include\mikktspace.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\armature\armature.cpp" />
+    <ClCompile Include="src\armature\bone_reader.cpp" />
     <ClCompile Include="src\bin_codec.cpp" />
     <ClCompile Include="src\bin_format.cpp" />
     <ClCompile Include="src\cereal\effectserializer.cpp" />
@@ -274,6 +276,8 @@
     <ClInclude Include="include\zlib\zconf.h" />
     <ClInclude Include="include\zlib\zlib.h" />
     <ClInclude Include="include\zlib\zutil.h" />
+    <ClInclude Include="src\armature\armature.h" />
+    <ClInclude Include="src\armature\bone_reader.h" />
     <ClInclude Include="src\bin_codec.h" />
     <ClInclude Include="src\bin_format.h" />
     <ClInclude Include="src\cereal\effectserializer.h" />

@@ -1,5 +1,6 @@
 from ..Link.wrapper            import cmodellib
 from ..SkinModel.skinmesh      import vCSkinMesh
+from ..SkinModel.skinrig       import vCSkeleton
 
 class CNBAScene():
 
@@ -18,13 +19,19 @@ class CNBAScene():
             self.__setup()
         
 class cNBASkinModel():
-    
     def getNumMeshes(self):
         return len(self.__meshes)
     
     def getMeshes(self):
         return self.__meshes
 
+    def getSkeleton(self):
+        return self.__skeleton
+    
+    def has_skeleton(self):
+        skeleton = self.getSkeleton()
+        return (len(skeleton.bones) != 0)
+    
     def __getCSceneModel(self):
         return cmodellib.getSceneModel(self.__data, self.__index)
     
@@ -39,11 +46,13 @@ class cNBASkinModel():
             mesh = vCSkinMesh(self.__data, i)
             self.__meshes.append(mesh)
 
+        self.__skeleton = vCSkeleton(self.__data) # Gather all rig/joint data
         return
     
     def __init__(self, data=None, index=None):
         self.__index  = index
         self.__data   = data
+        self.__skeleton = None
         self.__meshes = []
         
         if (self.__data != None):

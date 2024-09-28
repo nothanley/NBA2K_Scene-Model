@@ -42,3 +42,8 @@ std::string CNBAModel::name()
 {
 	return m_name;
 }
+
+const NSSkeleton& CNBAModel::getSkeleton() const
+{
+	return m_skeleton;
+}

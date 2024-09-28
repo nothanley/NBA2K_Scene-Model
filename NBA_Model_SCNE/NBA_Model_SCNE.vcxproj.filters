@@ -59,6 +59,9 @@
     <Filter Include="Library\DirectXTex">
       <UniqueIdentifier>{fb0ddcfc-64bc-4806-aa42-3a41ed4103a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NBA\Armature">
+      <UniqueIdentifier>{c11fc3b6-5b44-4aca-a9c3-93f4eddfa5dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -180,6 +183,12 @@
     </ClCompile>
     <ClCompile Include="include\DirectXTex\BCDirectCompute.cpp">
       <Filter>Library\DirectXTex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\armature\armature.cpp">
+      <Filter>NBA\Armature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\armature\bone_reader.cpp">
+      <Filter>NBA\Reader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -365,6 +374,12 @@
     </ClInclude>
     <ClInclude Include="include\DirectXTex\scoped.h">
       <Filter>Library\DirectXTex</Filter>
+    </ClInclude>
+    <ClInclude Include="src\armature\armature.h">
+      <Filter>NBA\Armature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\armature\bone_reader.h">
+      <Filter>NBA\Reader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

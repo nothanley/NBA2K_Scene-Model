@@ -1,5 +1,6 @@
 import numpy as np
 from ..Link.wrapper        import cmodellib
+from .skinmesh_weights     import vCMeshWeights
 from mathutils import Vector # type: ignore
 
 def getMeshName(mesh):
@@ -95,6 +96,7 @@ class vCSkinMesh():
         self.vertex_normals  = getMeshNormals(self)
         self.index_list      = getIndexList(self)
         self.texcoords       = getTexCoords(self)
+        self.skin            = vCMeshWeights(self.data, self.id)
 
         return
     

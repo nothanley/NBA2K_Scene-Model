@@ -49,6 +49,21 @@ def remove_loose_verts(mesh):
     bm.free()
     return
 
+def setVertexGroups(obj, vertex_skin):
+    # Check if the mesh has valid skin groups
+    if vertex_skin.groups == None:
+        return
+    
+    # Create a new vertex group and append defined weights
+    for i, group in enumerate(vertex_skin.groups):
+        vertex_group = obj.vertex_groups.new(name=group)
+        vertex_weights = vertex_skin.weights[i]
+
+        for index, weight in enumerate(vertex_weights):
+            if (weight != 0.0):
+                vertex_group.add([index], weight, 'ADD')
+    return
+
 def loadSkinMesh(skinmesh, settings, model_path):
     # Create BPY mesh
     new_mesh = bpy.data.meshes.new( skinmesh.mesh_name )
@@ -58,7 +73,8 @@ def loadSkinMesh(skinmesh, settings, model_path):
     # Set mesh attributes
     setMeshNormals   (new_mesh,    skinmesh.vertex_normals)
     setTexCoords     (new_mesh,    skinmesh.texcoords)
-
+    setVertexGroups  (new_object,  skinmesh.skin)
+    
     # Debug to remove extraneous geo
     remove_loose_verts(new_mesh)
 

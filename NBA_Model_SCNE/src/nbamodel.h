@@ -1,11 +1,8 @@
 
 #include <meshprimitive.h>
+#include <armature/armature.h>
 #include <databuffer.h>
 #pragma once
-
-struct RigBone;
-struct Material;
-struct BoundingBox;
 
 class CNBAModel
 {
@@ -21,12 +18,15 @@ public:
 
 public:
 	void pushMesh(const Mesh& mesh);
+	const NSSkeleton& getSkeleton() const;
 
 protected:
 	std::string m_name;
+	NSSkeleton m_skeleton;
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
 	std::vector<StGeoPrim> m_groups;
 	std::vector<Array2D> g_uvDeriv;
+	int m_weightBits;
 };
 
 
