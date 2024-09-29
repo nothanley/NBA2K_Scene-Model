@@ -41,6 +41,9 @@ def loadSkinModel(model, parent, args, model_path):
             object.parent   = armature_obj
             modifier        = object.modifiers.new(type='ARMATURE', name="Armature")
             modifier.object = armature_obj
+
+        if args["split_groups"]:
+            splitAllMaterialGroups(object)
     return
 
 

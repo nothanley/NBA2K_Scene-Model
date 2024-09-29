@@ -339,11 +339,22 @@ class cmodellib():
         lib.getAllJointWeights.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_int)] 
         return lib.getAllJointWeights(cskinmodel, bone_name, size_p)
 
+    @staticmethod
+    def getMaterialFaceGroup(cskinmodel, mesh_index, group_index, face_begin_p, face_end_p):
+        lib.getMaterialFaceGroup.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int)] 
+        return lib.getMaterialFaceGroup(cskinmodel, mesh_index, group_index, face_begin_p, face_end_p)
+    
+    @staticmethod
+    def getAllFaceGroups(cskinmodel, mesh_index, size_p):
+        lib.getAllFaceGroups.restype  = ctypes.POINTER(ctypes.c_char_p)
+        lib.getAllFaceGroups.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.POINTER(ctypes.c_int)] 
+        return lib.getAllFaceGroups(cskinmodel, mesh_index, size_p)
+
 class ExternalLibary():
     def getLoadOperator(self):
-        # Defines Call for 'void* loadModelFile(const char* filePath, CNBAScene* pScene, bool use_lods, bool split_groups)'
+        # Defines Call for 'void* loadModelFile(const char* filePath, CNBAScene* pScene)'
         self.dynamic_lib.loadModelFile.restype  = ctypes.c_void_p
-        self.dynamic_lib.loadModelFile.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p), ctypes.c_bool, ctypes.c_bool]
+        self.dynamic_lib.loadModelFile.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p)]
         return self.dynamic_lib.loadModelFile
     
     def getDeleteOperator(self):

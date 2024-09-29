@@ -6,7 +6,6 @@ from ..SkinModel.skinrig      import vCSkeleton, vCRigJoint
 from ..Blender.blender_scene  import cNBABlenderScene
 
 def buildScene(scene_pointer, model_path, args):
-
     # initialize scene models  
     scene = CNBAScene(scene_pointer)
     models = [None] * scene.num_models
@@ -19,7 +18,6 @@ def buildScene(scene_pointer, model_path, args):
     scene.set_name(model_path)
     scene.set_load_args(args)
     scene.build()
-
     return
 
 def loadSceneFile( filepath , args ):
@@ -34,8 +32,6 @@ def loadSceneFile( filepath , args ):
     nba_scene = module.load_scene(
          filepath.encode('utf-8'), 
          ctypes.byref(scene_file), 
-         args['include_lods'] ,
-         args['split_groups'] 
          )
 
     # evaluate result type

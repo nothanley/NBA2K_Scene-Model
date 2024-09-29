@@ -8,8 +8,7 @@ def getSkinData(cmodel, mesh_index):
 def getAllSkinGroups(cskin):
     numBones = ctypes.c_int()
     data     = cmodellib.getAllSkinGroups(cskin, ctypes.byref(numBones))
-    if (data == None): 
-        return None
+    if (not data): return None
     
     # Convert the received data to a Python list of strings
     skin_groups = [ctypes.string_at(data[i]).decode("utf-8") for i in range(numBones.value)]
@@ -19,7 +18,7 @@ def getAllSkinGroups(cskin):
     return skin_groups
 
 def getAllSkinWeights(cskin, groups):
-    if (groups == None): return None
+    if (not groups): return None
 
     size = ctypes.c_int()
     weights = [float] * len(groups)

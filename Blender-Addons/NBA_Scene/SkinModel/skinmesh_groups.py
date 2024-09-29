@@ -6,7 +6,6 @@ class vCMeshGroup():
         self.material   = None
         self.face_begin = None
         self.face_end   = None
-        self.diffuse_id  = None
 
 def getGroupLabels(cmodel, mesh_index):
     numGroups = ctypes.c_int()
@@ -27,10 +26,6 @@ def getGroupData(cmodel, mesh_index, group_index):
     cmodellib.getMaterialFaceGroup(cmodel, mesh_index, group_index, ctypes.byref(faceBegin), ctypes.byref(faceSize))
     return faceBegin.value, faceSize.value
 
-def getMaterialDiffuseName(cmodel, mesh_index, group_index):
-    map_id = cmodellib.getMaterialDiffuseMap(cmodel, mesh_index, group_index)
-    return map_id.decode("utf-8")
-
 def getMaterialGroups(cmodel, mesh_index):
     mesh_groups = []
     faceGroupNames = getGroupLabels(cmodel, mesh_index)
@@ -43,7 +38,6 @@ def getMaterialGroups(cmodel, mesh_index):
             group.material   = label
             group.face_begin = triangle_index
             group.face_end   = triangle_index + num_triangles
-            group.diffuse_id  = getMaterialDiffuseName(cmodel, mesh_index, i)
             mesh_groups.append(group)
 
     return mesh_groups

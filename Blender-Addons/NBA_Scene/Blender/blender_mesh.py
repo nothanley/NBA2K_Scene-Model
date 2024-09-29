@@ -64,6 +64,28 @@ def setVertexGroups(obj, vertex_skin):
                 vertex_group.add([index], weight, 'ADD')
     return
 
+def setMaterials(obj, groups, model_path):
+    toggle_matcap = False
+
+    for index, group in enumerate(groups):
+        mat = bpy.data.materials.new(name=group.material)
+        selected_faces = [f for f in obj.data.polygons if f.index in range(group.face_begin, group.face_end)]
+        
+        for face in selected_faces:
+            face.material_index = index
+        
+        obj.data.materials.append(mat)
+        # todo: load material textures ...
+
+    if (toggle_matcap):
+        try:
+            bpy.context.space_data.shading.light = 'MATCAP'
+            bpy.context.space_data.shading.color_type = 'TEXTURE'
+        except:
+            pass
+
+    return
+
 def loadSkinMesh(skinmesh, settings, model_path):
     # Create BPY mesh
     new_mesh = bpy.data.meshes.new( skinmesh.mesh_name )
@@ -74,6 +96,7 @@ def loadSkinMesh(skinmesh, settings, model_path):
     setMeshNormals   (new_mesh,    skinmesh.vertex_normals)
     setTexCoords     (new_mesh,    skinmesh.texcoords)
     setVertexGroups  (new_object,  skinmesh.skin)
+    setMaterials     (new_object , skinmesh.material_groups, model_path)
     
     # Debug to remove extraneous geo
     remove_loose_verts(new_mesh)
