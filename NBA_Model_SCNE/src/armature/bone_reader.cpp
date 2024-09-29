@@ -38,7 +38,8 @@ void CBoneReader::parse()
 	for (JSON::iterator it = m_json->begin(); it != m_json->end(); ++it)
 		if (it.value().is_object())
 		{
-			loadTransformDef(index++, it.key(), it.value());
+			loadTransformDef(index, it.key(), it.value());
+			index++;
 		}
 }
 
@@ -69,8 +70,9 @@ inline static void loadTranslate(JSON::iterator& it, std::shared_ptr<NSJoint>& j
 void CBoneReader::loadTransformDef(const int index, const std::string& key, JSON & obj)
 {
 	// create joint
-	auto joint = std::make_shared<NSJoint>();
-	joint->name = key;
+	auto joint   = std::make_shared<NSJoint>();
+	joint->name  = key;
+	joint->index = index;
 
 	// collect bone data
 	for (JSON::iterator it = obj.begin(); it != obj.end(); ++it)
@@ -96,7 +98,6 @@ void CBoneReader::loadTransformDef(const int index, const std::string& key, JSON
 	}
 
 	// store joint
-	joint->index = index;
 	m_skeleton->joints[index] = joint;
 }
 

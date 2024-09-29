@@ -7,7 +7,6 @@ using JSON = nlohmann::ordered_json;
 // GLOBAL EXPORT SETTINGS
 extern bool USE_DEBUG_LOGS;   // toggles debug logs  - (could be preprocessor def but this lets client toggle)
 extern bool INCLUDE_LODS;     // toggles lower level meshes
-extern bool MERGE_MESH_PRIMS; // splits all mesh primitives
 
 // Known prim JSON keys
 enum enModelData {
@@ -21,6 +20,7 @@ enum enModelData {
 };
 
 enum enPrimTag {
+	PM_BLENDINDEXRANGE = 483033871,
 	PM_MATERIAL = 3427514740,
 	PM_MESH = 2089354642,
 	PM_TYPE = 2089627879,
@@ -48,8 +48,9 @@ struct StGeoPrim
 	std::string material_name;
 
 	int count = NULL;
-	int64_t begin = -1;
+	int64_t data_begin = -1;
 
+	Vec2 blendIndexRange{ 0,0 };
 	std::vector<Array2D> uv_deriv;
 	std::vector<StGeoLOD> lods;
 	std::shared_ptr<Mesh> mesh;

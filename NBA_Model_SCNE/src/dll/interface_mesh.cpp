@@ -2,11 +2,10 @@
 #include <nbascene>
 #include <vector>
 
-void* loadModelFile(const char* filePath, void** filePtr, bool use_lods, bool split_groups)
+void* loadModelFile(const char* filePath, void** filePtr)
 {
     /* Initialize CModelFile Address */
-    INCLUDE_LODS     = use_lods;
-    MERGE_MESH_PRIMS = !split_groups;
+    INCLUDE_LODS = false;
     *filePtr = nullptr;
 
     /* Load file and scene-contents */
@@ -305,18 +304,18 @@ const char** getAllSkinGroups(void* pSkin, int* num_groups)
 
     // Get all bones from skin
     std::vector<std::string*> groups;
-    for (auto& vertex : skin->blendverts) {
+    for (auto& vertex : skin->blendverts) 
+    {
         for (auto& bone : vertex.bones)
-        {
             if (!hasGroup(groups, &bone))
                 groups.push_back(&bone);
-        }
     }
 
     // Convert std::vector<std::string> to array of char pointers
     *num_groups = static_cast<int>(groups.size());
     const char** arr = new const char* [*num_groups];
-    for (size_t i = 0; i < *num_groups; ++i) {
+    for (size_t i = 0; i < *num_groups; ++i) 
+{
         arr[i] = groups[i]->c_str();
     }
 
@@ -336,13 +335,13 @@ float* getAllJointWeights(void* pSkin, const char* joint_name, int* size)
     for (int i = 0; i < numVerts; i++)
     {
         auto& skinVtx   = skin->blendverts.at(i);
-        int numVtxBones = skinVtx.bones.size();
+        int numBones    = skinVtx.bones.size();
         vtxWeights[i]   = 0.0f;
 
-        for (int j = 0; j < numVtxBones; j++)
+        for (int j = 0; j < numBones; j++)
             if (skinVtx.bones.at(j) == joint_name)
             {
-                vtxWeights[i] = skinVtx.weights.at(j);
+                vtxWeights[i] = skinVtx.weights.at(j); 
                 break;
             }
     }
@@ -350,5 +349,54 @@ float* getAllJointWeights(void* pSkin, const char* joint_name, int* size)
     *size = numVerts;
     return vtxWeights;
 }
+
+const char** getAllFaceGroups(void* pNbaModel, const int meshIndex, int* size)
+{
+    // Convert void pointer back to CSkinModel pointer
+    CNBAModel* model = static_cast<CNBAModel*>(pNbaModel);
+    if (!model || meshIndex > model->getNumMeshes())
+        return nullptr;
+
+    /* Load mesh */
+    auto mesh = model->getMeshes().at(meshIndex);
+
+    // Collect all group names
+    std::vector<std::string*> groups;
+    for (auto& faceGrp : mesh->groups) 
+    {
+        groups.push_back(&faceGrp.name);
+    }
+
+    // Convert std::vector<std::string> to array of char pointers
+    *size = static_cast<int>(groups.size());
+    const char** arr = new const char* [*size];
+    for (size_t i = 0; i < *size; ++i) {
+        arr[i] = groups[i]->c_str();
+    }
+
+    return arr;
+}
+
+void getMaterialFaceGroup(void* pNbaModel, const int meshIndex, const int groupIndex, int* faceBegin, int* faceSize)
+{
+    /* Define default values*/
+    *faceBegin = -1;
+    *faceSize  = -1;
+
+    // Convert void pointer back to CSkinModel pointer
+    CNBAModel* model = static_cast<CNBAModel*>(pNbaModel);
+    if (!model || meshIndex > model->getNumMeshes())
+        return;
+
+    /* Load mesh */
+    auto mesh = model->getMeshes().at(meshIndex);
+    if (groupIndex > mesh->groups.size())
+        return;
+
+    FaceGroup& group = mesh->groups.at(groupIndex);
+    *faceBegin       = group.begin / 3;
+    *faceSize        = group.count / 3;
+}
+
 
 

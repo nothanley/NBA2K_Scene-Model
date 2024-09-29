@@ -6,8 +6,7 @@
 bool getFileStatus(const char* path)
 {
     USE_DEBUG_LOGS = false;
-    INCLUDE_LODS = false;
-    MERGE_MESH_PRIMS = true;
+    INCLUDE_LODS   = false;
 
     /* Try to load file and contents */
     try
@@ -38,8 +37,7 @@ bool updateMeshData(
     const int search_method)
 {
     USE_DEBUG_LOGS = false;
-    INCLUDE_LODS = false;
-    MERGE_MESH_PRIMS = true;
+    INCLUDE_LODS   = false;
 
     /* Try to load file and contents */
     try

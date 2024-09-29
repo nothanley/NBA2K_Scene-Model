@@ -12,8 +12,6 @@ CTextureCompressor::CTextureCompressor(const std::shared_ptr<CNSTexture>& textur
 
 bool CTextureCompressor::compress(const std::shared_ptr<CNSTexture>& texture, const char* path, size_t& size)
 {
-	printf("Compressing texture to file: %s\n", path);
-
 	CTextureCompressor compressor(texture);
 	compressor.compressToFile(path, size);
 	return true;
@@ -58,7 +56,7 @@ inline static bool initImageTex(ScratchImage& image, const std::shared_ptr<CNSTe
 	// Copy the pixel data into the ScratchImage
 	memcpy(image.GetPixels(), pixelBits.data(), pixelBits.size());
 
-	printf("Texture initialized with width: %d, height: %d, mips: %d\n", tex->width(), tex->height(), tex->mips());
+	//printf("Texture initialized with width: %d, height: %d, mips: %d\n", tex->width(), tex->height(), tex->mips());
 	return true;
 }
 
@@ -66,7 +64,7 @@ inline static bool compressTexture(ScratchImage& image, ScratchImage& compressed
 {
 	HRESULT hr = Compress(*image.GetImage(0, 0, 0), fmt, TEX_COMPRESS_DEFAULT, TEX_THRESHOLD_DEFAULT, compressedImage);
 
-	printf("Texture compressed to format: %d\n", fmt);
+	//printf("Texture compressed to format: %d\n", fmt);
 	return !FAILED(hr);
 }
 
@@ -92,7 +90,6 @@ bool CTextureCompressor::compressToFile(const char* path, size_t& size)
 	if (FAILED(status))
 		return false;
 	
-	printf("Texture compressed to file: %s\n", path);
 	return true;
 }
 

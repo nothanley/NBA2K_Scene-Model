@@ -344,11 +344,13 @@ void MeshCalc::calculateTangentsBinormals(Mesh& mesh, const bool use_tangents)
 	mesh.tangents.clear();
 	mesh.binormals.clear();
 
-	if (!use_tangents || mesh.uvs.empty()) 
+	if (/* !use_tangents*/ mesh.uvs.empty())
 	{
 		MeshCalc::setFlatTangentBinormals(mesh);
 		return;
 	}
+
+	printf("\n[MeshCalc] Calculating Tangents and Binormals for mesh: %s", mesh.name.c_str());
 
 	MikkTCalc mikkcalculator(&mesh);
 	mikkcalculator.generate();
@@ -362,16 +364,20 @@ inline bool hasString(const std::vector<std::string>& vec, const std::string& ta
 void Skin::updateIndices(const NSSkeleton* skeleton)
 {
 	// Update blend indices
-	for (auto& vertex : this->blendverts)
-		for (int i = 0; i < vertex.indices.size(); i++)
-		{
-			int index = vertex.indices[i];
-			if (index > skeleton->joints.size())
-				continue;
+	int numIndices;
 
-			auto& joint = skeleton->joints[index];
-			if (!::hasString(vertex.bones, joint->name))
-				vertex.bones.push_back(joint->name);
+	for (auto& vertex : this->blendverts)
+	{
+		numIndices = vertex.indices.size();
+		vertex.bones.resize(numIndices);
+
+		for (int i = 0; i < numIndices; i++)
+		{
+			auto& blendIndex = vertex.indices[i];
+
+			if (blendIndex <= skeleton->joints.size())
+				vertex.bones[i]  = skeleton->joints[blendIndex]->name;
 		}
+	}
 }
 

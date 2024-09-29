@@ -13,7 +13,8 @@ void run_loader_debug()
 {
 	// Open and load a scene file given a local path.
 	CSceneFile inFile(
-		"C:/SteamLibrary/steamapps/common/NBA 2K25/mods/png1013/hihead.scne" );
+		"C:/Users/wauke/Desktop/clothing/lod23/TARGET_clothing_resource_male_nailpolish_left_thumb_geo/male_nailpolish_left_thumb.SCNE");
+		//"C:/SteamLibrary/steamapps/common/NBA 2K25/mods/png1013/hihead.scne" );
 		//"C:/Users/wauke/Downloads/NBA 2K25 Research/mods/props/appliance_boombox_generic-2/appliance_boombox_generic.SCNE");
 		//"C:/Users/wauke/Downloads/NBA 2K25 Research/mods/balls/ball.SCNE");
 		//"C:/Users/wauke/Desktop/NBA2K_OUT_DEV/nba_test.scne");

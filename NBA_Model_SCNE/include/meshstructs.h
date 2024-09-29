@@ -166,7 +166,8 @@ struct BoundingBox
 	float radius;
 };
 
-struct BlendVertex {
+struct BlendVertex 
+{
 	std::vector<int> indices;
 	std::vector<std::string> bones;
 	std::vector<float> weights;
@@ -196,6 +197,14 @@ struct UVMap {
 	float baseU, baseV;
 };
 
+struct FaceGroup 
+{
+	std::string name;
+	CNSMaterial material;
+	int begin;
+	int count;
+};
+
 // Game mesh struct - todo: make this a full class
 struct Mesh
 {
@@ -209,6 +218,7 @@ struct Mesh
 	std::vector<float> normals, binormals, tangents;
 	std::vector<Triangle> triangles;
 	std::vector<UVMap> uvs;
+	std::vector<FaceGroup> groups;
 
 	// NBA Specific attributes
 	void* vertex_ref   = NULL;

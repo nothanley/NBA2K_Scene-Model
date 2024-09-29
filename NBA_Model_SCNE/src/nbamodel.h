@@ -24,7 +24,7 @@ protected:
 	std::string m_name;
 	NSSkeleton m_skeleton;
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
-	std::vector<StGeoPrim> m_groups;
+	std::vector<StGeoPrim> m_primitives;
 	std::vector<Array2D> g_uvDeriv;
 	int m_weightBits;
 };

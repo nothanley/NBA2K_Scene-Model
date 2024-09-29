@@ -5,7 +5,6 @@
 
 bool USE_DEBUG_LOGS   = false;
 bool INCLUDE_LODS     = false;
-bool MERGE_MESH_PRIMS = true;
 
 void decodeOctahedralNorms(CDataBuffer* tanFrameBf, Mesh& mesh)
 {
@@ -65,6 +64,9 @@ void StGeoPrim::load(JSON& obj)
 
 		switch (key)
 		{
+		case enPrimTag::PM_BLENDINDEXRANGE:
+			blendIndexRange = { it.value()[0], it.value()[1] };
+			break;
 		case enPrimTag::PM_MATERIAL:
 			material_name = it.value();
 			break;
@@ -75,7 +77,7 @@ void StGeoPrim::load(JSON& obj)
 			type = it.value();
 			break;
 		case enPrimTag::PM_START:
-			begin = it.value();
+			data_begin = it.value();
 			break;
 		case enPrimTag::PM_COUNT:
 			count = it.value(); // (it.value() * UINT16_MAX ) / 3
@@ -120,7 +122,7 @@ void GeomDef::pushPrimLods(StGeoPrim& prim, std::vector<StGeoPrim>& prim_vec)
 
 		// Inherit source geometry from primitive but alter triangle list
 		StGeoPrim newPrim = prim;
-		newPrim.begin = lod.start;
+		newPrim.data_begin = lod.start;
 		newPrim.count = lod.count;
 
 		// Format and push to scene.

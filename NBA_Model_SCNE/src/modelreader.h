@@ -18,15 +18,14 @@ public:
 	void parse();
 
 private:
-	inline void mergeMeshGroups();
-	inline void createSkinMeshes();
+	inline void splitMeshGroups();
 
 private:
 	void loadMeshData();
 	void loadWeights(Mesh& mesh);
 	void loadVertices(Mesh& mesh);
-	void loadIndices(Mesh& mesh, const int count);
-	void loadMesh(StGeoPrim& prim);
+	void loadIndices(Mesh& mesh, const int count, uintptr_t& offset);
+	void loadMesh();
 	void readTfms(JSON& obj);
 	void readPrim(JSON& obj);
 	void readVertexFmt(JSON& obj);

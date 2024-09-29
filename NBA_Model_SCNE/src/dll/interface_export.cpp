@@ -81,10 +81,7 @@ void setMeshNormals(void* pMesh, float* normals, int size)
 	for (int i = 0; i < size; i++)
 		mesh->normals[i] = normals[i];
 
-	// Pack tangent frames
 	mesh->alignNormals(true);
-	MeshCalc::calculateTangentsBinormals(*mesh);
-	MeshCalc::buildTangentFrameVec(*mesh, mesh->tangent_frames);
 }
 
 void addUvMap(void* pMesh, float* texcoords, int size)
@@ -101,6 +98,10 @@ void addUvMap(void* pMesh, float* texcoords, int size)
 	}
 
 	mesh->uvs.push_back(channel);
+
+	// Pack tangent frames
+	MeshCalc::calculateTangentsBinormals(*mesh);
+	MeshCalc::buildTangentFrameVec(*mesh, mesh->tangent_frames);
 }
 
 void setMeshSkinData(void* pMesh, int* indices, float* weights, int size, int numWeightsPerVtx)

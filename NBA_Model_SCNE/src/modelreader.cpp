@@ -3,8 +3,6 @@
 #include <common.h>
 #include <armature/bone_reader.h>
 
-static int gPrimOffset = 0;
-
 CModelReader::CModelReader(const char* id, JSON& data)
 	:
 	CNBAModel(id),
@@ -63,70 +61,78 @@ void CModelReader::parse()
 	this->loadMeshData();
 }
 
-void CModelReader::mergeMeshGroups()
+inline static void trisFromMeshGroup(std::shared_ptr<Mesh>& fullMesh, std::shared_ptr<Mesh>& splitMsh, const FaceGroup& group)
 {
-	// Inherit base mesh from primitive - merge all data
-	auto src = *m_groups.front().mesh.get();
-	auto mesh = std::make_shared<Mesh>(src);
+	splitMsh->triangles.clear();
 
-	// Update mesh info
-	mesh->name = this->m_name;
-	mesh->definition = m_name;
-	mesh->triangles.clear();
+	// update index list
+	const int numTris = fullMesh->triangles.size();
+	size_t indexBegin = (group.begin) / 3;
+	size_t indexEnd   = (group.begin + group.count) / 3;
 
-	for (auto& group : m_groups)
+	for (size_t i = indexBegin; i < indexEnd; i++)
+		if (i <= numTris)
+		{
+			Triangle& tri = fullMesh->triangles[i];
+			splitMsh->triangles.push_back(tri);
+		}
+};
+
+void CModelReader::splitMeshGroups()
+{
+	if (m_meshes.empty())
+		return;
+
+	// split mesh using groups ...
+	auto fullMesh = m_meshes.front();
+	for (auto& group : fullMesh->groups)
 	{
-		// Merge Faces
-		for (auto& triangle : group.mesh->triangles)
-			mesh->triangles.push_back(triangle);
+		auto splitMsh = std::make_shared<Mesh>(*fullMesh);
+		::trisFromMeshGroup(fullMesh, splitMsh, group);
+
+		splitMsh->name = group.name;
+		m_meshes.push_back(splitMsh);
 	}
 
-	// update scene collection
-	loadWeights(*mesh); // load skin weights
-
-	m_meshes.clear();
-	m_meshes.push_back(mesh);
-}
-
-void CModelReader::createSkinMeshes()
-{
-	for (auto& group : m_groups)
-	{
-		// build split meshes using material group data
-		gPrimOffset = (group.begin > 0) ? group.begin : gPrimOffset;
-		loadMesh(group);
-	}
-
-	gPrimOffset = NULL;
+	m_meshes.erase(m_meshes.begin());
 }
 
 void CModelReader::loadMeshData()
 {
-	if (m_dataBfs.empty() || m_vtxBfs.empty() || m_groups.empty())
+	if (m_dataBfs.empty() || m_vtxBfs.empty() || m_primitives.empty())
 		return;
 
-	// todo: implement this better, this is slow ...
-	createSkinMeshes();
-	if (MERGE_MESH_PRIMS)
-		this->mergeMeshGroups();
+	this->loadMesh();
+	//this->splitMeshGroups();
 
-	m_groups.clear();
+	m_primitives.clear();
 }
 
-void CModelReader::loadMesh(StGeoPrim& prim)
+void CModelReader::loadMesh()
 {
-	prim.mesh  = std::make_shared<Mesh>();
-	auto& mesh = *prim.mesh;
+	// build full model mesh
+	uintptr_t dataOffset = NULL;
+	int  beginIdx        = 0;
+	auto mesh            = std::make_shared<Mesh>();
 
-	int index          = m_meshes.size();
-	int numTris        = prim.count;
-	mesh.definition    = m_name;
-	mesh.name          = prim.name;
-	mesh.material.setName(prim.material_name.c_str());
+	for (auto& prim : m_primitives)
+	{
+		FaceGroup group;
 
-	loadIndices(mesh, numTris);
-	loadVertices(mesh);
-	m_meshes.push_back(prim.mesh);
+		dataOffset  = (prim.data_begin < 0) ? dataOffset : prim.data_begin;
+		group.name  = prim.name;
+		group.begin = beginIdx;
+		group.count = prim.count;
+		group.material.setName(prim.material_name.c_str());
+		mesh->groups.push_back(group);
+
+		loadIndices(*mesh, prim.count, dataOffset);
+		beginIdx += prim.count;
+	}
+
+	loadVertices(*mesh);
+	loadWeights(*mesh);
+	m_meshes.push_back(mesh);
 }
 
 void CModelReader::loadVertices(Mesh& mesh)
@@ -152,22 +158,23 @@ void CModelReader::loadVertices(Mesh& mesh)
 
 	// System logs ...
 	if (USE_DEBUG_LOGS)
-		printf("\n[CModelReader] Built 3D Mesh: \"%s\" | Points: %d | Tris: %d",
+		printf
+		(	"\n[CModelReader] Built 3D Mesh: \"%s\" | Points: %d | Tris: %d",
 			mesh.name.c_str(),
 			mesh.vertices.size() / 3,
 			mesh.triangles.size()
 		);
 }
 
-void CModelReader::loadIndices(Mesh& mesh, const int count)
+void CModelReader::loadIndices(Mesh& mesh, const int count, uintptr_t& offset)
 {
 	auto triBf = findDataBuffer("IndexBuffer");
-	int end = count + gPrimOffset;
+	int end    = count + offset;
 
 	if (!triBf || end > triBf->data.size() || count % 3 != 0)
 		return;
 
-	for (int i = gPrimOffset; i < end; i += 3)
+	for (int i = offset; i < end; i += 3)
 	{
 		Triangle face
 		{
@@ -179,7 +186,7 @@ void CModelReader::loadIndices(Mesh& mesh, const int count)
 		mesh.triangles.push_back(face);
 	}
 
-	gPrimOffset += count;
+	offset += count;
 }
 
 void CModelReader::readVertexFmt(JSON& obj)
@@ -286,7 +293,7 @@ void CModelReader::readPrim(JSON& obj)
 			grp.uv_deriv = (grp.uv_deriv.empty()) ? g_uvDeriv : grp.uv_deriv;
 
 			// push lods
-			GeomDef::pushPrimLods(grp, m_groups);
+			GeomDef::pushPrimLods(grp, m_primitives);
 		}
 	}
 }
@@ -299,46 +306,50 @@ void CModelReader::readTfms(JSON& obj)
 }
 
 
-inline static float unpackWeight(const uint16_t& packedWeight)
-{
-	return (float)packedWeight / 0xFFFF;
+inline static float unpackWeight(uint16_t packedWeight) {
+    return static_cast<float>(packedWeight) / 65535.0f;
 }
 
 inline static void loadPackedWeights(const uint32_t& index, const std::vector<float>& mtxData, const int num_weights, BlendVertex& skinVtx)
 {
 	uint32_t encodedValue, blendIdx, skinVal;
-	size_t   numPackVals = mtxData.size();
+	skinVtx.weights.resize(num_weights);
+	skinVtx.indices.resize(num_weights);
 
-	// load weight data
-	for (int i = 0; i < (num_weights+1); i++)
-		if ((index + i) <= numPackVals)
-		{
-			encodedValue = mtxData[index + i];
-			blendIdx = encodedValue >> 0x10;
-			skinVal  = encodedValue & 0xFFFF;
+	for (int i = 0; i < num_weights; i++)
+	{
+		encodedValue = mtxData[index + i];
+		blendIdx = encodedValue >> 0x10;
+		skinVal  = encodedValue & 0xFFFF;
 
-			skinVtx.indices.push_back(blendIdx);
-			skinVtx.weights.push_back(::unpackWeight(skinVal));
-		};
+		skinVtx.indices[i] = blendIdx;
+		skinVtx.weights[i] = ::unpackWeight(skinVal);
+	};
 }
 
 inline static void loadMatrixBufferWeights(
-	Mesh& mesh, const size_t& numVerts, const size_t& numElems,
-	const CDataBuffer* weightBf, const CDataBuffer* matrixBf)
+	Mesh& mesh, const size_t& numVerts, const size_t& numElems, const CDataBuffer* weightBf, const CDataBuffer* matrixBf)
 {
 	// Load vertex weights + indices
-	uint32_t packedVtxSkin, numVtxWeights, matrixIndex;
+	uint32_t packedVtxSkin, numWeights, index;
 	mesh.skin.blendverts.resize(numVerts);
 
 	for (size_t i = 0; i < numVerts; i++)
 	{
+		auto& skinVtx = mesh.skin.blendverts[i];
 		packedVtxSkin = weightBf->data[i];
-		numVtxWeights = packedVtxSkin & 0xFF;
-		matrixIndex   = packedVtxSkin >> 0x8;
+		numWeights    = packedVtxSkin & 0xFF;
+		index         = packedVtxSkin >> 0x8;
 
-		// unpack weight data
-		::loadPackedWeights(matrixIndex, matrixBf->data, numVtxWeights, mesh.skin.blendverts[i]);
-	}
+		if (numWeights == 0)
+		{   // load default weight
+			skinVtx.weights.push_back(1.0f);
+			skinVtx.indices.push_back(index);
+		}
+		else { // unpack matrix buffer weights
+			::loadPackedWeights(index, matrixBf->data, numWeights+1, skinVtx);
+		}
+	};
 }
 
 void CModelReader::loadWeights(Mesh& mesh)
@@ -347,7 +358,7 @@ void CModelReader::loadWeights(Mesh& mesh)
 	auto weightBf = findDataBuffer("WEIGHTDATA0");
 	auto matrixBf = findDataBuffer("MatrixWeightBuffer");
 	if (!weightBf || !matrixBf)
-		return;
+		return;	
 
 	// Get num total elements
 	size_t numBfElems = matrixBf->data.size();
@@ -355,9 +366,10 @@ void CModelReader::loadWeights(Mesh& mesh)
 	if (numVerts > weightBf->data.size())
 		return;
 
+	// load vertex skin
 	::loadMatrixBufferWeights(mesh, numVerts, numBfElems, weightBf, matrixBf);
-
-	// System logs ...
 	mesh.skin.updateIndices(&m_skeleton);
 }
+
+
 
