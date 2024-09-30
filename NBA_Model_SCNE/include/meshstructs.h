@@ -168,6 +168,7 @@ struct BoundingBox
 
 struct BlendVertex 
 {
+	int num_weights = 0;
 	std::vector<int> indices;
 	std::vector<std::string> bones;
 	std::vector<float> weights;

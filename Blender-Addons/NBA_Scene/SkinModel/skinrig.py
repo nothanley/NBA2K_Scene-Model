@@ -8,7 +8,9 @@ class vCRigJoint():
     def getBoneParentIndex(joint):
         index = cmodellib.getBoneParentIndex(joint.data, joint.id)
 
-        if (index == -1): return None
+        if (index == -1): 
+            return None
+        
         return index
 
     @staticmethod

@@ -104,23 +104,15 @@ void addUvMap(void* pMesh, float* texcoords, int size)
 	MeshCalc::buildTangentFrameVec(*mesh, mesh->tangent_frames);
 }
 
-void setMeshSkinData(void* pMesh, int* indices, float* weights, int size, int numWeightsPerVtx)
-{
-	Mesh* mesh = static_cast<Mesh*>(pMesh);
-	if (!mesh)
-		return;
-
-	//printf("\n[CSkinModel] Populating Skin with limit: %d\n", numWeightsPerVtx);
-	
-}
-
 void saveModelToFile(void* pModel, const char* savePath)
 {
 	// todo: add cereal implementation ...
 	auto model = static_cast<CNBAModel*>(pModel);
 	if (!model || (model->getNumMeshes() == 0)) return;
 	
+	// System logs ...
 	printf("\n[CSkinModel] Saving model to file: %s\n", savePath);
+
 	auto scene_id = model->getMesh()->name;
 	auto scene = std::make_shared<CNBAScene>(scene_id.c_str());
 	scene->pushModel(*model);
@@ -128,17 +120,6 @@ void saveModelToFile(void* pModel, const char* savePath)
 	CSceneSerializer serializer(scene);
 	serializer.save(savePath);
 }
-
-void setNewModelBone(
-	void* pModel,
-	const char* name,
-	float* matrices,
-	const int index,
-	const char* parent,
-	bool reorder_matrix)
-{
-	//todo: add bone implemetation ...
-};
 
 void linkMeshToModel(void* pModel, void* pMesh)
 {
@@ -175,5 +156,58 @@ void setMaterialTexture(void* pMesh, const char* name, const char* type, const i
 	material.addTexture(texture);
 }
 
+void setNewModelBone(
+	void* pModel,
+	const char* name,
+	float* matrices,
+	const int index,
+	const char* parent)
+{
+	// Convert void pointer back to CNBAModel pointer
+	CNBAModel* model = static_cast<CNBAModel*>(pModel);
+	if (!model) return;
+
+	// Create a new bone
+	std::string parent_id(parent);
+	auto& skeleton  = model->getSkeleton();
+	auto bone       = std::make_shared<NSJoint>(NSJoint{ index, name });
+	bone->translate = Vec3{ matrices[0], matrices[2], -matrices[1] };
+
+	if (!parent_id.empty())
+	{
+		auto joint = skeleton.findJoint(parent);
+		if (joint)
+		{
+			bone->parent = joint;
+			joint->children.push_back(bone);
+		}
+	}
+
+	skeleton.addJoint(bone);
+};
+
+void setMeshSkinData(void* pMesh, int* indices, float* weights, int size, int num_weights)
+{
+	Mesh* mesh = static_cast<Mesh*>(pMesh);
+	if (!mesh) return;
+
+	int num_verts = size / num_weights;
+	int arr_index;
+	mesh->skin.blendverts.resize(num_verts);
+
+	for (int i = 0; i < num_verts; i++)
+	{
+		auto& vertex = mesh->skin.blendverts[i];
+		vertex.indices.resize(num_weights);
+		vertex.weights.resize(num_weights);
+
+		for (int j = 0; j < num_weights; j++)
+		{
+			arr_index         = (i * num_weights) + j;
+			vertex.indices[j] = indices[arr_index];
+			vertex.weights[j] = weights[arr_index];
+		}
+	};
+};
 
 

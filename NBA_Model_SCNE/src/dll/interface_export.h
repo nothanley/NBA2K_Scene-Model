@@ -14,6 +14,7 @@ DLLEX void  freeMesh(void* pMesh);
 // Mesh Data Population Funcs
 DLLEX void setMeshNameInfo(void* pMesh, const char* meshName, const char* mtlName);
 DLLEX void setMeshData(void* pMesh, float* position, int* indexList, int numVerts, int numFaces);
+DLLEX void setMeshSkinData(void* pMesh, int* indices, float* weights, int size, int numWeightsPerVtx);
 DLLEX void setMeshNormals(void* pMesh, float* normals, int size);
 DLLEX void addUvMap(void* pMesh, float* texcoords, int size);
 DLLEX void setNewModelBone(
@@ -21,8 +22,7 @@ DLLEX void setNewModelBone(
 	const char* name,
 	float* matrices,
 	const int index,
-	const char* parent,
-	bool reorder_matrix = true);
+	const char* parent);
 
 // Model Serializer Funcs
 DLLEX void saveModelToFile(void* pModel, const char* savePath);

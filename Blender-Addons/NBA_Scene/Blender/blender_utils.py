@@ -1,5 +1,7 @@
 import bpy, bmesh
+from ..SkinModel.skinrig import vCRigJoint, vCSkeleton
 from mathutils import Vector
+
 
 class CVertexSkin():
     @staticmethod
@@ -142,11 +144,19 @@ def getTexCoords(obj):
 
     return uv_maps
 
-def unpack_matrices(matrix):
-    matrices = []
-    for row in matrix:
-        for value in row:
-            matrices.append(value)
-    return matrices
+def get_joint_translate(bone):
+    translate = bone.head_local
+    if bone.parent:
+        translate = translate - bone.parent.head_local
         
+    return [translate[0], translate[1], translate[2], 0.0]
+
+def getRigBone(bone):
+    joint        = vCRigJoint()
+    joint.name   = bone.name
+    joint.parent = bone.parent.name if bone.parent else None
+    
+    # matrix must be unpacked for cmesh library usage
+    joint.matrix = get_joint_translate(bone)
+    return joint
 

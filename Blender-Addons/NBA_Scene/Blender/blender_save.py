@@ -22,6 +22,52 @@ def getBaseName(obj):
         name = name.split(".")[0]
     return name
 
+def getBoneIndex(name, skin):
+    try:
+        index = skin.bones.index(name)
+    except ValueError:
+        return -1
+    return index
+
+def getVertexWeights(vertex, skin, groups):
+    table_index = (vertex.index * skin.weights_per_vertex)
+    for i, elem in enumerate(vertex.groups):
+        bone_index = getBoneIndex( groups[elem.group] , skin)
+    
+        if (bone_index != -1):
+            skin.blendweights[table_index + i] = elem.weight
+            skin.blendindices[table_index + i] = bone_index 
+    return
+
+def getVertexSkin(obj, weight_limit):
+    skin = CVertexSkin()
+    skin.weights_per_vertex = weight_limit
+    skin.prepopulate_skin(obj)
+
+    obj_groups = [group.name for group in obj.vertex_groups]
+    for vertex in obj.data.vertices:
+        getVertexWeights(vertex, skin, obj_groups)
+    return skin
+
+def get_closest_vertex_weight_mode(object):
+    group_length = len(object.data.vertices[0].groups)
+    weight_modes = {4: 'WEIGHT_4', 8: 'WEIGHT_8'}
+
+    return 8 #min(weight_modes.keys(), key=lambda x: abs(x - group_length))
+
+def getMeshSkin(obj):
+    if not has_armature_modifier(obj):
+        return None
+
+    try:
+        weight_limit = get_closest_vertex_weight_mode(obj)
+        bpy.context.view_layer.objects.active  = obj
+        bpy.ops.object.vertex_group_limit_total(group_select_mode='ALL', limit=weight_limit)
+    except:
+        return None
+                
+    return getVertexSkin(obj, weight_limit)
+
 def makeSkinMesh(obj):
     # Build skin mesh from scene object
     skinmesh = vCSkinMesh()
@@ -32,8 +78,8 @@ def makeSkinMesh(obj):
     skinmesh.vertex_normals = getVertexNorms(obj)
     skinmesh.texcoords      = getTexCoords(obj)
     skinmesh.materials      = getMaterials(obj)
+    skinmesh.skin           = getMeshSkin(obj)
     # skinmesh.vertex_colors  = getVertexColors(obj)
-    # skinmesh.skin           = getMeshSkin(obj)
     # skinmesh.blendshapes    = getShapeKeys(obj)
     # skinmesh.scene_flag     = getGameSceneFlag(obj)
     # skinmesh.motion_flag    = getGameMotionFlag(obj)
@@ -164,3 +210,20 @@ def getSceneMeshes():
         models.append(skinmesh)
     
     return models
+
+def getSceneArmature():
+    selection = getMeshSelection()
+    bpy.context.view_layer.update()
+
+    for obj in selection:
+        if (has_armature_modifier(obj)):
+            armature = obj.parent
+            target_rig = vCSkeleton()
+
+            # print("\n[MDL Addon] Loading Armature: ", armature.name)
+            for bone in armature.data.bones:
+                target_rig.bones.append( getRigBone(bone) )
+
+            return target_rig
+    
+    return None

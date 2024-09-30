@@ -225,19 +225,30 @@ int getNumBones(void* pNbaModel)
     return skel.joints.size();
 }
 
+inline static int findParent(const std::vector<std::shared_ptr<NSJoint>>& joints, const std::string& id)
+{
+    for (auto& joint : joints)
+    {
+        for (auto& child : joint->children)
+			if (child->name == id)
+				return joint->index;
+    }
+
+	return -1;
+}
+
 int getBoneParentIndex(void* pNbaModel, int joint_index)
 {
     CNBAModel* model = static_cast<CNBAModel*>(pNbaModel);
-	if (!model)
+    if (!model) return -1;
+
+    auto& skel = model->getSkeleton();
+    if (joint_index > skel.joints.size())
         return -1;
 
-	auto& skel = model->getSkeleton();
-    if (joint_index > skel.joints.size())
-		return -1;
+    auto& joint = skel.joints[joint_index];
 
-    auto& joint  = skel.joints[joint_index];
-    auto& parent = joint->parent;
-    return (parent) ? parent->index : -1;
+    return (joint->parent) ? joint->parent->index : -1;
 }
 
 float* getBoneMatrix(void* pNbaModel, int joint_index)
@@ -267,7 +278,7 @@ const char* getBoneName(void* pNbaModel, int joint_index)
 
     auto& skel = model->getSkeleton();
     if (joint_index > skel.joints.size())
-        return "";;
+        return "";
 
     auto& joint = skel.joints[joint_index];
     return joint->name.c_str();

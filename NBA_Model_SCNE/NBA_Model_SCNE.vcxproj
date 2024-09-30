@@ -222,6 +222,7 @@
     <ClCompile Include="src\cereal\modelserializer.cpp" />
     <ClCompile Include="src\cereal\objectserializer.cpp" />
     <ClCompile Include="src\cereal\sceneserializer.cpp" />
+    <ClCompile Include="src\cereal\skeletonserializer.cpp" />
     <ClCompile Include="src\cereal\textureserializer.cpp" />
     <ClCompile Include="src\common.cpp" />
     <ClCompile Include="src\common_json.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="src\cereal\modelserializer.h" />
     <ClInclude Include="src\cereal\objectserializer.h" />
     <ClInclude Include="src\cereal\sceneserializer.h" />
+    <ClInclude Include="src\cereal\skeletonserializer.h" />
     <ClInclude Include="src\cereal\textureserializer.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\common_json.h" />

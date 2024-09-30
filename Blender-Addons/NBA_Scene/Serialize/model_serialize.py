@@ -24,11 +24,7 @@ class CModelSerializer():
             cskinmesh.set_name_info(mesh.mesh_name, mesh.name)
             cskinmesh.set_data(mesh.vertices, mesh.index_list)
             cskinmesh.set_normals(mesh.vertex_normals)
-
-            # cskinmesh.add_vertex_colors(mesh.vertex_colors)
-            # cskinmesh.set_skin_data(mesh.skin)
-            # cskinmesh.set_blendshapes(mesh.blendshapes)
-            # cskinmesh.set_model_game_flags(mesh.scene_flag, mesh.motion_flag)
+            cskinmesh.set_skin_data(mesh.skin)
             
             for mat in mesh.materials:
                 self.set_material_link(cskinmesh, mat)
@@ -41,6 +37,14 @@ class CModelSerializer():
     
     def set_meshes(self, mesh_list):
         self.meshes = mesh_list
+        return
+    
+    def set_skeleton(self, armature):
+        if (armature == None): 
+            return
+        
+        for index, bone in enumerate(armature.bones):
+            cmodellib.addBoneToModel(self.__model, bone.name, bone.matrix, index, bone.parent)
         return
     
     def free(self):

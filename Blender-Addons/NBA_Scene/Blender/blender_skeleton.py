@@ -21,11 +21,11 @@ def createRigJoint(armature, bones, joint):
     bbone.head = Vector( (joint.matrix[0][0], -joint.matrix[0][2], joint.matrix[0][1]) )
 
     # Link hierarchy 
-    if joint.parent:
+    if (joint.parent != None):
         bbone.parent = bones[joint.parent].scene_bone
         bbone.head = bbone.head + bbone.parent.head
         bbone.tail = bbone.parent.head
-
+    
     # Set minimum length to prevent culling
     if( bbone.length < .00000001 ):        
         bbone.length = bbone.length + .0001  
@@ -80,7 +80,6 @@ def find_bone_index(armature, target):
     for i, bone in enumerate(armature.data.bones):
         if (bone.name == target):
             return i
-    
     return None
 
 def load_attachment_points(collection, root_node, armature_obj, points):

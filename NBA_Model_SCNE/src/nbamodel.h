@@ -17,8 +17,9 @@ public:
 	std::string name();
 
 public:
+	bool hasSkeleton();
 	void pushMesh(const Mesh& mesh);
-	const NSSkeleton& getSkeleton() const;
+	NSSkeleton& getSkeleton();
 
 protected:
 	std::string m_name;

@@ -190,6 +190,9 @@
     <ClCompile Include="src\armature\bone_reader.cpp">
       <Filter>NBA\Reader</Filter>
     </ClCompile>
+    <ClCompile Include="src\cereal\skeletonserializer.cpp">
+      <Filter>NBA\Cereal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\memoryreader.h">
@@ -380,6 +383,9 @@
     </ClInclude>
     <ClInclude Include="src\armature\bone_reader.h">
       <Filter>NBA\Reader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cereal\skeletonserializer.h">
+      <Filter>NBA\Cereal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

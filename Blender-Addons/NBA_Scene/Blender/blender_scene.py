@@ -44,6 +44,7 @@ def loadSkinModel(model, parent, args, model_path):
 
         if args["split_groups"]:
             splitAllMaterialGroups(object)
+            
     return
 
 

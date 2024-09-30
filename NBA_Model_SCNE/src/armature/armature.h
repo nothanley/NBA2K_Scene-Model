@@ -14,6 +14,8 @@ struct NSJoint
 
 struct NSSkeleton 
 {
+	void addJoint(const std::shared_ptr<NSJoint>& joint);
+	std::shared_ptr<NSJoint> findJoint(const char* name) const;
 	std::vector<std::shared_ptr<NSJoint>> joints;
 };
 

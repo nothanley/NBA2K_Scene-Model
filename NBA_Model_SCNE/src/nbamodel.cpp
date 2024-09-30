@@ -43,7 +43,12 @@ std::string CNBAModel::name()
 	return m_name;
 }
 
-const NSSkeleton& CNBAModel::getSkeleton() const
+NSSkeleton& CNBAModel::getSkeleton()
 {
 	return m_skeleton;
+}
+
+bool CNBAModel::hasSkeleton()
+{
+	return !m_skeleton.joints.empty();
 }

@@ -33,6 +33,10 @@ void CBoneReader::parse()
 	size_t size = ::getNumJsonChilds(*m_json);
 	m_skeleton->joints.resize(size);
 
+	// create joints
+	for (auto& joint : m_skeleton->joints)
+		joint = std::make_shared<NSJoint>();
+
 	// Load bone data from JSON iterator
 	int index = 0;
 	for (JSON::iterator it = m_json->begin(); it != m_json->end(); ++it)
@@ -50,6 +54,7 @@ inline static void loadParent(JSON::iterator& it, std::shared_ptr<NSJoint>& join
 		return;
 
 	joint->parent = joints[parent_index];
+	joint->parent->children.push_back(joint);
 }
 
 inline static void loadChild(JSON::iterator& it, std::shared_ptr<NSJoint>& joint, const std::vector<std::shared_ptr<NSJoint>>& joints)
@@ -58,7 +63,7 @@ inline static void loadChild(JSON::iterator& it, std::shared_ptr<NSJoint>& joint
 	if (child_index > joints.size())
 		return;
 
-	joint->children.push_back(joints[child_index]);
+	joints[child_index]->parent = joint;
 }
 
 inline static void loadTranslate(JSON::iterator& it, std::shared_ptr<NSJoint>& joint)
@@ -70,7 +75,7 @@ inline static void loadTranslate(JSON::iterator& it, std::shared_ptr<NSJoint>& j
 void CBoneReader::loadTransformDef(const int index, const std::string& key, JSON & obj)
 {
 	// create joint
-	auto joint   = std::make_shared<NSJoint>();
+	auto& joint = m_skeleton->joints[index];
 	joint->name  = key;
 	joint->index = index;
 
@@ -96,8 +101,6 @@ void CBoneReader::loadTransformDef(const int index, const std::string& key, JSON
 				break;
 		};
 	}
-
-	// store joint
-	m_skeleton->joints[index] = joint;
 }
 
+ 

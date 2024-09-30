@@ -1,5 +1,6 @@
 #include <cereal/modelserializer.h>
 #include <cereal/sceneserializer.h>
+#include <cereal/skeletonserializer.h>
 #include <cereal/meshjson.h>
 #include <common.h>
 
@@ -23,6 +24,18 @@ CModelSerializer::serialize()
 }
 
 void
+CModelSerializer::setRigJson(const std::shared_ptr<CNBAModel>& model, std::shared_ptr<JSON>& root)
+{
+	CSkeletonSerializer worker(m_parent);
+	auto tfmJson  = worker.serialize();
+	int numJoints = model->getSkeleton().joints.size();
+
+	(*root)["WeightBits"]      = 16;
+	(*root)["BlendIndexRange"] = std::vector<int>{ 0, numJoints };
+	(*root)["Transform"]       = *tfmJson.get();
+}
+
+void
 CModelSerializer::addModelJson(const std::shared_ptr<CNBAModel>& model)
 {
 	// collect mesh childs
@@ -34,6 +47,11 @@ CModelSerializer::addModelJson(const std::shared_ptr<CNBAModel>& model)
 
 		// push mesh data to json
 		auto obj = getMeshJson(mesh);
+
+		// load skeleton data
+		if (model->hasSkeleton())
+			setRigJson(model, obj);
+
 		(*m_json)[mesh->name.c_str()] = *obj.get();
 	}
 }

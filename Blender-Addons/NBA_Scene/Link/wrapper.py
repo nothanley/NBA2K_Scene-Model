@@ -27,6 +27,20 @@ class cmesh():
 
         return lib.setMeshData(self.__struct, verts, face_list, len(vertices), len(index_list))
 
+    def set_skin_data(self, skin):
+        if (skin == None):
+            return
+        
+        lib.setMeshSkinData.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_float), ctypes.c_int, ctypes.c_int]
+        
+        # Convert python list to c array
+        cindices = (ctypes.c_int   * len(skin.blendindices))(*skin.blendindices)
+        cweights = (ctypes.c_float * len(skin.blendweights))(*skin.blendweights)
+
+        # Send data to cmesh struct
+        return lib.setMeshSkinData(self.__struct, cindices, cweights, len(cindices), skin.weights_per_vertex)
+    
+    
     def set_material(self, material_name):
         lib.setMeshMaterial.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
         return lib.setMeshMaterial(self.__struct, material_name.encode("utf-8"))
@@ -349,6 +363,16 @@ class cmodellib():
         lib.getAllFaceGroups.restype  = ctypes.POINTER(ctypes.c_char_p)
         lib.getAllFaceGroups.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.POINTER(ctypes.c_int)] 
         return lib.getAllFaceGroups(cskinmodel, mesh_index, size_p)
+
+    @staticmethod
+    def addBoneToModel(cskinmodel, bone_name, matrix, index, parent_name ):
+        lib.setNewModelBone.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_float), ctypes.c_int, ctypes.c_char_p]
+
+        # Convert python list to c array
+        parent_name = "" if not parent_name else parent_name
+        cmatrices = (ctypes.c_float * 4)(*matrix)
+        return lib.setNewModelBone(cskinmodel, bone_name.encode("utf-8"), cmatrices, index, parent_name.encode("utf-8"))
+
 
 class ExternalLibary():
     def getLoadOperator(self):
