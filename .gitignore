@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /NBA_Model_SCNE/src/material/resources - (delete me)/common/Effects/Generic-PBR
 /Preset-Mats/Ball
+/NBA_Model_SCNE/main.cpp
