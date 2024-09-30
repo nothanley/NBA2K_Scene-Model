@@ -1,6 +1,6 @@
 #include <cereal/materialserializer.h>
 #include <cereal/sceneserializer.h>
-#include <cereal/meshjson.h>
+#include <cereal/mesh_json.h>
 
 #include <material/effect.h>
 #include <material/material.h>

@@ -5,6 +5,7 @@
 
 bool USE_DEBUG_LOGS   = false;
 bool INCLUDE_LODS     = false;
+uint8_t WEIGHT_BITS   = 16;
 
 void decodeOctahedralNorms(CDataBuffer* tanFrameBf, Mesh& mesh)
 {

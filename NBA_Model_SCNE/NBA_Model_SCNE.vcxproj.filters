@@ -62,6 +62,9 @@
     <Filter Include="NBA\Armature">
       <UniqueIdentifier>{c11fc3b6-5b44-4aca-a9c3-93f4eddfa5dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NBA\Cereal\Binary">
+      <UniqueIdentifier>{ba57cb98-6789-454a-a129-a33daa0cb74a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -127,9 +130,6 @@
     <ClCompile Include="src\dll\interface_export.cpp">
       <Filter>PyInterface</Filter>
     </ClCompile>
-    <ClCompile Include="src\cereal\meshjson.cpp">
-      <Filter>NBA\Cereal</Filter>
-    </ClCompile>
     <ClCompile Include="src\sceneupdate.cpp">
       <Filter>NBA\Inject</Filter>
     </ClCompile>
@@ -192,6 +192,15 @@
     </ClCompile>
     <ClCompile Include="src\cereal\skeletonserializer.cpp">
       <Filter>NBA\Cereal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cereal\mesh_json.cpp">
+      <Filter>NBA\Cereal\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cereal\skin_json.cpp">
+      <Filter>NBA\Cereal\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cereal\bin_json.cpp">
+      <Filter>NBA\Cereal\Binary</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -306,9 +315,6 @@
     <ClInclude Include="src\dll\interface_export.h">
       <Filter>PyInterface</Filter>
     </ClInclude>
-    <ClInclude Include="src\cereal\meshjson.h">
-      <Filter>NBA\Cereal</Filter>
-    </ClInclude>
     <ClInclude Include="src\sceneupdate.h">
       <Filter>NBA\Inject</Filter>
     </ClInclude>
@@ -386,6 +392,15 @@
     </ClInclude>
     <ClInclude Include="src\cereal\skeletonserializer.h">
       <Filter>NBA\Cereal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cereal\mesh_json.h">
+      <Filter>NBA\Cereal\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cereal\skin_json.h">
+      <Filter>NBA\Cereal\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cereal\bin_json.h">
+      <Filter>NBA\Cereal\Binary</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

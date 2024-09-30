@@ -381,3 +381,18 @@ void Skin::updateIndices(const NSSkeleton* skeleton)
 	}
 }
 
+void Skin::getMinMaxRange(int& min, int& max) const
+{
+	min = 0;
+	max = 0;
+
+	for (auto& vertex : this->blendverts)
+	{
+		for (auto& index : vertex.indices)
+		{
+			min = (index < min) ? index : min;
+			max = (index > max) ? index : max;
+		}
+	}
+}
+

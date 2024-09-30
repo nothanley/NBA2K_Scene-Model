@@ -186,6 +186,15 @@ void setNewModelBone(
 	skeleton.addJoint(bone);
 };
 
+inline static void normalize_data_16_bits(float* data, const int size)
+{
+	for (int i = 0; i < size; i++)
+	{	
+		// normalize weights to 16 bit scalar
+		data[i] = (uint16_t(data[i] * 65535.0f)) / 65535.0f;
+	}
+}
+
 void setMeshSkinData(void* pMesh, int* indices, float* weights, int size, int num_weights)
 {
 	Mesh* mesh = static_cast<Mesh*>(pMesh);
@@ -195,17 +204,23 @@ void setMeshSkinData(void* pMesh, int* indices, float* weights, int size, int nu
 	int arr_index;
 	mesh->skin.blendverts.resize(num_verts);
 
+	::normalize_data_16_bits(weights, size);
+
 	for (int i = 0; i < num_verts; i++)
 	{
 		auto& vertex = mesh->skin.blendverts[i];
-		vertex.indices.resize(num_weights);
-		vertex.weights.resize(num_weights);
 
 		for (int j = 0; j < num_weights; j++)
 		{
-			arr_index         = (i * num_weights) + j;
-			vertex.indices[j] = indices[arr_index];
-			vertex.weights[j] = weights[arr_index];
+			arr_index    = (i * num_weights) + j;
+			auto& index  = indices[arr_index];
+			auto& weight = weights[arr_index];
+
+			if (weight > 0.0f)
+			{
+				vertex.indices.push_back(index);
+				vertex.weights.push_back(weight);
+			}
 		}
 	};
 };

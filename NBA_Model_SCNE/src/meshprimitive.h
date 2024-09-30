@@ -7,6 +7,7 @@ using JSON = nlohmann::ordered_json;
 // GLOBAL EXPORT SETTINGS
 extern bool USE_DEBUG_LOGS;   // toggles debug logs  - (could be preprocessor def but this lets client toggle)
 extern bool INCLUDE_LODS;     // toggles lower level meshes
+extern uint8_t WEIGHT_BITS;
 
 // Known prim JSON keys
 enum enModelData {

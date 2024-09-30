@@ -188,6 +188,7 @@ struct Skin
 {
 	std::vector<BlendVertex> blendverts;
 	void updateIndices(const NSSkeleton* skeleton);
+	void getMinMaxRange(int& min, int& max) const;
 };
 
 struct UVMap {

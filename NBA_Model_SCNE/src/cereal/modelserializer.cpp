@@ -1,8 +1,10 @@
 #include <cereal/modelserializer.h>
 #include <cereal/sceneserializer.h>
 #include <cereal/skeletonserializer.h>
-#include <cereal/meshjson.h>
+#include <cereal/mesh_json.h>
+#include <cereal/skin_json.h>
 #include <common.h>
+#include <armature/armature.h>
 
 CModelSerializer::CModelSerializer(CSceneSerializer* parent)
 	:
@@ -50,7 +52,10 @@ CModelSerializer::addModelJson(const std::shared_ptr<CNBAModel>& model)
 
 		// load skeleton data
 		if (model->hasSkeleton())
+		{
 			setRigJson(model, obj);
+			serializeMeshSkin(obj, mesh, model->getSkeleton());
+		}
 
 		(*m_json)[mesh->name.c_str()] = *obj.get();
 	}
@@ -66,7 +71,6 @@ CModelSerializer::getMeshJson(const std::shared_ptr<Mesh>& mesh)
 	MeshJSON::AABBsToJson(mesh, json);
 	MeshJSON::dUVsToJson(mesh, json);
 	MeshJSON::tfmToJson(mesh, json);
-	MeshJSON::skinDataToJson(mesh, json);
 	MeshJSON::primsToJson(mesh, prims);
 	(*json)["Prim"] = std::vector<JSON>{ *prims.get() };
 
@@ -75,7 +79,7 @@ CModelSerializer::getMeshJson(const std::shared_ptr<Mesh>& mesh)
 	std::string subDir  = "meshbuffers/";
 	
 	// generate mesh buffers
-	if (!subDir.empty() && !common::create_folder(saveDir + "/" + subDir))
+	if (subDir.empty() || !common::create_folder(saveDir + "/" + subDir))
 	{
 		throw std::runtime_error("Failed to create mesh buffers directory"); 
 	}
@@ -86,5 +90,13 @@ CModelSerializer::getMeshJson(const std::shared_ptr<Mesh>& mesh)
 	return json;
 }
 
+void
+CModelSerializer::serializeMeshSkin(std::shared_ptr<JSON>& json, const std::shared_ptr<Mesh>& mesh, NSSkeleton& armature)
+{
+	CSkinJsonEncoder skinJson(json, *mesh, armature);
+	auto saveDir = common::get_parent_directory(m_parent->path());
+
+	skinJson.encode(saveDir.c_str(), "skin/");
+}
 
 
