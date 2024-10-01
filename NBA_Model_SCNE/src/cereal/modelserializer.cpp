@@ -69,7 +69,7 @@ CModelSerializer::getMeshJson(const std::shared_ptr<Mesh>& mesh)
 	auto json  = std::make_shared<JSON>();
 	auto prims = std::make_shared<JSON>();
 
- 	// collect mesh data
+ 	// collect mesh data 
 	//MeshJSON::AABBsToJson(mesh, json);
 	//MeshJSON::dUVsToJson(mesh, json);
 	MeshJSON::tfmToJson(mesh, json);
