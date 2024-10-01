@@ -41,6 +41,15 @@ namespace BinJSON
 	void writeVertexBuffer(
 		VertexStream& vs);
 	
+	void createPackedVertexSkinBuffer(
+		VertexStream& vertexBuffer,
+		const char* dirPath,
+		const char* subdir,
+		const Mesh& mesh,
+		JSON& fmtObj,
+		JSON& srmObj,
+		const int index);
+
 	void createVertexBuffer(
 		VertexStream& vertexBuffer,
 		const char* dirPath,
@@ -48,7 +57,5 @@ namespace BinJSON
 		const Mesh& mesh,
 		JSON& fmtObj,
 		JSON& srmObj,
-		const int index,
-		const Vec4 offset = { 0.0f, 0.0f, 0.0f, 0.0f },
-		const Vec4 scale = { 1.0f, 1.0f, 1.0f, 1.0f });
+		const int index);
 }

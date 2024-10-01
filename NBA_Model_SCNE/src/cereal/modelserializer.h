@@ -20,6 +20,7 @@ private:
 	std::shared_ptr<JSON> getMeshJson(const std::shared_ptr<Mesh>& mesh);
 	void addModelJson(const std::shared_ptr<CNBAModel>& model);
 	void setRigJson(const std::shared_ptr<CNBAModel>& model, std::shared_ptr<JSON>& root);
+	void setMeshMorphs(std::shared_ptr<JSON>& json, const std::shared_ptr<Mesh>& mesh);
 
 	CSceneSerializer* m_parent;
 };

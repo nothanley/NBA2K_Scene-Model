@@ -26,6 +26,7 @@ private:
 	void loadVertices(Mesh& mesh);
 	void loadIndices(Mesh& mesh, const int count, uintptr_t& offset);
 	void loadMesh();
+	void readMorphs(JSON& obj);
 	void readTfms(JSON& obj);
 	void readPrim(JSON& obj);
 	void readVertexFmt(JSON& obj);

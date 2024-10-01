@@ -27,9 +27,19 @@ CObjectSerializer::serialize()
 
 void CObjectSerializer::processModel(const std::shared_ptr<CNBAModel>& model)
 {
+	auto& armature = model->getSkeleton();
+
 	for (auto& mesh : model->getMeshes())
 	{
 		this->processMesh(mesh);
+
+
+		if (!armature.joints.empty() && !mesh->skin.blendverts.empty())
+		{
+			JSON& mdlJson = (*m_json)[mesh->name];
+			auto& bone = armature.joints.front();
+			mdlJson["Transform"] = bone->name;
+		}
 	}
 }
 
@@ -39,7 +49,6 @@ void CObjectSerializer::processMesh(const std::shared_ptr<Mesh>& mesh)
 	JSON objJson;
 	objJson["Type"]   = "OBJECT";
 	objJson["Target"] =  mesh->name;
-
 
 	(*m_json)[mesh->name] = objJson;
 }

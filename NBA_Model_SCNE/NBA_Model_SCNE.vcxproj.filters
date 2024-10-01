@@ -65,6 +65,9 @@
     <Filter Include="NBA\Cereal\Binary">
       <UniqueIdentifier>{ba57cb98-6789-454a-a129-a33daa0cb74a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NBA\Morphs">
+      <UniqueIdentifier>{36bc14f8-52b4-413a-a335-afe6f15e5db6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -401,6 +404,9 @@
     </ClInclude>
     <ClInclude Include="src\cereal\bin_json.h">
       <Filter>NBA\Cereal\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="src\morphs\debug_morphs.h">
+      <Filter>NBA\Morphs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

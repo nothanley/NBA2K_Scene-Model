@@ -45,8 +45,8 @@ MeshJSON::primsToJson(const std::shared_ptr<Mesh>& mesh, std::shared_ptr<JSON>& 
 	(*prims)["Type"]     = "TRIANGLE_LIST";
 	(*prims)["Count"]    = mesh->triangles.size() * 3;
 
-	MeshJSON::AABBsToJson(mesh, prims);
-	MeshJSON::dUVsToJson(mesh, prims);
+	//MeshJSON::AABBsToJson(mesh, prims);
+	//MeshJSON::dUVsToJson(mesh, prims);
 	MeshJSON::skinDataToJson(mesh, prims);
 }
  

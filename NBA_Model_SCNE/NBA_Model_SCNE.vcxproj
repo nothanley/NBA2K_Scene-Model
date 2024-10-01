@@ -308,6 +308,7 @@
     <ClInclude Include="src\material\material_reader.h" />
     <ClInclude Include="src\meshprimitive.h" />
     <ClInclude Include="src\modelreader.h" />
+    <ClInclude Include="src\morphs\debug_morphs.h" />
     <ClInclude Include="src\nbamodel.h" />
     <ClInclude Include="src\nbascene.h" />
     <ClInclude Include="src\scenefile.h" />

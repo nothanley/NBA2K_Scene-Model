@@ -93,25 +93,44 @@ inline static MatrixPalette getVertexPalette(const BlendVertex& vertex)
 	return matrix;
 }
 
+inline static void packVertexCoordsAndWeights(Mesh& mesh, VertexStream& position, std::vector<float>& weights)
+{
+	// Pack encoded weights into W component of position stream
+	int numVerts = weights.size();
+	for (int i = 0; i < numVerts; i++)
+	{
+		mesh.vertices[(i * 4) + 3] = weights[i];
+	}
+
+	position.data = &mesh.vertices;
+}
+
+inline static void encodeVertexWeights(std::vector<float>& data, 
+	std::vector<VertexWeightLink>& links, std::vector <MatrixPalette>& table, Mesh& mesh)
+{
+	for (int i = 0; i < links.size(); i++)
+	{
+		auto& blend = mesh.skin.blendverts[i];
+		auto encoded = links[i].pack(table, blend);
+		data.push_back(*reinterpret_cast<float*>(&encoded));
+	}
+}
+
 void
 CSkinJsonEncoder::writeWeightData()
 {
-	// Get packed vertex weight stream ...
-	std::vector<float> data;
-	for (int i = 0; i < m_vertexLinks.size(); i++)
-	{
-		auto& blend  = m_mesh->skin.blendverts[i];
-		auto encoded = m_vertexLinks[i].pack(m_matrixTable, blend);
-		data.push_back(*reinterpret_cast<float*>(&encoded));
-	}
-
 	// Define JSON entries
 	JSON fmt = (*m_json)["VertexFormat"];
 	JSON srm = (*m_json)["VertexStream"];
+	VertexStream position{ "POSITION0","R32G32B32A32", "FLOAT" };
 
-	VertexStream weights{ "WEIGHTDATA0", "R32", "UINT" };
-	weights.data = &data;
-	BinJSON::createVertexBuffer(weights, m_savePath.c_str(), m_subPath.c_str(), *m_mesh, fmt, srm, m_streamIndex);
+	// Get packed vertex weight stream ...
+	std::vector<float> data;
+	::encodeVertexWeights(data, m_vertexLinks, m_matrixTable, *m_mesh);
+
+	// Pack position and weight data ...
+	::packVertexCoordsAndWeights(*m_mesh, position, data);
+	BinJSON::createPackedVertexSkinBuffer(position, m_savePath.c_str(), m_subPath.c_str(), *m_mesh, fmt, srm, 0);
 
 	(*m_json)["VertexFormat"] = fmt;
 	(*m_json)["VertexStream"] = srm;

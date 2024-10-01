@@ -23,6 +23,9 @@ void CModelReader::parse()
 
 		switch (key)
 		{
+		case enModelData::MORPH:
+			readMorphs(it.value());
+			break;
 		case enModelData::WEIGHTBITS:
 			m_weightBits = it.value();
 			break;
@@ -373,3 +376,22 @@ void CModelReader::loadWeights(Mesh& mesh)
 
 
 
+void CModelReader::readMorphs(JSON& obj)
+{
+	// debug morph id's - collects and prints all debug morphs
+	return;
+	
+	std::vector<std::string> debugMorphs;
+	for (JSON::iterator it = obj.begin(); it != obj.end(); ++it)
+	{
+		debugMorphs.push_back(it.key());
+	}
+
+	printf("\ndebugMorphs = {");
+	for (auto& morph : debugMorphs)
+	{
+		printf("\n\"%s\",", morph.c_str());
+	}
+
+	printf("};");
+}

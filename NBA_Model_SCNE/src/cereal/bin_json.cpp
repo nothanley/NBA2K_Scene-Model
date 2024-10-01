@@ -36,6 +36,49 @@ BinJSON::writeVertexBuffer(
 }
 
 void
+BinJSON::createPackedVertexSkinBuffer
+(
+	VertexStream& vs,
+	const char* dirPath,
+	const char* subdir,
+	const Mesh& mesh,
+	JSON& fmtObj, 
+	JSON& srmObj,
+	const int index
+)
+{
+	// validate data
+	if (!vs.data) return;
+
+	// write vertex buffer to disk
+	vs.file_name = generateBufferID(mesh, vs.name.c_str(), 0);
+	vs.file_path = std::string(dirPath) + "/" + std::string(subdir) + vs.file_name;
+	BinJSON::writeVertexBuffer(vs);
+
+	// Define vertex buffer format
+	JSON posFmtInfo, posStream;
+	posFmtInfo["CpuAccess"] = "READWRITE";
+	posFmtInfo["Format"]    = "R32G32B32_FLOAT";
+	posFmtInfo["Stream"]    = index;
+
+	// Define vertex buffer stream
+	posStream["CpuAccess"] = "READWRITE";
+	posStream["Stride"]    = 16;
+	posStream["Size"]      = vs.size;
+	posStream["Binary"]    = std::string(subdir) + vs.file_name;
+	fmtObj[vs.name]        = posFmtInfo;
+	srmObj["VertexBuffer_" + std::to_string(index)] = posStream;
+
+	// Define Weight buffer format
+	JSON wgtFmtInfo;
+	wgtFmtInfo["CpuAccess"]   = "READWRITE";
+	wgtFmtInfo["Format"]      = "R32_UINT";
+	wgtFmtInfo["ByteOffset"]  = 12;
+	wgtFmtInfo["Stream"]      = index;
+	fmtObj["WEIGHTDATA0"]     = wgtFmtInfo;
+}
+
+void
 BinJSON::createVertexBuffer
 (
 	VertexStream& vs,
@@ -44,9 +87,7 @@ BinJSON::createVertexBuffer
 	const Mesh& mesh,
 	JSON& fmtObj, 
 	JSON& srmObj,
-	const int index,
-	const Vec4 offset, 
-	const Vec4 scale
+	const int index
 )
 {
 	// validate data
@@ -61,8 +102,6 @@ BinJSON::createVertexBuffer
 	JSON fmtInfo, stream;
 	fmtInfo["Format"] = vs.format + "_" + vs.type;
 	fmtInfo["Stream"] = index;
-	fmtInfo["Offset"] = { offset.x, offset.y, offset.z, offset.w };
-	fmtInfo["Scale"]  = { scale.x, scale.y, scale.z, scale.w };
 
 	// Define vertex buffer stream
 	stream["Stride"] = vs.stride;

@@ -5,6 +5,7 @@
 #include <cereal/skin_json.h>
 #include <common.h>
 #include <armature/armature.h>
+#include <morphs/debug_morphs.h>
 
 CModelSerializer::CModelSerializer(CSceneSerializer* parent)
 	:
@@ -55,6 +56,7 @@ CModelSerializer::addModelJson(const std::shared_ptr<CNBAModel>& model)
 		{
 			setRigJson(model, obj);
 			serializeMeshSkin(obj, mesh, model->getSkeleton());
+			setMeshMorphs(obj, mesh);
 		}
 
 		(*m_json)[mesh->name.c_str()] = *obj.get();
@@ -68,8 +70,8 @@ CModelSerializer::getMeshJson(const std::shared_ptr<Mesh>& mesh)
 	auto prims = std::make_shared<JSON>();
 
  	// collect mesh data
-	MeshJSON::AABBsToJson(mesh, json);
-	MeshJSON::dUVsToJson(mesh, json);
+	//MeshJSON::AABBsToJson(mesh, json);
+	//MeshJSON::dUVsToJson(mesh, json);
 	MeshJSON::tfmToJson(mesh, json);
 	MeshJSON::primsToJson(mesh, prims);
 	(*json)["Prim"] = std::vector<JSON>{ *prims.get() };
@@ -96,7 +98,20 @@ CModelSerializer::serializeMeshSkin(std::shared_ptr<JSON>& json, const std::shar
 	CSkinJsonEncoder skinJson(json, *mesh, armature);
 	auto saveDir = common::get_parent_directory(m_parent->path());
 
-	skinJson.encode(saveDir.c_str(), "skin/");
+	skinJson.encode(saveDir.c_str(), "meshbuffers/");
+}
+
+void
+CModelSerializer::setMeshMorphs(std::shared_ptr<JSON>& json, const std::shared_ptr<Mesh>& mesh)
+{
+	JSON morphs;
+
+	for (auto& morph : debugMorphs)
+	{
+		morphs[morph] = nullptr;
+	}
+
+	(*json)["Morph"] = morphs;
 }
 
 
